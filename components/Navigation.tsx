@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { HiBars3, HiXMark } from "react-icons/hi2";
+import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 
 const navLinks = [
@@ -33,12 +34,31 @@ export default function Navigation() {
         ))}
       </div>
 
-      <div className="hidden lg:block">
-        <Button
-          className="bg-[#B9FF66] border-2 border-black rounded-xl px-8 py-4 text-black font-bold text-lg brutalist-shadow hover:bg-[#a8ef55] hover:shadow-[4px_4px_0px_0px_#000000] hover:translate-x-1 hover:translate-y-1 h-auto"
-        >
-          Get Started
-        </Button>
+      <div className="hidden lg:flex items-center gap-3">
+        <Show when="signed-out">
+          <SignInButton mode="modal">
+            <button className="px-4 py-2 text-sm font-bold text-zinc-800 hover:text-[#88cc33] transition-colors">
+              Sign In
+            </button>
+          </SignInButton>
+          <SignUpButton mode="modal">
+            <Button
+              className="bg-[#B9FF66] border-2 border-black rounded-xl px-6 py-3 text-black font-bold text-base brutalist-shadow hover:bg-[#a8ef55] hover:shadow-[4px_4px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 h-auto"
+            >
+              Get Started
+            </Button>
+          </SignUpButton>
+        </Show>
+        <Show when="signed-in">
+          <Link href="/generate">
+            <Button
+              className="bg-[#B9FF66] border-2 border-black rounded-xl px-6 py-3 text-black font-bold text-base brutalist-shadow hover:bg-[#a8ef55] hover:shadow-[4px_4px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 h-auto"
+            >
+              Dashboard
+            </Button>
+          </Link>
+          <UserButton />
+        </Show>
       </div>
 
       <Button
@@ -63,11 +83,29 @@ export default function Navigation() {
                 {link.label}
               </Link>
             ))}
-            <Button
-              className="bg-[#B9FF66] border-2 border-black rounded-xl px-6 py-3 text-black font-bold text-lg brutalist-shadow-sm hover:bg-[#a8ef55] mt-4 h-auto"
-            >
-              Get Started
-            </Button>
+            <Show when="signed-out">
+              <SignInButton mode="modal">
+                <button className="w-full px-4 py-3 text-lg font-bold text-zinc-800 border-2 border-black rounded-xl mt-4">
+                  Sign In
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <Button
+                  className="bg-[#B9FF66] border-2 border-black rounded-xl px-6 py-3 text-black font-bold text-lg brutalist-shadow-sm hover:bg-[#a8ef55] mt-2 h-auto w-full"
+                >
+                  Get Started
+                </Button>
+              </SignUpButton>
+            </Show>
+            <Show when="signed-in">
+              <Link href="/generate" onClick={() => setIsOpen(false)}>
+                <Button
+                  className="bg-[#B9FF66] border-2 border-black rounded-xl px-6 py-3 text-black font-bold text-lg brutalist-shadow-sm hover:bg-[#a8ef55] mt-4 h-auto w-full"
+                >
+                  Dashboard
+                </Button>
+              </Link>
+            </Show>
           </div>
         </div>
       )}

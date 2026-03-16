@@ -3,7 +3,6 @@ import { Bricolage_Grotesque } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
-import { AuthButtons } from "@/components/auth-buttons";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -31,7 +30,6 @@ export default function RootLayout({
             style={{ fontFamily: 'var(--font-bricolage), system-ui, sans-serif' }}
           >
             <TooltipProvider>
-              <AuthButtons />
               {children}
               <Toaster position="top-right" />
             </TooltipProvider>
