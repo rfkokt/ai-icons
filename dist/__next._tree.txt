@@ -1,0 +1,3 @@
+:HL["/_next/static/chunks/f04fa77e9f5c79f0.css","style"]
+:HL["/_next/static/media/017d9bea37084d9b-s.p.a6d6de71.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+0:{"buildId":"Ving61-T-Qcm5rSwEE5O1","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":true},"staleTime":300}
