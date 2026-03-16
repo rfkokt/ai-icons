@@ -13,7 +13,7 @@ export default function GeneratePage() {
     <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
       {/* Empty State */}
       <div className="text-center mb-6 lg:mb-8">
-        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#B9FF66] rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 border-2 border-black brutalist-shadow-sm">
+        <div className="w-12 h-12 sm:w-16 bg-white rounded-xl sm:rounded-2xl border-2 border-black brutalist-shadow p-2 sm:p-3sm:h-16 bg-[#B9FF66] rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 border-2 border-black brutalist-shadow-sm">
           <HiSparkles className="h-6 w-6 sm:h-8 sm:w-8 text-black" />
         </div>
         <h1 className="text-xl sm:text-2xl font-bold text-zinc-900 mb-2">

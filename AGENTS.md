@@ -44,13 +44,23 @@ ai-icons/
 │   ├── stat-card.tsx        # Reusable stat card (referral)
 │   ├── user-card.tsx        # Reusable user card (leaderboard)
 │   ├── quick-prompt-button.tsx  # Quick prompt button (generate)
-│   ├── Navigation.tsx        # Landing page nav
-│   ├── Hero.tsx             # Hero section
-│   ├── Features.tsx         # Features grid
-│   ├── Stats.tsx            # Stats + case studies
-│   ├── CTA.tsx              # Call-to-action
-│   ├── Footer.tsx           # Footer
-│   └── Marquee.tsx          # Marquee animation
+│   ├── section.tsx          # Section wrapper component
+│   ├── section-badge.tsx    # Section badge component
+│   ├── filter-tabs.tsx     # Filter tabs component
+│   ├── icon-grid.tsx       # Responsive icon grid
+│   ├── copy-link-button.tsx    # Copy link with feedback
+│   ├── empty-state.tsx     # Empty state placeholder
+│   ├── how-it-works.tsx    # Step-by-step display
+│   ├── brutalist-icon-box.tsx  # Icon container
+│   ├── page-hero.tsx       # Page hero component
+│   ├── prompt-input.tsx    # AI prompt input
+│   ├── Navigation.tsx      # Landing page nav
+│   ├── Hero.tsx            # Hero section
+│   ├── Features.tsx        # Features grid
+│   ├── Stats.tsx           # Stats + case studies
+│   ├── CTA.tsx             # Call-to-action
+│   ├── Footer.tsx          # Footer
+│   └── Marquee.tsx         # Marquee animation
 ├── hooks/
 │   ├── use-tab-state.ts    # Tab state hook
 │   └── use-scroll-animation.ts  # GSAP ScrollTrigger hook
@@ -154,8 +164,9 @@ import { formatDateStandard, formatDateSingleLine, formatDateNoTime, DAYS, MONTH
 ### Utility Classes (globals.css)
 | Class | Description |
 |-------|-------------|
-| `.brutalist-shadow` | 8px offset shadow |
-| `.brutalist-shadow-sm` | 4px offset shadow |
+| `.brutalist-shadow` | 8px offset shadow (static, no hover animation) |
+| `.brutalist-shadow-sm` | 4px offset shadow (static, no hover animation) |
+| `.btn-brutalist` | Button with hover/active animation |
 | `.brutalist-border` | 4px black border |
 | `.brutalist-border-2` | 2px black border |
 | `.animate-marquee` | 20s horizontal scroll |
@@ -190,9 +201,11 @@ import { formatDateStandard, formatDateSingleLine, formatDateNoTime, DAYS, MONTH
 ### Layout Components
 | Component | Description |
 |-----------|-------------|
-| `SidebarLayout` | Main layout with sidebar navigation |
+| `SidebarLayout` | Main layout with sidebar navigation (include user dropdown) |
 | `PageHeader` | Page title + description + action buttons |
 | `PageTabs` | Tab navigation synced with URL |
+| `Section` | Wrapper section with consistent padding/sizing |
+| `IconGrid` | Responsive grid for icon cards |
 
 ### Auth Components
 | Component | Description |
@@ -208,6 +221,14 @@ import { formatDateStandard, formatDateSingleLine, formatDateNoTime, DAYS, MONTH
 | `QuickPromptButton` | Quick suggestion button for prompts | Generate page |
 | `Section` | Wrapper section with consistent padding/sizing | All page sections |
 | `SectionBadge` | Badge for section headers | Features, Stats, etc. |
+| `FilterTabs` | Filter tab buttons | Community, Leaderboard pages |
+| `IconGrid` | Responsive icon grid layout | Library, Community pages |
+| `CopyLinkButton` | Copy to clipboard with feedback | Referral page |
+| `EmptyState` | Empty state placeholder | Various pages |
+| `HowItWorks` | Step-by-step process display | Referral page |
+| `BrutalistIconBox` | Icon container with brutalist style | Page heroes, stats |
+| `PageHero` | Page title + icon + description | Generate, Pricing pages |
+| `PromptInput` | AI prompt input with options | Generate page |
 
 ### Hooks
 | Hook | Description | Usage |
@@ -246,7 +267,12 @@ import { HiUsers } from "react-icons/hi2"
 ```tsx
 import { QuickPromptButton } from "@/components/quick-prompt-button"
 
-<QuickPromptButton suggestion="Shopping cart" onClick={(s) => setPrompt(s)} />
+<QuickPromptButton 
+  suggestion="Shopping cart" 
+  onClick={(s) => setPrompt(s)} 
+  // Optional: custom className
+  className="bg-white"
+/>
 ```
 
 ### Section Usage
@@ -276,10 +302,99 @@ return (
 )
 ```
 
+### FilterTabs Usage
+```tsx
+import { FilterTabs } from "@/components/filter-tabs"
+import { HiClock, HiHeart } from "react-icons/hi2"
+
+<FilterTabs
+  tabs={[
+    { key: "latest", label: "Latest", icon: <HiClock /> },
+    { key: "mostLoved", label: "Most Loved", icon: <HiHeart /> }
+  ]}
+  activeTab={filter}
+  onTabChange={setFilter}
+/>
+```
+
+### IconGrid Usage
+```tsx
+import { IconGrid } from "@/components/icon-grid"
+
+<IconGrid>
+  {items.map(item => <IconCard key={item.id} {...item} />)}
+</IconGrid>
+```
+
+### CopyLinkButton Usage
+```tsx
+import { CopyLinkButton } from "@/components/copy-link-button"
+
+<CopyLinkButton text="https://example.com/link" className="bg-[#B9FF66]" />
+```
+
+### EmptyState Usage
+```tsx
+import { EmptyState } from "@/components/empty-state"
+import { HiShare } from "react-icons/hi2"
+
+<EmptyState
+  icon={<HiShare className="h-10 w-10 text-zinc-300" />}
+  title="No Items Yet"
+  description="Start adding items to see them here"
+/>
+```
+
+### HowItWorks Usage
+```tsx
+import { HowItWorks } from "@/components/how-it-works"
+
+<HowItWorks
+  steps={[
+    { step: 1, title: "Share", description: "Share your link" },
+    { step: 2, title: "Sign Up", description: "Friend signs up" },
+    { step: 3, title: "Earn", description: "Both get credits" }
+  ]}
+/>
+```
+
+### BrutalistIconBox Usage
+```tsx
+import { BrutalistIconBox } from "@/components/brutalist-icon-box"
+import { HiSparkles } from "react-icons/hi2"
+
+<BrutalistIconBox icon={HiSparkles} size="md" variant="primary" />
+```
+
+### PageHero Usage
+```tsx
+import { PageHero } from "@/components/page-hero"
+import { HiSparkles } from "react-icons/hi2"
+
+<PageHero
+  icon={HiSparkles}
+  title="Create Your Icon"
+  description="Describe the icon you want"
+/>
+```
+
+### PromptInput Usage
+```tsx
+import { PromptInput } from "@/components/prompt-input"
+
+<PromptInput
+  value={prompt}
+  onChange={setPrompt}
+  onGenerate={() => generate()}
+  onOptionsClick={() => setShowOptions(true)}
+  onStyleClick={() => setShowStyles(true)}
+/>
+```
+
 ### Button Variants
 ```tsx
-// Primary CTA
-<Button className="bg-[#B9FF66] border-2 border-black rounded-xl px-8 py-4 text-black font-bold brutalist-shadow">
+// Primary CTA (with animation)
+<Button className="bg-[#B9FF66] border-2 border-black rounded-xl px-8 py-4 text-black font-bold btn-brutalist">
   Get Started
 </Button>
 
@@ -288,8 +403,8 @@ return (
   Learn More
 </Button>
 
-// Dark variant
-<Button className="bg-black text-[#B9FF66] border-2 border-black brutalist-shadow">
+// Dark variant (with animation)
+<Button className="bg-black text-[#B9FF66] border-2 border-black btn-brutalist">
   Dark Button
 </Button>
 ```
