@@ -311,6 +311,7 @@ skill: { name: "next-best-practices" }  # Next.js patterns & best practices
 ## 7. Best Practices
 
 ### MANDATORY
+- **MOBILE-FIRST DESIGN**: Semua komponen harus responsif, dimulai dari mobile lalu scale up ke desktop
 - Gunakan `cn()` untuk merge className
 - Cleanup `ScrollTrigger` di useEffect return
 - `"use client"` hanya jika ada hooks/GSAP
@@ -325,7 +326,83 @@ skill: { name: "next-best-practices" }  # Next.js patterns & best practices
 - Jangan lupa cleanup GSAP animations
 - Jangan taruh API calls di page components
 
-### Route Protection Pattern
+## 8. Responsive Design (Mobile-First)
+
+### Tailwind Breakpoints
+| Breakpoint | Min Width | Usage |
+|------------|-----------|-------|
+| Default | 0px | Mobile-first base styles |
+| `sm:` | 640px | Small tablets |
+| `md:` | 768px | Tablets |
+| `lg:` | 1024px | Laptops |
+| `xl:` | 1280px | Desktops |
+| `2xl:` | 1536px | Large screens |
+
+### Mobile-First Pattern
+```tsx
+// ✅ BENAR: Mobile-first
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+// ❌ SALAH: Desktop-first
+<div className="grid grid-cols-4 lg:grid-cols-2 lg:grid-cols-1 gap-4">
+```
+
+### Responsive Guidelines
+
+#### Grid Layouts
+```tsx
+// Mobile: 1 kolom, Tablet: 2 kolom, Desktop: 4 kolom
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+```
+
+#### Padding & Margin
+```tsx
+// Mobile: kecil, Desktop: besar
+<section className="px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24">
+```
+
+#### Typography
+```tsx
+// Mobile: kecil, Desktop: besar
+<h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
+```
+
+#### Flex Direction
+```tsx
+// Mobile: column, Desktop: row
+<div className="flex flex-col sm:flex-row gap-4">
+```
+
+#### Hide/Show Elements
+```tsx
+// Hide on mobile, show on desktop
+<div className="hidden lg:block">
+
+// Show on mobile, hide on desktop
+<div className="lg:hidden">
+```
+
+### Dashboard Responsive Pattern
+```tsx
+// Sidebar: hidden on mobile, show on desktop
+<aside className="hidden lg:flex lg:w-64">
+
+// Main content: full width on mobile
+<main className="flex-1 min-w-0">
+
+// History panel: hidden on tablet, show on desktop
+<aside className="hidden xl:block w-72">
+```
+
+### Testing Checklist
+- [ ] Test di 320px (mobile kecil)
+- [ ] Test di 768px (tablet)
+- [ ] Test di 1024px (laptop)
+- [ ] Test di 1280px+ (desktop)
+- [ ] Pastikan touch targets minimum 44x44px
+- [ ] Pastikan text readable tanpa zoom
+
+## 9. Route Protection Pattern
 ```tsx
 // Protected route (main)/layout.tsx
 const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
@@ -339,7 +416,7 @@ useEffect(() => {
 }, [isAuthenticated])
 ```
 
-## 8. Scripts
+## 10. Scripts
 
 ```bash
 npm run dev      # Start development server
@@ -348,7 +425,7 @@ npm run start    # Start production server
 npm run lint     # Run ESLint
 ```
 
-## 9. Notes
+## 11. Notes
 
 - Project: Landing page + Dashboard (protected routes)
 - Design: Neo-Brutalist dengan primary accent `#B9FF66`

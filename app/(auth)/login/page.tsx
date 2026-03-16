@@ -47,7 +47,7 @@ export default function LoginPage() {
         "demo-token"
       )
       
-      router.push("/dashboard")
+      router.push("/generate")
     } catch {
       setError("Email atau password salah")
     } finally {
@@ -56,30 +56,30 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6] bg-grid-pattern flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#f3f4f6] bg-grid-pattern flex items-center justify-center p-4 sm:p-6">
       <div className="w-full max-w-md">
-        <div className="bg-white border-4 border-black brutalist-shadow rounded-2xl p-8">
-          <div className="text-center mb-8">
+        <div className="bg-white border-4 border-black brutalist-shadow rounded-2xl p-6 sm:p-8">
+          <div className="text-center mb-6 sm:mb-8">
             <Link href="/" className="inline-block">
-              <h1 className="text-4xl font-bold tracking-tighter">AI Icons</h1>
+              <h1 className="text-3xl sm:text-4xl font-bold tracking-tighter">AI Icons</h1>
             </Link>
-            <p className="text-zinc-500 mt-2">Sign in to your account</p>
+            <p className="text-zinc-500 mt-2 text-sm sm:text-base">Sign in to your account</p>
           </div>
 
           {error && (
-            <div className="bg-red-50 border-2 border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6">
+            <div className="bg-red-50 border-2 border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 sm:space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-sm sm:text-base">Email</Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="you@example.com"
-                className="brutalist-border-2 rounded-xl"
+                className="brutalist-border-2 rounded-xl h-11 sm:h-auto"
                 {...register("email")}
               />
               {errors.email && (
@@ -88,12 +88,12 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-sm sm:text-base">Password</Label>
               <Input
                 id="password"
                 type="password"
                 placeholder="••••••••"
-                className="brutalist-border-2 rounded-xl"
+                className="brutalist-border-2 rounded-xl h-11 sm:h-auto"
                 {...register("password")}
               />
               {errors.password && (
@@ -104,7 +104,7 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#B9FF66] text-black border-2 border-black rounded-xl py-3 font-bold text-lg brutalist-shadow hover:bg-[#a8ef55] hover:shadow-[4px_4px_0px_0px_#000000] hover:translate-x-1 hover:translate-y-1 h-auto"
+              className="w-full bg-[#B9FF66] text-black border-2 border-black rounded-xl py-3 font-bold text-base sm:text-lg brutalist-shadow hover:bg-[#a8ef55] hover:shadow-[4px_4px_0px_0px_#000000] hover:translate-x-1 hover:translate-y-1 h-12 sm:h-auto touch-manipulation"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center gap-2">
@@ -117,14 +117,14 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-zinc-500">
+          <div className="mt-5 sm:mt-6 text-center text-sm text-zinc-500">
             <p>Demo: any email & password (min 6 chars)</p>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-zinc-200 text-center">
+          <div className="mt-5 sm:mt-6 pt-5 sm:pt-6 border-t border-zinc-200 text-center">
             <Link
               href="/"
-              className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors"
+              className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors touch-manipulation"
             >
               ← Back to home
             </Link>
