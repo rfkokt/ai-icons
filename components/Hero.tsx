@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import { HiArrowTopRightOnSquare, HiSparkles } from "react-icons/hi2";
 import gsap from "gsap";
 
 export default function Hero() {
@@ -45,7 +45,7 @@ export default function Hero() {
         <div ref={heroContentRef} className="max-w-xl">
           <div className="inline-block bg-white border-2 border-black px-4 py-2 rounded-full font-bold mb-6 transform -rotate-2 brutalist-shadow-sm">
             <span className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-[#B9FF66]" />
+              <HiSparkles className="w-5 h-5 text-[#B9FF66]" />
               AI-Powered Icon Generation
             </span>
           </div>
@@ -68,7 +68,7 @@ export default function Hero() {
               className="bg-black text-[#B9FF66] text-xl px-10 py-5 rounded-2xl brutalist-shadow border-2 border-black flex justify-center items-center gap-3 group h-auto hover:shadow-[4px_4px_0px_0px_#000000] hover:translate-x-1 hover:translate-y-1"
             >
               Start Creating
-              <ArrowUpRight className="text-2xl group-hover:rotate-45 transition-transform" />
+              <HiArrowTopRightOnSquare className="text-2xl group-hover:rotate-45 transition-transform" />
             </Button>
             
             <Button
@@ -112,7 +112,7 @@ export default function Hero() {
                     </svg>
                   </div>
                   <div className="w-20 h-20 bg-[#B9FF66] border-4 border-black rounded-2xl flex items-center justify-center relative">
-                    <Sparkles className="w-10 h-10 hero-icon-float" />
+                    <HiSparkles className="w-10 h-10 hero-icon-float" />
                   </div>
                   <div className="w-20 h-20 bg-zinc-100 border-4 border-black rounded-2xl flex items-center justify-center">
                     <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

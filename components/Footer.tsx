@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, Github, Twitter, MessageCircle } from "lucide-react";
+import { HiArrowTopRightOnSquare, HiXMark, HiChatBubbleLeftRight } from "react-icons/hi2";
+import { FaGithub, FaXTwitter } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 
 export default function Footer() {
@@ -37,7 +38,7 @@ export default function Footer() {
                 size="icon"
                 className="w-16 h-16 rounded-xl bg-zinc-800 hover:bg-[#B9FF66] text-white hover:text-black flex items-center justify-center transition-colors duration-300 group border-4 border-zinc-800 hover:border-[#B9FF66]"
               >
-                <ArrowUpRight className="w-8 h-8 group-hover:rotate-45 transition-transform" />
+                <HiArrowTopRightOnSquare className="w-8 h-8 group-hover:rotate-45 transition-transform" />
               </Button>
             </div>
           </div>
@@ -100,13 +101,13 @@ export default function Footer() {
           </p>
           <div className="flex gap-6">
             <Link href="#" className="text-white hover:text-[#B9FF66] transition-transform hover:scale-110">
-              <Twitter className="w-8 h-8" />
+              <FaXTwitter className="w-8 h-8" />
             </Link>
             <Link href="#" className="text-white hover:text-[#B9FF66] transition-transform hover:scale-110">
-              <Github className="w-8 h-8" />
+              <FaGithub className="w-8 h-8" />
             </Link>
             <Link href="#" className="text-white hover:text-[#B9FF66] transition-transform hover:scale-110">
-              <MessageCircle className="w-8 h-8" />
+              <HiChatBubbleLeftRight className="w-8 h-8" />
             </Link>
           </div>
         </div>

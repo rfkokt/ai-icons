@@ -4,16 +4,16 @@ import { useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Wand2, 
-  Download, 
-  Palette, 
-  Zap, 
-  Share2, 
-  CreditCard,
-  ArrowUpRight,
-  Target,
-  Sparkles
-} from "lucide-react";
+  HiSparkles,
+  HiArrowDownTray,
+  HiPaintBrush,
+  HiBolt,
+  HiShare,
+  HiCreditCard,
+  HiArrowTopRightOnSquare,
+  HiCursorArrowRays,
+} from "react-icons/hi2";
+import { FaBullseye } from "react-icons/fa6";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -23,42 +23,42 @@ if (typeof window !== "undefined") {
 
 const features = [
   {
-    icon: Wand2,
+    icon: HiSparkles,
     title: "AI Generation",
     description: "Generate custom icons from text prompts using advanced AI models",
     color: "bg-zinc-100",
     hoverColor: "hover:bg-[#B9FF66]",
   },
   {
-    icon: Download,
+    icon: HiArrowDownTray,
     title: "Multiple Formats",
     description: "Export icons as SVG, PNG, or React components for seamless integration",
     color: "bg-[#B9FF66]",
     hoverColor: "hover:bg-black hover:text-white",
   },
   {
-    icon: Palette,
+    icon: HiPaintBrush,
     title: "Custom Styles",
     description: "Choose from various styles: minimalist, outlined, filled, gradient, and more",
     color: "bg-black text-white",
     hoverColor: "hover:bg-zinc-800",
   },
   {
-    icon: Zap,
+    icon: HiBolt,
     title: "Fast Generation",
     description: "Get your icons in under 3 seconds with our optimized AI pipeline",
     color: "bg-zinc-100",
     hoverColor: "hover:bg-[#B9FF66]",
   },
   {
-    icon: Share2,
+    icon: HiShare,
     title: "Community Library",
     description: "Share your creations and discover icons made by other designers",
     color: "bg-[#B9FF66]",
     hoverColor: "hover:bg-black hover:text-white",
   },
   {
-    icon: CreditCard,
+    icon: HiCreditCard,
     title: "Flexible Pricing",
     description: "Start with 2 free credits, then purchase packages that fit your needs",
     color: "bg-black text-white",
@@ -105,12 +105,12 @@ export default function Features() {
         {/* Parallel Illustration */}
         <div className="lg:col-span-4 flex justify-center lg:justify-end relative">
           <div className="w-48 h-48 bg-white border-4 border-black rounded-full brutalist-shadow flex flex-col items-center justify-center relative z-10 group">
-            <Target className="w-20 h-20 text-black group-hover:scale-110 transition-transform duration-300" />
+            <FaBullseye className="w-20 h-20 text-black group-hover:scale-110 transition-transform duration-300" />
           </div>
           {/* Decorative blob behind */}
           <div className="absolute w-48 h-48 bg-[#B9FF66] border-4 border-black rounded-full translate-x-4 translate-y-4" />
           {/* Little sparks */}
-          <Sparkles className="absolute -top-4 right-10 w-10 h-10 text-black rotate-12 z-20 animate-pulse" />
+          <HiSparkles className="absolute -top-4 right-10 w-10 h-10 text-black rotate-12 z-20 animate-pulse" />
         </div>
       </div>
 
@@ -136,7 +136,7 @@ export default function Features() {
                   ? 'group-hover:border-[#B9FF66]' 
                   : 'group-hover:bg-black group-hover:text-[#B9FF66]'
               }`}>
-                <ArrowUpRight className="w-6 h-6" />
+                <HiArrowTopRightOnSquare className="w-6 h-6" />
               </div>
               Learn more
             </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { HiArrowRight, HiSparkles } from "react-icons/hi2";
 
 export default function CTA() {
   return (
@@ -11,7 +11,7 @@ export default function CTA() {
         
         <div className="max-w-2xl relative z-10">
           <div className="flex items-center gap-2 mb-6">
-            <Sparkles className="w-6 h-6 text-[#B9FF66]" />
+            <HiSparkles className="w-6 h-6 text-[#B9FF66]" />
             <span className="font-bold text-zinc-600">Start for free</span>
           </div>
           <h3 className="text-4xl lg:text-5xl font-black tracking-tighter mb-6">
@@ -27,7 +27,7 @@ export default function CTA() {
             className="bg-black text-white text-xl font-bold px-10 py-5 rounded-2xl brutalist-shadow border-4 border-black whitespace-nowrap hover:bg-zinc-800 transition-colors h-auto"
           >
             Get Started Free
-            <ArrowRight className="ml-2 w-6 h-6" />
+            <HiArrowRight className="ml-2 w-6 h-6" />
           </Button>
         </div>
       </div>

@@ -3,13 +3,13 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Gift, Users, Clock, CheckCircle, Sparkles, Copy, Share2, Link2 } from "lucide-react"
+import { HiGift, HiUsers, HiClock, HiCheckCircle, HiSparkles, HiClipboard, HiShare, HiLink } from "react-icons/hi2"
 
 const stats = [
-  { label: "Total Referrals", value: "0", icon: Users },
-  { label: "Pending", value: "0", icon: Clock },
-  { label: "Completed", value: "0", icon: CheckCircle },
-  { label: "Credits Earned", value: "0", icon: Sparkles },
+  { label: "Total Referrals", value: "0", icon: HiUsers },
+  { label: "Pending", value: "0", icon: HiClock },
+  { label: "Completed", value: "0", icon: HiCheckCircle },
+  { label: "Credits Earned", value: "0", icon: HiSparkles },
 ]
 
 const steps = [
@@ -34,7 +34,7 @@ export default function ReferralPage() {
         {/* Hero Section */}
         <div className="text-center">
           <div className="w-16 h-16 bg-[#B9FF66] rounded-2xl flex items-center justify-center mx-auto mb-4 border-2 border-black brutalist-shadow-sm">
-            <Gift className="h-8 w-8 text-black" />
+            <HiGift className="h-8 w-8 text-black" />
           </div>
           <h1 className="text-3xl font-bold text-zinc-900 mb-2">Refer & Earn</h1>
           <p className="text-zinc-500 max-w-md mx-auto">
@@ -48,7 +48,7 @@ export default function ReferralPage() {
         {/* Stats Row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {stats.map((stat) => (
-            <Card key={stat.label} className="p-4 rounded-xl border-2 border-zinc-200 bg-white">
+            <Card key={stat.label} className="p-4 rounded-xl border-2 border-zinc-200 bg-white active:scale-[0.98] transition-all duration-200 cursor-pointer">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-zinc-100 rounded-lg flex items-center justify-center shrink-0">
                   <stat.icon className="h-5 w-5 text-zinc-500" />
@@ -73,7 +73,7 @@ export default function ReferralPage() {
               onClick={handleCopy}
               className="bg-[#B9FF66] text-black border-2 border-black brutalist-shadow-sm hover:bg-[#a8ef55] px-4"
             >
-              {copied ? <CheckCircle className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              {copied ? <HiCheckCircle className="h-4 w-4" /> : <HiClipboard className="h-4 w-4" />}
               <span className="ml-2">{copied ? "Copied" : "Copy Link"}</span>
             </Button>
           </div>
@@ -83,10 +83,10 @@ export default function ReferralPage() {
             <p className="text-sm text-zinc-500 mb-3">Share on social media</p>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" className="brutalist-border-2 rounded-lg">
-                <Share2 className="h-4 w-4" />
+                <HiShare className="h-4 w-4" />
               </Button>
               <Button variant="outline" size="sm" className="brutalist-border-2 rounded-lg">
-                <Link2 className="h-4 w-4" />
+                <HiLink className="h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -113,7 +113,7 @@ export default function ReferralPage() {
         {/* Empty State */}
         <Card className="p-8 rounded-2xl border-2 border-zinc-200 bg-zinc-50 text-center">
           <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-zinc-200">
-            <Share2 className="h-10 w-10 text-zinc-300" />
+            <HiShare className="h-10 w-10 text-zinc-300" />
           </div>
           <h3 className="font-semibold text-zinc-900 mb-2">No Referrals Yet</h3>
           <p className="text-sm text-zinc-500 max-w-xs mx-auto">

@@ -4,7 +4,8 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Crown, Medal, Trophy } from "lucide-react"
+import { HiTrophy } from "react-icons/hi2"
+import { FaCrown, FaMedal } from "react-icons/fa6"
 import { cn } from "@/lib/utils"
 
 type FilterType = "weekly" | "monthly" | "allTime"
@@ -67,7 +68,7 @@ export default function LeaderboardPage() {
         <div className="flex items-end justify-center gap-4 mb-8">
           {/* Rank 2 */}
           <div className="flex flex-col items-center">
-            <Card className="w-28 p-4 rounded-2xl border-2 border-zinc-200 bg-white text-center">
+            <Card className="w-28 p-4 rounded-2xl border-2 border-zinc-200 bg-white text-center active:scale-[0.98] transition-all duration-200 cursor-pointer">
               <Avatar className="w-12 h-12 mx-auto mb-2 bg-zinc-100">
                 <AvatarFallback className="bg-zinc-200 text-zinc-600">AJ</AvatarFallback>
               </Avatar>
@@ -81,9 +82,9 @@ export default function LeaderboardPage() {
 
           {/* Rank 1 */}
           <div className="flex flex-col items-center">
-            <Card className="w-32 p-5 rounded-2xl border-2 border-black bg-gradient-to-b from-[#B9FF66] to-[#a8ed55] text-center brutalist-shadow">
+            <Card className="w-32 p-5 rounded-2xl border-2 border-black bg-gradient-to-b from-[#B9FF66] to-[#a8ed55] text-center brutalist-shadow active:scale-[0.98] transition-all duration-200 cursor-pointer">
               <div className="w-14 h-14 mx-auto mb-2 bg-white rounded-full flex items-center justify-center border-2 border-black">
-                <Crown className="h-7 w-7 text-black" />
+                <FaCrown className="h-7 w-7 text-black" />
               </div>
               <p className="font-bold text-black truncate">{topUsers[0].name}</p>
               <p className="text-sm text-black/80">{topUsers[0].referrals} referrals</p>
@@ -96,7 +97,7 @@ export default function LeaderboardPage() {
 
           {/* Rank 3 */}
           <div className="flex flex-col items-center">
-            <Card className="w-28 p-4 rounded-2xl border-2 border-zinc-200 bg-white text-center">
+            <Card className="w-28 p-4 rounded-2xl border-2 border-zinc-200 bg-white text-center active:scale-[0.98] transition-all duration-200 cursor-pointer">
               <Avatar className="w-12 h-12 mx-auto mb-2 bg-zinc-100">
                 <AvatarFallback className="bg-zinc-200 text-zinc-600">MW</AvatarFallback>
               </Avatar>
@@ -110,7 +111,7 @@ export default function LeaderboardPage() {
         </div>
 
         {/* Community Champions */}
-        <Card className="rounded-2xl border-2 border-zinc-200 bg-white">
+        <Card className="rounded-2xl border-2 border-zinc-200 bg-white active:scale-[0.98] transition-all duration-200">
           <div className="p-4 border-b border-zinc-200">
             <h2 className="font-semibold text-zinc-900">Community Champions</h2>
           </div>
@@ -141,7 +142,7 @@ export default function LeaderboardPage() {
 
       {/* My Rank Floating Card */}
       <div className="fixed bottom-6 right-6 z-50">
-        <Card className="p-4 rounded-2xl border-2 border-black brutalist-shadow bg-[#B9FF66]">
+        <Card className="p-4 rounded-2xl border-2 border-black brutalist-shadow bg-[#B9FF66] active:scale-[0.98] transition-all duration-200 cursor-pointer">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center border-2 border-black">
               <span className="font-bold text-black">#{myRank.rank}</span>

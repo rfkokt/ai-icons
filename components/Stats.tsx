@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Users, Zap, Award } from "lucide-react";
+import { HiArrowTrendingUp, HiUsers, HiBolt, HiTrophy } from "react-icons/hi2";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -12,25 +12,25 @@ if (typeof window !== "undefined") {
 
 const stats = [
   {
-    icon: TrendingUp,
+    icon: HiArrowTrendingUp,
     value: "10,000+",
     label: "Icons Generated",
     description: "Custom icons created by our users",
   },
   {
-    icon: Users,
+    icon: HiUsers,
     value: "2,000+",
     label: "Active Users",
     description: "Designers and developers trust us",
   },
   {
-    icon: Zap,
+    icon: HiBolt,
     value: "<3s",
     label: "Avg. Generation Time",
     description: "Lightning fast icon creation",
   },
   {
-    icon: Award,
+    icon: HiTrophy,
     value: "98%",
     label: "Satisfaction Rate",
     description: "Users love their generated icons",

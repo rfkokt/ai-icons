@@ -18,7 +18,7 @@
 
 - **Styling**: Tailwind utility classes + custom classes di `globals.css`
 - **Animations**: GSAP + ScrollTrigger untuk scroll animations
-- **Icons**: Lucide React (`import { IconName } from "lucide-react"`)
+- **Icons**: React Icons - Heroicons v2 (`import { HiIconName } from "react-icons/hi2"`)
 
 ### Project Structure
 ```
@@ -72,7 +72,7 @@ ai-icons/
 
 import { useEffect, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
-import { IconName } from "lucide-react";
+import { HiSparkles } from "react-icons/hi2";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -288,6 +288,7 @@ const user = useAuthStore((state) => state.user)
 |-------|---------|---------|
 | `shadcn` | ShadCN component management | Add/fix/debug shadcn components |
 | `next-best-practices` | Next.js best practices | RSC, data patterns, metadata, error handling |
+| `frontend-design` | High-quality frontend UI design | Build web components, pages, or applications |
 
 ### Usage Examples
 ```bash

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { MoreVertical, Download, Trash2, Check } from "lucide-react"
+import { HiEllipsisVertical, HiArrowDownTray, HiTrash, HiCheck } from "react-icons/hi2"
 import { cn } from "@/lib/utils"
 
 const libraryIcons = [
@@ -99,7 +99,7 @@ export default function LibraryPage() {
                   )}
                 >
                   {selectedIds.includes(icon.id) && (
-                    <Check className="h-3.5 w-3.5 text-black" />
+                    <HiCheck className="h-3.5 w-3.5 text-black" />
                   )}
                 </div>
               )}
@@ -114,7 +114,7 @@ export default function LibraryPage() {
                     }}
                     className="w-9 h-9 sm:w-8 sm:h-8 bg-white rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-50 active:bg-zinc-100 touch-manipulation"
                   >
-                    <MoreVertical className="h-4 w-4 text-zinc-500" />
+                    <HiEllipsisVertical className="h-4 w-4 text-zinc-500" />
                   </button>
                   
                   {/* Menu - Show on click for mobile, hover for desktop */}
@@ -127,7 +127,7 @@ export default function LibraryPage() {
                         }}
                         className="w-full px-3 py-2.5 sm:py-2 text-sm text-left flex items-center gap-2 hover:bg-zinc-50 active:bg-zinc-100 touch-manipulation"
                       >
-                        <Download className="h-4 w-4" />
+                        <HiArrowDownTray className="h-4 w-4" />
                         Download
                       </button>
                       <button
@@ -137,7 +137,7 @@ export default function LibraryPage() {
                         }}
                         className="w-full px-3 py-2.5 sm:py-2 text-sm text-left flex items-center gap-2 hover:bg-zinc-50 active:bg-zinc-100 text-red-500 touch-manipulation"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <HiTrash className="h-4 w-4" />
                         Delete
                       </button>
                     </div>
@@ -173,7 +173,7 @@ export default function LibraryPage() {
               size="sm"
               className="w-full sm:w-auto h-11 sm:h-9 brutalist-border-2 rounded-lg touch-manipulation"
             >
-              <Download className="h-4 w-4 mr-1.5" />
+              <HiArrowDownTray className="h-4 w-4 mr-1.5" />
               Download Selected
             </Button>
             <Button
@@ -181,7 +181,7 @@ export default function LibraryPage() {
               size="sm"
               className="w-full sm:w-auto h-11 sm:h-9 brutalist-border-2 rounded-lg text-red-500 hover:text-red-600 touch-manipulation"
             >
-              <Trash2 className="h-4 w-4 mr-1.5" />
+              <HiTrash className="h-4 w-4 mr-1.5" />
               Delete Selected
             </Button>
           </div>

@@ -3,7 +3,8 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Check, ArrowRight, Zap, Crown, Building2, Sparkles } from "lucide-react"
+import { HiCheck, HiArrowRight, HiBolt, HiBuildingOffice2, HiSparkles } from "react-icons/hi2"
+import { FaCrown } from "react-icons/fa6"
 import { cn } from "@/lib/utils"
 
 type BillingPeriod = "monthly" | "yearly"
@@ -40,7 +41,7 @@ const tiers: PricingTier[] = [
     icon: (
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-zinc-400/30 to-zinc-500/30 blur-xl rounded-full" />
-        <Zap className="w-6 h-6 relative z-10 text-zinc-600" />
+        <HiBolt className="w-6 h-6 relative z-10 text-zinc-600" />
       </div>
     ),
     features: [
@@ -63,7 +64,7 @@ const tiers: PricingTier[] = [
     icon: (
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-[#B9FF66]/50 to-[#88cc33]/50 blur-xl rounded-full" />
-        <Crown className="w-6 h-6 relative z-10 text-black" />
+        <FaCrown className="w-6 h-6 relative z-10 text-black" />
       </div>
     ),
     features: [
@@ -84,7 +85,7 @@ const tiers: PricingTier[] = [
     icon: (
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-zinc-400/30 to-zinc-500/30 blur-xl rounded-full" />
-        <Building2 className="w-6 h-6 relative z-10 text-zinc-600" />
+        <HiBuildingOffice2 className="w-6 h-6 relative z-10 text-zinc-600" />
       </div>
     ),
     features: [
@@ -105,7 +106,7 @@ const tiers: PricingTier[] = [
     icon: (
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-zinc-400/30 to-zinc-500/30 blur-xl rounded-full" />
-        <Sparkles className="w-6 h-6 relative z-10 text-zinc-600" />
+        <HiSparkles className="w-6 h-6 relative z-10 text-zinc-600" />
       </div>
     ),
     features: [
@@ -257,7 +258,7 @@ function PricingSection({ className }: { className?: string }) {
                             : "text-zinc-300"
                         )}
                       >
-                        <Check className="w-4 h-4" />
+                        <HiCheck className="w-4 h-4" />
                       </div>
                       <div className="flex-1">
                         <div className="text-sm font-medium text-zinc-900">
@@ -286,12 +287,12 @@ function PricingSection({ className }: { className?: string }) {
                     {tier.highlight ? (
                       <>
                         Buy Now
-                        <ArrowRight className="w-4 h-4" />
+                        <HiArrowRight className="w-4 h-4" />
                       </>
                     ) : (
                       <>
                         Get Started
-                        <ArrowRight className="w-4 h-4" />
+                        <HiArrowRight className="w-4 h-4" />
                       </>
                     )}
                   </span>

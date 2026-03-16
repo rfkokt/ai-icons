@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Sparkles, Sliders, ArrowUpRight, ChevronDown } from "lucide-react"
+import { HiSparkles, HiAdjustmentsHorizontal, HiArrowTopRightOnSquare, HiChevronDown } from "react-icons/hi2"
 
 export default function GeneratePage() {
   const [prompt, setPrompt] = useState("")
@@ -13,7 +13,7 @@ export default function GeneratePage() {
       {/* Empty State */}
       <div className="text-center mb-6 lg:mb-8">
         <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#B9FF66] rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 border-2 border-black brutalist-shadow-sm">
-          <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-black" />
+          <HiSparkles className="h-6 w-6 sm:h-8 sm:w-8 text-black" />
         </div>
         <h1 className="text-xl sm:text-2xl font-bold text-zinc-900 mb-2">
           Create Your Icon
@@ -45,7 +45,7 @@ export default function GeneratePage() {
                 size="sm"
                 className="h-10 sm:h-9 gap-1.5 text-xs sm:text-sm brutalist-border-2 rounded-lg flex-shrink-0"
               >
-                <Sliders className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <HiAdjustmentsHorizontal className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Options
               </Button>
 
@@ -57,13 +57,13 @@ export default function GeneratePage() {
                 className="h-10 sm:h-9 text-xs sm:text-sm text-zinc-500 flex-shrink-0"
               >
                 Style: Minimalist
-                <ChevronDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 ml-1" />
+                <HiChevronDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 ml-1" />
               </Button>
             </div>
 
             <Button className="bg-[#B9FF66] text-black border-2 border-black rounded-xl px-4 sm:px-6 h-10 sm:h-11 text-sm font-semibold brutalist-shadow-sm hover:bg-[#a8ef55] w-full sm:w-auto">
               Generate
-              <ArrowUpRight className="h-4 w-4 ml-1.5" />
+              <HiArrowTopRightOnSquare className="h-4 w-4 ml-1.5" />
             </Button>
           </div>
         </div>

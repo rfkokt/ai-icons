@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { HiBars3, HiXMark } from "react-icons/hi2";
 import Link from "next/link";
 
 const navLinks = [
@@ -47,7 +47,7 @@ export default function Navigation() {
         className="lg:hidden bg-white p-2 border-2 border-black rounded-lg brutalist-shadow-sm h-auto w-auto"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {isOpen ? <X className="text-3xl" /> : <Menu className="text-3xl" />}
+        {isOpen ? <HiXMark className="text-3xl" /> : <HiBars3 className="text-3xl" />}
       </Button>
 
       {isOpen && (

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Clock, Heart } from "lucide-react"
+import { HiClock, HiHeart } from "react-icons/hi2"
 import { cn } from "@/lib/utils"
 
 const communityIcons = [
@@ -55,7 +55,7 @@ export default function CommunityPage() {
                 : "text-zinc-600 hover:text-zinc-900 hover:bg-transparent"
             )}
           >
-            <Clock className="h-4 w-4 mr-1.5" />
+            <HiClock className="h-4 w-4 mr-1.5" />
             Latest
           </Button>
           <Button
@@ -69,7 +69,7 @@ export default function CommunityPage() {
                 : "text-zinc-600 hover:text-zinc-900 hover:bg-transparent"
             )}
           >
-            <Heart className="h-4 w-4 mr-1.5" />
+            <HiHeart className="h-4 w-4 mr-1.5" />
             Most Loved
           </Button>
         </div>

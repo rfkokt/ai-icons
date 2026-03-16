@@ -15,18 +15,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
-  Home,
-  Image,
-  Settings,
-  LogOut,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react"
+  HiHome,
+  HiPhoto,
+  HiCog,
+  HiArrowRightOnRectangle,
+  HiChevronLeft,
+  HiChevronRight,
+} from "react-icons/hi2"
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: Home },
-  { href: "/icons", label: "Icons", icon: Image },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/dashboard", label: "Dashboard", icon: HiHome },
+  { href: "/icons", label: "Icons", icon: HiPhoto },
+  { href: "/settings", label: "Settings", icon: HiCog },
 ]
 
 export function SidebarLayout({ children }: { children: React.ReactNode }) {
@@ -54,7 +54,7 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
             onClick={toggle}
             className="h-8 w-8"
           >
-            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            {collapsed ? <HiChevronRight className="h-4 w-4" /> : <HiChevronLeft className="h-4 w-4" />}
           </Button>
         </div>
 
@@ -104,13 +104,13 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <Link href="/settings" className="flex items-center">
-                  <Settings className="h-4 w-4 mr-2" />
+                  <HiCog className="h-4 w-4 mr-2" />
                   Settings
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={logout} className="text-red-600">
-                <LogOut className="h-4 w-4 mr-2" />
+                <HiArrowRightOnRectangle className="h-4 w-4 mr-2" />
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>

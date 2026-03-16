@@ -7,31 +7,31 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import {
-  Sparkles,
-  Image,
-  Home,
-  Gift,
-  Trophy,
-  CreditCard,
-  Settings,
-  LogOut,
-  Copy,
-  Trash2,
-  ChevronDown,
-  Menu,
-  X,
-  History,
-} from "lucide-react"
+  HiSparkles,
+  HiPhoto,
+  HiHome,
+  HiGift,
+  HiTrophy,
+  HiCreditCard,
+  HiCog,
+  HiArrowRightOnRectangle,
+  HiClipboard,
+  HiTrash,
+  HiChevronDown,
+  HiBars3,
+  HiXMark,
+  HiClock,
+} from "react-icons/hi2"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
 
 const menuItems = [
-  { icon: Sparkles, label: "Generate", href: "/generate" },
-  { icon: Image, label: "Community", href: "/community" },
-  { icon: Home, label: "Library", href: "/library" },
-  { icon: Gift, label: "Referral", href: "/referral" },
-  { icon: Trophy, label: "Leaderboard", href: "/leaderboard" },
-  { icon: CreditCard, label: "Pricing", href: "/pricing" },
+  { icon: HiSparkles, label: "Generate", href: "/generate" },
+  { icon: HiPhoto, label: "Community", href: "/community" },
+  { icon: HiHome, label: "Library", href: "/library" },
+  { icon: HiGift, label: "Referral", href: "/referral" },
+  { icon: HiTrophy, label: "Leaderboard", href: "/leaderboard" },
+  { icon: HiCreditCard, label: "Pricing", href: "/pricing" },
 ]
 
 const recentIcons = [
@@ -61,14 +61,14 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="w-11 h-11 rounded-xl flex items-center justify-center text-zinc-500 hover:bg-zinc-100"
         >
-          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {mobileMenuOpen ? <HiXMark className="h-5 w-5" /> : <HiBars3 className="h-5 w-5" />}
         </button>
         <span className="font-semibold text-zinc-900">{currentLabel}</span>
         <div className="flex items-center gap-2">
           {isGeneratePage && (
             <Sheet>
               <SheetTrigger className="w-11 h-11 rounded-xl flex items-center justify-center text-zinc-500 hover:bg-zinc-100">
-                <History className="h-5 w-5" />
+                <HiClock className="h-5 w-5 text-zinc-500" />
               </SheetTrigger>
               <SheetContent side="right" className="w-80 p-0">
                 <SheetHeader className="h-14 px-4 flex items-center border-b border-zinc-200">
@@ -85,7 +85,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                     >
                       <div className="flex items-start gap-3">
                         <div className="w-10 h-10 bg-white rounded-lg border border-zinc-200 flex items-center justify-center shrink-0">
-                          <Image className="h-5 w-5 text-zinc-400" />
+                          <HiPhoto className="h-5 w-5 text-zinc-400" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-zinc-900 truncate">
@@ -95,10 +95,10 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                         </div>
                         <div className="flex items-center gap-1">
                           <button className="p-1 hover:bg-zinc-200 rounded">
-                            <Copy className="h-3.5 w-3.5 text-zinc-500" />
+                            <HiClipboard className="h-3.5 w-3.5 text-zinc-500" />
                           </button>
                           <button className="p-1 hover:bg-zinc-200 rounded">
-                            <Trash2 className="h-3.5 w-3.5 text-zinc-500" />
+                            <HiTrash className="h-3.5 w-3.5 text-zinc-500" />
                           </button>
                         </div>
                       </div>
@@ -160,7 +160,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                     : "text-zinc-600 hover:bg-zinc-100"
                 )}
               >
-                <Settings className="h-5 w-5" />
+                <HiCog className="h-5 w-5" />
                 Settings
               </Link>
               <button
@@ -170,7 +170,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 }}
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-zinc-600 hover:bg-zinc-100 transition-colors"
               >
-                <LogOut className="h-5 w-5" />
+                <HiArrowRightOnRectangle className="h-5 w-5" />
                 Logout
               </button>
             </div>
@@ -218,14 +218,14 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             )}
             title="Settings"
           >
-            <Settings className="h-5 w-5" />
+            <HiCog className="h-5 w-5" />
           </Link>
           <button
             onClick={logout}
             className="w-11 h-11 rounded-xl flex items-center justify-center text-zinc-500 hover:bg-zinc-100 transition-colors"
             title="Logout"
           >
-            <LogOut className="h-5 w-5" />
+            <HiArrowRightOnRectangle className="h-5 w-5" />
           </button>
         </div>
       </aside>
@@ -242,7 +242,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-100 rounded-lg">
-              <Sparkles className="h-4 w-4 text-[#B9FF66]" />
+              <HiSparkles className="h-4 w-4 text-[#B9FF66]" />
               <span className="text-sm font-medium">48 credits</span>
             </div>
 
@@ -253,7 +253,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                   {user?.name?.charAt(0) || "U"}
                 </AvatarFallback>
               </Avatar>
-              <ChevronDown className="h-4 w-4 text-zinc-400" />
+              <HiChevronDown className="h-4 w-4 text-zinc-400" />
             </div>
           </div>
         </header>
@@ -282,7 +282,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             >
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 bg-white rounded-lg border border-zinc-200 flex items-center justify-center shrink-0">
-                  <Image className="h-5 w-5 text-zinc-400" />
+                  <HiPhoto className="h-5 w-5 text-zinc-400" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-zinc-900 truncate">
@@ -292,10 +292,10 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 </div>
                 <div className="hidden group-hover:flex items-center gap-1 transition-opacity">
                   <button className="p-1 hover:bg-zinc-200 rounded">
-                    <Copy className="h-3.5 w-3.5 text-zinc-500" />
+                    <HiClipboard className="h-3.5 w-3.5 text-zinc-500" />
                   </button>
                   <button className="p-1 hover:bg-zinc-200 rounded">
-                    <Trash2 className="h-3.5 w-3.5 text-zinc-500" />
+                    <HiTrash className="h-3.5 w-3.5 text-zinc-500" />
                   </button>
                 </div>
               </div>

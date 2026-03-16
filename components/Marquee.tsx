@@ -1,14 +1,14 @@
 "use client";
 
-import { Star, Zap, Palette, Code, Sparkles, Layers } from "lucide-react";
+import { HiStar, HiBolt, HiPaintBrush, HiCodeBracket, HiSparkles, HiRectangleStack } from "react-icons/hi2";
 
 const marqueeItems = [
-  { text: "AI Generation", icon: Sparkles },
-  { text: "SVG Export", icon: Code },
-  { text: "React Components", icon: Layers },
-  { text: "Custom Styles", icon: Palette },
-  { text: "Fast Delivery", icon: Zap },
-  { text: "High Quality", icon: Star },
+  { text: "AI Generation", icon: HiSparkles },
+  { text: "SVG Export", icon: HiCodeBracket },
+  { text: "React Components", icon: HiRectangleStack },
+  { text: "Custom Styles", icon: HiPaintBrush },
+  { text: "Fast Delivery", icon: HiBolt },
+  { text: "High Quality", icon: HiStar },
 ];
 
 export default function Marquee() {
