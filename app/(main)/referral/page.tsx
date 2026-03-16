@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { HiGift, HiUsers, HiClock, HiCheckCircle, HiSparkles, HiClipboard, HiShare, HiLink } from "react-icons/hi2"
 import { StatCard } from "@/components/stat-card"
+import { UserArea } from "@/components/user-area"
 
 const stats = [
   { label: "Total Referrals", value: "0", icon: HiUsers },
@@ -22,6 +23,7 @@ const steps = [
 export default function ReferralPage() {
   const [copied, setCopied] = useState(false)
   const referralLink = "https://aiicons.app/ref/demo-user-123"
+  const userCredits = 48
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referralLink)
@@ -32,10 +34,15 @@ export default function ReferralPage() {
   return (
     <div className="flex-1 overflow-auto py-8 px-6">
       <div className="max-w-2xl mx-auto space-y-8">
+        {/* Header with UserArea */}
+        <div className="flex justify-end">
+          <UserArea credits={userCredits} />
+        </div>
+
         {/* Hero Section */}
         <div className="text-center">
-          <div className="w-16 h-16 bg-[#B9FF66] rounded-2xl flex items-center justify-center mx-auto mb-4 border-2 border-black brutalist-shadow-sm">
-            <HiGift className="h-8 w-8 text-black" />
+          <div className="w-10 h-10 bg-[#B9FF66] rounded-2xl flex items-center justify-center mx-auto mb-4 border-2 border-black brutalist-shadow-sm">
+            <HiGift className="h-6 w-6 text-black" />
           </div>
           <h1 className="text-3xl font-bold text-zinc-900 mb-2">Refer & Earn</h1>
           <p className="text-zinc-500 max-w-md mx-auto">

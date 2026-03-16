@@ -29,7 +29,7 @@ export default function Navigation() {
         AI Icons
       </Link>
 
-      <div className="hidden lg:flex items-center gap-10 text-lg font-bold text-zinc-800 bg-white px-8 py-3 rounded-full border-2 border-black brutalist-shadow-sm">
+      <div className="hidden lg:flex items-center h-10 gap-10 text-base font-bold text-zinc-800 bg-white px-6 rounded-full border-2 border-black brutalist-shadow-sm">
         {navLinks.map((link) => (
           <Link
             key={link.href}
