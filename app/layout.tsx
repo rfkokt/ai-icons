@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -28,6 +29,7 @@ export default function RootLayout({
       >
         <TooltipProvider>
           {children}
+          <Toaster position="top-right" />
         </TooltipProvider>
       </body>
     </html>

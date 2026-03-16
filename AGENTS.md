@@ -444,6 +444,7 @@ import { PromptInput } from "@/components/prompt-input"
 | Popover | `import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"` |
 | Tooltip | `import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"` |
 | Spinner | `import { Spinner } from "@/components/ui/spinner"` |
+| Sonner (Toast) | `import { Toaster } from "@/components/ui/sonner"` |
 
 ### Add New Components
 ```bash
@@ -455,6 +456,41 @@ npx shadcn@latest add dropdown-menu
 npx shadcn@latest add form
 npx shadcn@latest add toast
 ```
+
+## 5.2 Toast Notifications
+
+### Setup
+Add `<Toaster />` to root layout inside `TooltipProvider`:
+```tsx
+import { Toaster } from "@/components/ui/sonner"
+
+<TooltipProvider>
+  {children}
+  <Toaster position="top-right" />
+</TooltipProvider>
+```
+
+### Usage
+```tsx
+import { showApiError, showSuccess, showInfo, showWarning } from "@/lib/toast"
+
+// Auto-triggered on API errors (configured in api.ts)
+showApiError(error)
+
+// Manual usage
+showSuccess("Success!", "Operation completed")
+showInfo("Info", "Some information")
+showWarning("Warning", "Be careful")
+```
+
+### Error Codes (Auto-handled by api.ts)
+| Code | Message |
+|------|---------|
+| 400 | Invalid request |
+| 401 | Session expired |
+| 403 | Access denied |
+| 404 | Not found |
+| 500 | Server error |
 
 ## 5.1 Zustand Store
 

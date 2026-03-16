@@ -1,4 +1,5 @@
 import axios from "axios"
+import { showApiError } from "./toast"
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "/api",
@@ -28,6 +29,8 @@ api.interceptors.response.use(
         localStorage.removeItem("token")
         window.location.href = "/login"
       }
+    } else {
+      showApiError(error)
     }
     return Promise.reject(error)
   }
