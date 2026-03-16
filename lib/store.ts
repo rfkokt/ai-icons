@@ -16,6 +16,7 @@ interface AuthState {
   login: (user: User, token: string) => void
   logout: () => void
   setUser: (user: User) => void
+  syncFromClerk: (clerkUser: { id: string; email: string; name: string; imageUrl?: string }) => void
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -37,6 +38,16 @@ export const useAuthStore = create<AuthState>()(
         set({ user: null, token: null, isAuthenticated: false })
       },
       setUser: (user) => set({ user }),
+      syncFromClerk: (clerkUser) => {
+        const user: User = {
+          id: clerkUser.id,
+          email: clerkUser.email,
+          name: clerkUser.name,
+          avatar: clerkUser.imageUrl,
+          role: "user",
+        }
+        set({ user, isAuthenticated: true })
+      },
     }),
     {
       name: "auth-storage",
@@ -71,15 +82,10 @@ interface PaginationState {
 }
 
 interface DashboardStore {
-  // Pagination
   pagination: PaginationState
   setPagination: (pagination: Partial<PaginationState>) => void
-  
-  // Search
   searchValue: string
   setSearchValue: (value: string) => void
-  
-  // Filters
   filters: Record<string, unknown>
   setFilters: (filters: Record<string, unknown>) => void
   resetFilters: () => void

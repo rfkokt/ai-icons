@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuthStore } from "@/lib/store"
+import { useAuthSync } from "@/hooks/use-auth-sync"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { Spinner } from "@/components/ui/spinner"
 
@@ -12,27 +12,15 @@ export default function MainLayout({
   children: React.ReactNode
 }) {
   const router = useRouter()
-  const [isReady, setIsReady] = useState(false)
-  
-  // Get auth state after hydration
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  const { isLoaded, isSignedIn } = useAuthSync()
 
   useEffect(() => {
-    // Small delay to ensure zustand persist has hydrated
-    const checkAuth = () => {
-      if (!isAuthenticated) {
-        router.push("/login")
-      }
-      setIsReady(true)
+    if (isLoaded && !isSignedIn) {
+      router.push("/")
     }
+  }, [isLoaded, isSignedIn, router])
 
-    // Run after hydration
-    const timeout = setTimeout(checkAuth, 50)
-    return () => clearTimeout(timeout)
-  }, [isAuthenticated, router])
-
-  // Loading state while checking auth
-  if (!isReady) {
+  if (!isLoaded) {
     return (
       <div className="h-screen flex items-center justify-center bg-zinc-50">
         <Spinner size="lg" />
@@ -40,8 +28,7 @@ export default function MainLayout({
     )
   }
 
-  // Redirect if not authenticated
-  if (!isAuthenticated) {
+  if (!isSignedIn) {
     return null
   }
 

@@ -3,10 +3,10 @@
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { useAuthStore } from "@/lib/store"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { UserButton, useUser } from "@clerk/nextjs"
 import {
   HiSparkles,
   HiPhoto,
@@ -18,13 +18,13 @@ import {
   HiArrowRightOnRectangle,
   HiClipboard,
   HiTrash,
-  HiChevronDown,
   HiBars3,
   HiXMark,
   HiClock,
 } from "react-icons/hi2"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
+import { UserArea } from "@/components/user-area"
 
 const menuItems = [
   { icon: HiSparkles, label: "Generate", href: "/generate" },
@@ -46,6 +46,7 @@ const recentIcons = [
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const { user: clerkUser } = useUser()
   const user = useAuthStore((state) => state.user)
   const logout = useAuthStore((state) => state.logout)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -53,6 +54,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const currentItem = menuItems.find((item) => item.href === pathname)
   const currentLabel = currentItem?.label || "Generate"
   const isGeneratePage = pathname === "/generate"
+  
+  const userCredits = 48
 
   return (
     <div className="h-screen flex flex-col lg:flex-row bg-zinc-100 overflow-hidden">
@@ -111,12 +114,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               </SheetContent>
             </Sheet>
           )}
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={user?.avatar} />
-            <AvatarFallback className="bg-[#B9FF66] text-black text-sm">
-              {user?.name?.charAt(0) || "U"}
-            </AvatarFallback>
-          </Avatar>
+          <UserArea credits={userCredits} />
         </div>
       </header>
 
@@ -153,30 +151,19 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </nav>
             <Separator className="my-2" />
             <div className="p-2">
-              <Link
-                href="/settings"
-                onClick={() => setMobileMenuOpen(false)}
-                className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
-                  pathname === "/settings"
-                    ? "bg-[#B9FF66] text-black"
-                    : "text-zinc-600 hover:bg-zinc-100"
-                )}
-              >
-                <HiCog className="h-5 w-5" />
-                Settings
-              </Link>
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  logout()
-                  setMobileMenuOpen(false)
-                }}
-                className="w-full justify-start gap-3 px-4 py-3 rounded-xl text-sm font-medium text-zinc-600 hover:bg-zinc-100"
-              >
-                <HiArrowRightOnRectangle className="h-5 w-5" />
-                Logout
-              </Button>
+            <Link
+              href="/settings"
+              onClick={() => setMobileMenuOpen(false)}
+              className={cn(
+                "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
+                pathname === "/settings"
+                  ? "bg-[#B9FF66] text-black"
+                  : "text-zinc-600 hover:bg-zinc-100"
+              )}
+            >
+              <HiCog className="h-5 w-5" />
+              Settings
+            </Link>
             </div>
           </div>
         </div>
@@ -224,15 +211,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           >
             <HiCog className="h-5 w-5" />
           </Link>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={logout}
-            className="w-11 h-11 rounded-xl flex items-center justify-center text-zinc-500 hover:bg-zinc-100"
-            title="Logout"
-          >
-            <HiArrowRightOnRectangle className="h-5 w-5" />
-          </Button>
         </div>
       </aside>
 
@@ -246,21 +224,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <span className="font-medium text-zinc-900">{currentLabel}</span>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-100 rounded-lg">
-              <HiSparkles className="h-4 w-4 text-[#B9FF66]" />
-              <span className="text-sm font-medium">48 credits</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={user?.avatar} />
-                <AvatarFallback className="bg-[#B9FF66] text-black text-sm">
-                  {user?.name?.charAt(0) || "U"}
-                </AvatarFallback>
-              </Avatar>
-              <HiChevronDown className="h-4 w-4 text-zinc-400" />
-            </div>
+          <div className="flex items-center gap-3">
+            <UserArea credits={userCredits} />
           </div>
         </header>
 

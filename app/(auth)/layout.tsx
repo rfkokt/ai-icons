@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuthStore } from "@/lib/store"
+import { useAuthSync } from "@/hooks/use-auth-sync"
 
 export default function AuthLayout({
   children,
@@ -10,22 +10,15 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   const router = useRouter()
-  const [isReady, setIsReady] = useState(false)
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  const { isLoaded, isSignedIn } = useAuthSync()
 
   useEffect(() => {
-    const checkAuth = () => {
-      if (isAuthenticated) {
-        router.push("/generate")
-      }
-      setIsReady(true)
+    if (isLoaded && isSignedIn) {
+      router.push("/generate")
     }
+  }, [isLoaded, isSignedIn, router])
 
-    const timeout = setTimeout(checkAuth, 50)
-    return () => clearTimeout(timeout)
-  }, [isAuthenticated, router])
-
-  if (!isReady) {
+  if (!isLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-zinc-50">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
@@ -33,7 +26,7 @@ export default function AuthLayout({
     )
   }
 
-  if (isAuthenticated) {
+  if (isSignedIn) {
     return null
   }
 

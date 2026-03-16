@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { HiBars3, HiXMark } from "react-icons/hi2";
-import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, Show, useUser } from "@clerk/nextjs";
+import { useAuthSync } from "@/hooks/use-auth-sync";
+import { UserArea } from "@/components/user-area";
 import Link from "next/link";
 
 const navLinks = [
@@ -14,7 +16,12 @@ const navLinks = [
 ];
 
 export default function Navigation() {
+  const { user, isLoaded } = useUser();
+  const { isSignedIn } = useAuthSync();
   const [isOpen, setIsOpen] = useState(false);
+
+  const userName = user?.fullName || user?.username || user?.emailAddresses[0]?.emailAddress?.split('@')[0] || 'User';
+  const userCredits = 2;
 
   return (
     <nav className="max-w-7xl mx-auto px-6 py-8 flex justify-between items-center relative z-50">
@@ -50,14 +57,7 @@ export default function Navigation() {
           </SignUpButton>
         </Show>
         <Show when="signed-in">
-          <Link href="/generate">
-            <Button
-              className="bg-[#B9FF66] border-2 border-black rounded-xl px-6 py-3 text-black font-bold text-base brutalist-shadow hover:bg-[#a8ef55] hover:shadow-[4px_4px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 h-auto"
-            >
-              Dashboard
-            </Button>
-          </Link>
-          <UserButton />
+          <UserArea credits={userCredits} />
         </Show>
       </div>
 
@@ -99,11 +99,7 @@ export default function Navigation() {
             </Show>
             <Show when="signed-in">
               <Link href="/generate" onClick={() => setIsOpen(false)}>
-                <Button
-                  className="bg-[#B9FF66] border-2 border-black rounded-xl px-6 py-3 text-black font-bold text-lg brutalist-shadow-sm hover:bg-[#a8ef55] mt-4 h-auto w-full"
-                >
-                  Dashboard
-                </Button>
+                <UserArea credits={userCredits} />
               </Link>
             </Show>
           </div>

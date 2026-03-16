@@ -521,6 +521,38 @@ const user = useAuthStore((state) => state.user)
 |-----|---------|-------------|
 | `context7` | Query documentation | Butuh informasi library/framework terbaru |
 | `21st-dev-magic` | UI component builder | Buat komponen UI baru dari deskripsi |
+| `supabase` | Database operations | CRUD, migrations, queries langsung ke Supabase |
+
+### Setup Supabase MCP
+1. Add token di `opencode.json`:
+```json
+"supabase": {
+  "type": "remote",
+  "url": "https://mcp.supabase.com/mcp",
+  "headers": {
+    "Authorization": "Bearer YOUR_SUPABASE_ACCESS_TOKEN"
+  }
+}
+```
+2. Get token from: https://supabase.com/dashboard/account/tokens
+
+### Available Tools (Supabase MCP)
+```bash
+# List tables
+supabase_list_tables: { schemas: ["public"], verbose: true }
+
+# Execute SQL
+supabase_execute_sql: { query: "SELECT * FROM users" }
+
+# Apply migration
+supabase_apply_migration: { name: "migration_name", query: "CREATE TABLE..." }
+
+# List migrations
+supabase_list_migrations: {}
+
+# Get logs
+supabase_get_logs: { service: "postgres" }
+```
 
 ### Available Skills
 | Skill | Purpose | Trigger |
