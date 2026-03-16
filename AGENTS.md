@@ -24,21 +24,37 @@
 ```
 ai-icons/
 ├── app/
-│   ├── globals.css     # Design tokens, utility classes
-│   ├── layout.tsx      # Root layout + font
-│   └── page.tsx        # Landing page
+│   ├── (auth)/              # Auth route group
+│   │   ├── layout.tsx       # Auth layout (redirect if logged in)
+│   │   └── login/
+│   │       └── page.tsx     # Login page
+│   ├── (main)/              # Protected route group
+│   │   ├── layout.tsx       # Main layout (sidebar + auth check)
+│   │   └── dashboard/
+│   │       └── page.tsx     # Dashboard page
+│   ├── globals.css          # Design tokens, utility classes
+│   ├── layout.tsx           # Root layout + TooltipProvider
+│   └── page.tsx             # Landing page (home)
 ├── components/
-│   ├── ui/              # ShadCN components (EDIT WITH CAUTION)
-│   ├── Navigation.tsx   # Main navigation
-│   ├── Hero.tsx         # Hero section
-│   ├── Features.tsx     # Features grid
-│   ├── Stats.tsx        # Stats + case studies
-│   ├── CTA.tsx          # Call-to-action
-│   ├── Footer.tsx       # Footer
-│   └── Marquee.tsx      # Marquee animation
+│   ├── ui/                  # ShadCN components (EDIT WITH CAUTION)
+│   ├── sidebar-layout.tsx   # Main layout with sidebar
+│   ├── page-header.tsx      # Page header component
+│   ├── page-tabs.tsx        # Tab navigation component
+│   ├── Navigation.tsx        # Landing page nav
+│   ├── Hero.tsx             # Hero section
+│   ├── Features.tsx         # Features grid
+│   ├── Stats.tsx            # Stats + case studies
+│   ├── CTA.tsx              # Call-to-action
+│   ├── Footer.tsx           # Footer
+│   └── Marquee.tsx          # Marquee animation
+├── hooks/
+│   └── use-tab-state.ts    # Tab state hook
 ├── lib/
-│   └── utils.ts         # cn() helper
-└── components.json      # ShadCN config
+│   ├── api.ts              # Axios instance
+│   ├── store.ts            # Zustand store
+│   ├── utils.ts            # Utility functions
+│   └── validations.ts       # Zod schemas
+└── components.json          # ShadCN config
 ```
 
 ## 2. Coding Standards
@@ -160,6 +176,18 @@ import { cn } from "@/lib/utils";
 | Footer | None | - |
 | Marquee | CSS animation | - |
 
+### Layout Components
+| Component | Description |
+|-----------|-------------|
+| `SidebarLayout` | Main layout with sidebar navigation |
+| `PageHeader` | Page title + description + action buttons |
+| `PageTabs` | Tab navigation synced with URL |
+
+### Auth Components
+| Component | Description |
+|-----------|-------------|
+| `LoginForm` Zod validation + React Hook Form | |
+
 ### Button Variants
 ```tsx
 // Primary CTA
@@ -203,9 +231,16 @@ import { cn } from "@/lib/utils";
 | Card | `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"` |
 | Badge | `import { Badge } from "@/components/ui/badge"` |
 | Input | `import { Input } from "@/components/ui/input"` |
+| Label | `import { Label } from "@/components/ui/label"` |
 | Dialog | `import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog"` |
 | Sheet | `import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"` |
 | Separator | `import { Separator } from "@/components/ui/separator"` |
+| Tabs | `import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"` |
+| Avatar | `import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"` |
+| DropdownMenu | `import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"` |
+| Popover | `import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"` |
+| Tooltip | `import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"` |
+| Spinner | `import { Spinner } from "@/components/ui/spinner"` |
 
 ### Add New Components
 ```bash
@@ -216,6 +251,28 @@ npx shadcn@latest add dialog
 npx shadcn@latest add dropdown-menu
 npx shadcn@latest add form
 npx shadcn@latest add toast
+```
+
+## 5.1 Zustand Store
+
+### Available Stores
+| Store | Description | Usage |
+|-------|-------------|-------|
+| `useAuthStore` | Auth state (user, token, login, logout) | `const { user, isAuthenticated, login, logout } = useAuthStore()` |
+| `useSidebarStore` | Sidebar state (collapsed, toggle) | `const { collapsed, toggle } = useSidebarStore()` |
+| `useDashboardStore` | Dashboard state (pagination, filters, search) | `const { pagination, searchValue, setPagination } = useDashboardStore()` |
+
+### Auth Store Pattern
+```tsx
+// Login
+login({ id: "1", email: "user@example.com", name: "User", role: "user" }, "token")
+
+// Logout
+logout()
+
+// Check auth
+const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+const user = useAuthStore((state) => state.user)
 ```
 
 ## 6. MCP & Skills
@@ -258,12 +315,29 @@ skill: { name: "next-best-practices" }  # Next.js patterns & best practices
 - Cleanup `ScrollTrigger` di useEffect return
 - `"use client"` hanya jika ada hooks/GSAP
 - Gunakan komponen ShadCN untuk UI elements
+- Gunakan `useAuthStore` untuk auth state
+- Protected routes: wrap dengan `(main)` route group
 
 ### DILARANG
 - Jangan pakai native HTML jika ada ShadCN equivalent
 - Jangan buat inline styles (`style={{}}`)
 - Jangan hardcoded colors, gunakan CSS variables
 - Jangan lupa cleanup GSAP animations
+- Jangan taruh API calls di page components
+
+### Route Protection Pattern
+```tsx
+// Protected route (main)/layout.tsx
+const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+useEffect(() => {
+  if (!isAuthenticated) router.push("/login")
+}, [isAuthenticated])
+
+// Auth route (auth)/layout.tsx
+useEffect(() => {
+  if (isAuthenticated) router.push("/dashboard")
+}, [isAuthenticated])
+```
 
 ## 8. Scripts
 
@@ -276,7 +350,9 @@ npm run lint     # Run ESLint
 
 ## 9. Notes
 
-- Project: Landing page (bukan full web app)
+- Project: Landing page + Dashboard (protected routes)
 - Design: Neo-Brutalist dengan primary accent `#B9FF66`
 - Animations: GSAP + ScrollTrigger untuk entrance effects
 - Client-side: Hanya komponen yang butuh animasi/GSAP
+- Auth: Zustand store dengan localStorage persistence
+- Routes: `(auth)` untuk login, `(main)` untuk protected pages
