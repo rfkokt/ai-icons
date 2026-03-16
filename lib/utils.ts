@@ -5,6 +5,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export const DAYS = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"] as const
+export const MONTHS = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"] as const
+
+function parseDate(date: Date | string): Date {
+  return new Date(date)
+}
+
 export function getActiveFilterCount(
   filters: Record<string, unknown>,
   excludeKeys: string[] = []
@@ -18,13 +25,10 @@ export function getActiveFilterCount(
 }
 
 export function formatDateStandard(date: Date | string): string {
-  const d = new Date(date)
-  const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
-  const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
-  
-  const dayName = days[d.getDay()]
+  const d = parseDate(date)
+  const dayName = DAYS[d.getDay()]
   const day = d.getDate()
-  const month = months[d.getMonth()]
+  const month = MONTHS[d.getMonth()]
   const year = d.getFullYear()
   const hours = d.getHours().toString().padStart(2, "0")
   const minutes = d.getMinutes().toString().padStart(2, "0")
@@ -33,13 +37,10 @@ export function formatDateStandard(date: Date | string): string {
 }
 
 export function formatDateSingleLine(date: Date | string): string {
-  const d = new Date(date)
-  const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
-  const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
-  
-  const dayName = days[d.getDay()]
+  const d = parseDate(date)
+  const dayName = DAYS[d.getDay()]
   const day = d.getDate()
-  const month = months[d.getMonth()]
+  const month = MONTHS[d.getMonth()]
   const year = d.getFullYear()
   const hours = d.getHours().toString().padStart(2, "0")
   const minutes = d.getMinutes().toString().padStart(2, "0")
@@ -48,13 +49,10 @@ export function formatDateSingleLine(date: Date | string): string {
 }
 
 export function formatDateNoTime(date: Date | string): string {
-  const d = new Date(date)
-  const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
-  const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
-  
-  const dayName = days[d.getDay()]
+  const d = parseDate(date)
+  const dayName = DAYS[d.getDay()]
   const day = d.getDate()
-  const month = months[d.getMonth()]
+  const month = MONTHS[d.getMonth()]
   const year = d.getFullYear()
   
   return `${dayName}, ${day} ${month} ${year}`

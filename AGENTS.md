@@ -52,7 +52,8 @@ ai-icons/
 │   ├── Footer.tsx           # Footer
 │   └── Marquee.tsx          # Marquee animation
 ├── hooks/
-│   └── use-tab-state.ts    # Tab state hook
+│   ├── use-tab-state.ts    # Tab state hook
+│   └── use-scroll-animation.ts  # GSAP ScrollTrigger hook
 ├── lib/
 │   ├── api.ts              # Axios instance
 │   ├── store.ts            # Zustand store
@@ -132,6 +133,12 @@ import { cn } from "@/lib/utils";
 )} />
 ```
 
+### Date Formatting
+```tsx
+import { formatDateStandard, formatDateSingleLine, formatDateNoTime, DAYS, MONTHS } from "@/lib/utils"
+```
+```
+
 ## 3. Design System
 
 ### Color Palette
@@ -199,6 +206,14 @@ import { cn } from "@/lib/utils";
 | `StatCard` | Stats card with icon, value, label | Referral page |
 | `UserCard` | User card for leaderboard | Leaderboard page |
 | `QuickPromptButton` | Quick suggestion button for prompts | Generate page |
+| `Section` | Wrapper section with consistent padding/sizing | All page sections |
+| `SectionBadge` | Badge for section headers | Features, Stats, etc. |
+
+### Hooks
+| Hook | Description | Usage |
+|------|-------------|-------|
+| `useScrollAnimation` | GSAP ScrollTrigger animation | Animate elements on scroll |
+| `useTabState` | Tab state management | Tab navigation |
 
 ### IconCard Usage
 ```tsx
@@ -232,6 +247,33 @@ import { HiUsers } from "react-icons/hi2"
 import { QuickPromptButton } from "@/components/quick-prompt-button"
 
 <QuickPromptButton suggestion="Shopping cart" onClick={(s) => setPrompt(s)} />
+```
+
+### Section Usage
+```tsx
+import { Section } from "@/components/section"
+
+<Section size="default" border>Content</Section>
+```
+
+### SectionBadge Usage
+```tsx
+import { SectionBadge } from "@/components/section-badge"
+
+<SectionBadge variant="primary" rotate={-2}>Label</SectionBadge>
+```
+
+### useScrollAnimation Usage
+```tsx
+import { useScrollAnimation } from "@/hooks/use-scroll-animation"
+
+const ref = useScrollAnimation({ y: 60, duration: 0.8, stagger: 0.15 })
+
+return (
+  <section ref={ref}>
+    {children}
+  </section>
+)
 ```
 
 ### Button Variants
