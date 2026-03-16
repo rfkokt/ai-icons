@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { HiGift, HiUsers, HiClock, HiCheckCircle, HiSparkles, HiClipboard, HiShare, HiLink } from "react-icons/hi2"
+import { StatCard } from "@/components/stat-card"
 
 const stats = [
   { label: "Total Referrals", value: "0", icon: HiUsers },
@@ -48,17 +49,7 @@ export default function ReferralPage() {
         {/* Stats Row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {stats.map((stat) => (
-            <Card key={stat.label} className="p-4 rounded-xl border-2 border-zinc-200 bg-white active:scale-[0.98] transition-all duration-200 cursor-pointer">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-zinc-100 rounded-lg flex items-center justify-center shrink-0">
-                  <stat.icon className="h-5 w-5 text-zinc-500" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-zinc-900">{stat.value}</p>
-                  <p className="text-xs text-zinc-500">{stat.label}</p>
-                </div>
-              </div>
-            </Card>
+            <StatCard key={stat.label} label={stat.label} value={stat.value} icon={stat.icon} />
           ))}
         </div>
 

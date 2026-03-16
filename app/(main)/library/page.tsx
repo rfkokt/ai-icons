@@ -81,7 +81,7 @@ export default function LibraryPage() {
             <Card
               key={icon.id}
               className={cn(
-                "group relative aspect-square rounded-xl sm:rounded-2xl border-2 bg-white p-3 sm:p-4 cursor-pointer transition-all duration-200 overflow-hidden active:scale-[0.98]",
+                "group relative aspect-square rounded-xl sm:rounded-2xl border-2 bg-white p-3 sm:p-4 cursor-pointer transition-all duration-200 overflow-hidden",
                 selectedIds.includes(icon.id)
                   ? "border-[#B9FF66] ring-2 ring-[#B9FF66]"
                   : "border-zinc-200 hover:border-zinc-300 hover:shadow-lg"
@@ -107,39 +107,43 @@ export default function LibraryPage() {
               {/* Context Menu - Touch Friendly */}
               {!isSelectMode && (
                 <div className="absolute top-2 right-2 z-10">
-                  <button
+                  <Button
+                    variant="outline"
+                    size="icon"
                     onClick={(e) => {
                       e.stopPropagation()
                       setActiveMenuId(activeMenuId === icon.id ? null : icon.id)
                     }}
-                    className="w-9 h-9 sm:w-8 sm:h-8 bg-white rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-50 active:bg-zinc-100 touch-manipulation"
+                    className="w-9 h-9 sm:w-8 sm:h-8 bg-white rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-50"
                   >
                     <HiEllipsisVertical className="h-4 w-4 text-zinc-500" />
-                  </button>
+                  </Button>
                   
                   {/* Menu - Show on click for mobile, hover for desktop */}
                   {activeMenuId === icon.id && (
                     <div className="absolute right-0 top-full mt-1 bg-white rounded-lg border border-zinc-200 shadow-lg py-1 min-w-[130px] z-20">
-                      <button
+                      <Button
+                        variant="ghost"
                         onClick={(e) => {
                           e.stopPropagation()
                           handleDownload(icon.id)
                         }}
-                        className="w-full px-3 py-2.5 sm:py-2 text-sm text-left flex items-center gap-2 hover:bg-zinc-50 active:bg-zinc-100 touch-manipulation"
+                        className="w-full px-3 py-2.5 sm:py-2 text-sm text-left flex items-center gap-2 hover:bg-zinc-50 text-zinc-900 justify-start"
                       >
                         <HiArrowDownTray className="h-4 w-4" />
                         Download
-                      </button>
-                      <button
+                      </Button>
+                      <Button
+                        variant="ghost"
                         onClick={(e) => {
                           e.stopPropagation()
                           handleDelete(icon.id)
                         }}
-                        className="w-full px-3 py-2.5 sm:py-2 text-sm text-left flex items-center gap-2 hover:bg-zinc-50 active:bg-zinc-100 text-red-500 touch-manipulation"
+                        className="w-full px-3 py-2.5 sm:py-2 text-sm text-left flex items-center gap-2 hover:bg-zinc-50 text-red-500 justify-start"
                       >
                         <HiTrash className="h-4 w-4" />
                         Delete
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>

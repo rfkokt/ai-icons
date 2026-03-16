@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useAuthStore } from "@/lib/store"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
+import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import {
   HiSparkles,
@@ -57,12 +58,14 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     <div className="h-screen flex flex-col lg:flex-row bg-zinc-100 overflow-hidden">
       {/* Mobile Header */}
       <header className="lg:hidden h-14 bg-white border-b border-zinc-200 px-4 flex items-center justify-between shrink-0">
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="w-11 h-11 rounded-xl flex items-center justify-center text-zinc-500 hover:bg-zinc-100"
         >
           {mobileMenuOpen ? <HiXMark className="h-5 w-5" /> : <HiBars3 className="h-5 w-5" />}
-        </button>
+        </Button>
         <span className="font-semibold text-zinc-900">{currentLabel}</span>
         <div className="flex items-center gap-2">
           {isGeneratePage && (
@@ -94,12 +97,12 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                           <p className="text-xs text-zinc-500">{icon.date}</p>
                         </div>
                         <div className="flex items-center gap-1">
-                          <button className="p-1 hover:bg-zinc-200 rounded">
+                          <Button variant="ghost" size="icon" className="p-1 h-auto w-auto hover:bg-zinc-200">
                             <HiClipboard className="h-3.5 w-3.5 text-zinc-500" />
-                          </button>
-                          <button className="p-1 hover:bg-zinc-200 rounded">
+                          </Button>
+                          <Button variant="ghost" size="icon" className="p-1 h-auto w-auto hover:bg-zinc-200">
                             <HiTrash className="h-3.5 w-3.5 text-zinc-500" />
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -163,16 +166,17 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <HiCog className="h-5 w-5" />
                 Settings
               </Link>
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => {
                   logout()
                   setMobileMenuOpen(false)
                 }}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-zinc-600 hover:bg-zinc-100 transition-colors"
+                className="w-full justify-start gap-3 px-4 py-3 rounded-xl text-sm font-medium text-zinc-600 hover:bg-zinc-100"
               >
                 <HiArrowRightOnRectangle className="h-5 w-5" />
                 Logout
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -220,13 +224,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           >
             <HiCog className="h-5 w-5" />
           </Link>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={logout}
-            className="w-11 h-11 rounded-xl flex items-center justify-center text-zinc-500 hover:bg-zinc-100 transition-colors"
+            className="w-11 h-11 rounded-xl flex items-center justify-center text-zinc-500 hover:bg-zinc-100"
             title="Logout"
           >
             <HiArrowRightOnRectangle className="h-5 w-5" />
-          </button>
+          </Button>
         </div>
       </aside>
 
@@ -291,13 +297,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                   <p className="text-xs text-zinc-500">{icon.date}</p>
                 </div>
                 <div className="hidden group-hover:flex items-center gap-1 transition-opacity">
-                  <button className="p-1 hover:bg-zinc-200 rounded">
-                    <HiClipboard className="h-3.5 w-3.5 text-zinc-500" />
-                  </button>
-                  <button className="p-1 hover:bg-zinc-200 rounded">
-                    <HiTrash className="h-3.5 w-3.5 text-zinc-500" />
-                  </button>
-                </div>
+                    <Button variant="ghost" size="icon" className="p-1 h-auto w-auto hover:bg-zinc-200">
+                      <HiClipboard className="h-3.5 w-3.5 text-zinc-500" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="p-1 h-auto w-auto hover:bg-zinc-200">
+                      <HiTrash className="h-3.5 w-3.5 text-zinc-500" />
+                    </Button>
+                  </div>
               </div>
             </div>
           ))}

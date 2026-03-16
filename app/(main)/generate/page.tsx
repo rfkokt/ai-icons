@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { HiSparkles, HiAdjustmentsHorizontal, HiArrowTopRightOnSquare, HiChevronDown } from "react-icons/hi2"
+import { QuickPromptButton } from "@/components/quick-prompt-button"
 
 export default function GeneratePage() {
   const [prompt, setPrompt] = useState("")
@@ -77,13 +78,11 @@ export default function GeneratePage() {
             "Notification bell",
             "Message bubble",
           ].map((suggestion) => (
-            <button
+            <QuickPromptButton
               key={suggestion}
-              onClick={() => setPrompt(suggestion)}
-              className="px-3 py-2 sm:py-1.5 bg-white border border-zinc-200 rounded-lg text-xs sm:text-sm text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50 transition-colors"
-            >
-              {suggestion}
-            </button>
+              suggestion={suggestion}
+              onClick={setPrompt}
+            />
           ))}
         </div>
       </div>

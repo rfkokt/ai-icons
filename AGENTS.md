@@ -40,6 +40,10 @@ ai-icons/
 │   ├── sidebar-layout.tsx   # Main layout with sidebar
 │   ├── page-header.tsx      # Page header component
 │   ├── page-tabs.tsx        # Tab navigation component
+│   ├── icon-card.tsx        # Reusable icon card (community/library)
+│   ├── stat-card.tsx        # Reusable stat card (referral)
+│   ├── user-card.tsx        # Reusable user card (leaderboard)
+│   ├── quick-prompt-button.tsx  # Quick prompt button (generate)
 │   ├── Navigation.tsx        # Landing page nav
 │   ├── Hero.tsx             # Hero section
 │   ├── Features.tsx         # Features grid
@@ -187,6 +191,48 @@ import { cn } from "@/lib/utils";
 | Component | Description |
 |-----------|-------------|
 | `LoginForm` Zod validation + React Hook Form | |
+
+### Reusable Components
+| Component | Description | Usage |
+|-----------|-------------|-------|
+| `IconCard` | Icon card for community/library grid | Community, Library pages |
+| `StatCard` | Stats card with icon, value, label | Referral page |
+| `UserCard` | User card for leaderboard | Leaderboard page |
+| `QuickPromptButton` | Quick suggestion button for prompts | Generate page |
+
+### IconCard Usage
+```tsx
+import { IconCard } from "@/components/icon-card"
+
+// Community variant
+<IconCard id={1} prompt="Shopping cart" likes={128} date="2 hours ago" variant="community" />
+
+// Library variant with select mode
+<IconCard 
+  id={1} 
+  prompt="Shopping cart" 
+  format="SVG" 
+  variant="library"
+  isSelectMode={true}
+  isSelected={true}
+  onSelect={(id) => console.log(id)}
+/>
+```
+
+### StatCard Usage
+```tsx
+import { StatCard } from "@/components/stat-card"
+import { HiUsers } from "react-icons/hi2"
+
+<StatCard label="Total Users" value="1,234" icon={HiUsers} />
+```
+
+### QuickPromptButton Usage
+```tsx
+import { QuickPromptButton } from "@/components/quick-prompt-button"
+
+<QuickPromptButton suggestion="Shopping cart" onClick={(s) => setPrompt(s)} />
+```
 
 ### Button Variants
 ```tsx

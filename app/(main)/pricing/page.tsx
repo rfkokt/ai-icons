@@ -173,8 +173,10 @@ function PricingSection({ className }: { className?: string }) {
           {/* Currency Toggle */}
           <div className="flex items-center gap-2 p-1.5 bg-white rounded-full border-2 border-black brutalist-shadow-sm">
             {["IDR", "USD"].map((curr) => (
-              <button
+              <Button
                 key={curr}
+                variant={currency === curr ? "default" : "ghost"}
+                size="sm"
                 onClick={() => setCurrency(curr as "IDR" | "USD")}
                 className={cn(
                   "px-6 py-2 text-sm font-medium rounded-full transition-all",
@@ -184,7 +186,7 @@ function PricingSection({ className }: { className?: string }) {
                 )}
               >
                 {curr}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
