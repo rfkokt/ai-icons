@@ -21,11 +21,13 @@ import {
   HiArrowRightOnRectangle,
   HiChevronLeft,
   HiChevronRight,
+  HiClock,
 } from "react-icons/hi2"
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: HiHome },
   { href: "/icons", label: "Icons", icon: HiPhoto },
+  { href: "/history", label: "History", icon: HiClock },
   { href: "/settings", label: "Settings", icon: HiCog },
 ]
 

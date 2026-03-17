@@ -23,8 +23,17 @@ import {
   HiClock,
 } from "react-icons/hi2"
 import { cn } from "@/lib/utils"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { UserArea } from "@/components/user-area"
+
+interface HistoryPack {
+  id: string
+  prompt: string
+  iconCount: number
+  preview: string | null
+  created_at: string
+}
 
 const menuItems = [
   { icon: HiSparkles, label: "Generate", href: "/generate" },
@@ -35,25 +44,67 @@ const menuItems = [
   { icon: HiCreditCard, label: "Pricing", href: "/pricing" },
 ]
 
-const recentIcons = [
-  { id: 1, prompt: "Shopping cart icon", date: "2 hours ago" },
-  { id: 2, prompt: "Notification bell", date: "5 hours ago" },
-  { id: 3, prompt: "Settings gear", date: "1 day ago" },
-  { id: 4, prompt: "User profile avatar", date: "2 days ago" },
-  { id: 5, prompt: "Message bubble", date: "3 days ago" },
-  { id: 6, prompt: "Chart dashboard", date: "4 days ago" },
-]
-
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const router = useRouter()
   const { user: clerkUser } = useUser()
   const user = useAuthStore((state) => state.user)
   const logout = useAuthStore((state) => state.logout)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [historyPacks, setHistoryPacks] = useState<HistoryPack[]>([])
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false)
+  const isGeneratePage = pathname === "/generate"
+
+  useEffect(() => {
+    if (isGeneratePage) {
+      setIsLoadingHistory(true)
+      fetch('/api/history')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            setHistoryPacks(data.icons.slice(0, 10))
+          }
+        })
+        .catch(() => {})
+        .finally(() => setIsLoadingHistory(false))
+    }
+  }, [isGeneratePage])
+
+  const handlePackClick = (packId: string) => {
+    router.push(`/library?pack=${packId}`)
+  }
+
+  const handleDeletePack = async (packId: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!confirm("Delete this pack?")) return
+    
+    try {
+      const response = await fetch(`/api/pack/${packId}`, { method: "DELETE" })
+      const data = await response.json()
+      if (data.success) {
+        setHistoryPacks(prev => prev.filter(p => p.id !== packId))
+      }
+    } catch (error) {
+      console.error("Failed to delete pack:", error)
+    }
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+    const diffMins = Math.floor(diffMs / 60000)
+    const diffHours = Math.floor(diffMs / 3600000)
+    const diffDays = Math.floor(diffMs / 86400000)
+    if (diffMins < 1) return "Just now"
+    if (diffMins < 60) return `${diffMins}m ago`
+    if (diffHours < 24) return `${diffHours}h ago`
+    if (diffDays < 7) return `${diffDays}d ago`
+    return date.toLocaleDateString()
+  }
 
   const currentItem = menuItems.find((item) => item.href === pathname)
   const currentLabel = currentItem?.label || "Generate"
-  const isGeneratePage = pathname === "/generate"
   
   const userCredits = 48
 
@@ -80,36 +131,47 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <SheetHeader className="h-14 px-4 flex items-center border-b border-zinc-200">
                   <SheetTitle className="text-left">History</SheetTitle>
                   <span className="ml-2 px-2 py-0.5 bg-zinc-100 rounded-full text-xs text-zinc-500">
-                    {recentIcons.length}
+                    {historyPacks.length}
                   </span>
                 </SheetHeader>
                 <div className="flex-1 overflow-y-auto p-3 space-y-2">
-                  {recentIcons.map((icon) => (
-                    <div
-                      key={icon.id}
-                      className="group p-3 bg-zinc-50 hover:bg-zinc-100 rounded-xl transition-colors cursor-pointer"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 bg-white rounded-lg border border-zinc-200 flex items-center justify-center shrink-0">
-                          <HiPhoto className="h-5 w-5 text-zinc-400" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-zinc-900 truncate">
-                            {icon.prompt}
-                          </p>
-                          <p className="text-xs text-zinc-500">{icon.date}</p>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Button variant="ghost" size="icon" className="p-1 h-auto w-auto hover:bg-zinc-200">
-                            <HiClipboard className="h-3.5 w-3.5 text-zinc-500" />
-                          </Button>
-                          <Button variant="ghost" size="icon" className="p-1 h-auto w-auto hover:bg-zinc-200">
-                            <HiTrash className="h-3.5 w-3.5 text-zinc-500" />
+                  {isLoadingHistory ? (
+                    <div className="text-center py-8 text-zinc-400 text-sm">Loading...</div>
+                  ) : historyPacks.length === 0 ? (
+                    <div className="text-center py-8 text-zinc-400 text-sm">No history yet</div>
+                  ) : (
+                    historyPacks.map((pack) => (
+                      <div
+                        key={pack.id}
+                        className="group p-3 bg-zinc-50 hover:bg-zinc-100 rounded-xl transition-colors cursor-pointer"
+                        onClick={() => handlePackClick(pack.id)}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 bg-white rounded-lg border border-zinc-200 flex items-center justify-center shrink-0 overflow-hidden">
+                            {pack.preview ? (
+                              <img src={pack.preview} alt="" className="w-full h-full object-contain" />
+                            ) : (
+                              <HiPhoto className="h-5 w-5 text-zinc-400" />
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-zinc-900 truncate">
+                              {pack.prompt}
+                            </p>
+                            <p className="text-xs text-zinc-500">{pack.iconCount} icons • {formatDate(pack.created_at)}</p>
+                          </div>
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="p-1 h-auto w-auto opacity-0 group-hover:opacity-100 hover:bg-zinc-200 text-red-500"
+                            onClick={(e) => handleDeletePack(pack.id, e)}
+                          >
+                            <HiTrash className="h-3.5 w-3.5" />
                           </Button>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </SheetContent>
             </Sheet>
@@ -241,37 +303,48 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         <div className="h-14 px-4 flex items-center border-b border-zinc-200">
           <h2 className="font-semibold text-zinc-900">History</h2>
           <span className="ml-2 px-2 py-0.5 bg-zinc-100 rounded-full text-xs text-zinc-500">
-            {recentIcons.length}
+            {historyPacks.length}
           </span>
         </div>
 
         <div className="flex-1 overflow-y-auto p-3 space-y-2">
-          {recentIcons.map((icon) => (
-            <div
-              key={icon.id}
-              className="group p-3 bg-zinc-50 hover:bg-zinc-100 rounded-xl transition-colors cursor-pointer"
-            >
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-white rounded-lg border border-zinc-200 flex items-center justify-center shrink-0">
-                  <HiPhoto className="h-5 w-5 text-zinc-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-zinc-900 truncate">
-                    {icon.prompt}
-                  </p>
-                  <p className="text-xs text-zinc-500">{icon.date}</p>
-                </div>
-                <div className="hidden group-hover:flex items-center gap-1 transition-opacity">
-                    <Button variant="ghost" size="icon" className="p-1 h-auto w-auto hover:bg-zinc-200">
-                      <HiClipboard className="h-3.5 w-3.5 text-zinc-500" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="p-1 h-auto w-auto hover:bg-zinc-200">
-                      <HiTrash className="h-3.5 w-3.5 text-zinc-500" />
-                    </Button>
+          {isLoadingHistory ? (
+            <div className="text-center py-8 text-zinc-400 text-sm">Loading...</div>
+          ) : historyPacks.length === 0 ? (
+            <div className="text-center py-8 text-zinc-400 text-sm">No history yet</div>
+          ) : (
+            historyPacks.map((pack) => (
+              <div
+                key={pack.id}
+                className="group p-3 bg-zinc-50 hover:bg-zinc-100 rounded-xl transition-colors cursor-pointer"
+                onClick={() => handlePackClick(pack.id)}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-white rounded-lg border border-zinc-200 flex items-center justify-center shrink-0 overflow-hidden">
+                    {pack.preview ? (
+                      <img src={pack.preview} alt="" className="w-full h-full object-contain" />
+                    ) : (
+                      <HiPhoto className="h-5 w-5 text-zinc-400" />
+                    )}
                   </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-zinc-900 truncate">
+                      {pack.prompt}
+                    </p>
+                    <p className="text-xs text-zinc-500">{pack.iconCount} icons • {formatDate(pack.created_at)}</p>
+                  </div>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="p-1 h-auto w-auto opacity-0 group-hover:opacity-100 hover:bg-zinc-200 text-red-500"
+                    onClick={(e) => handleDeletePack(pack.id, e)}
+                  >
+                    <HiTrash className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </aside>
       )}

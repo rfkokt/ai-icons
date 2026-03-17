@@ -90,50 +90,69 @@ async function generateIconImage(prompt: string, style: string): Promise<Buffer 
 
 async function convertPngToSvg(pngBuffer: Buffer): Promise<string> {
   try {
-    // Downsample to small grid for clean icon
-    const gridSize = 24
+    const gridSize = 32
     const image = sharp(pngBuffer)
     
     const { data, info } = await image
       .resize(gridSize, gridSize, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
       .ensureAlpha()
-      .grayscale()
       .raw()
       .toBuffer({ resolveWithObject: true })
     
     const width = info.width
     const height = info.height
     
-    // Calculate grid cell size
-    const cellW = gridSize / width
-    const cellH = gridSize / height
-    
-    // Create grid of content presence
     const grid: boolean[][] = []
-    const threshold = 100
+    const threshold = 10
     
     for (let gy = 0; gy < height; gy++) {
       grid[gy] = []
       for (let gx = 0; gx < width; gx++) {
-        const idx = (gy * width + gx)
-        const pixel = data[idx]
-        grid[gy][gx] = pixel < threshold
+        const idx = (gy * width + gx) * 4 + 3
+        const alpha = data[idx] || 0
+        grid[gy][gx] = alpha > threshold
       }
     }
     
-    // Generate SVG with merged rectangles
     let svgContent = ""
     
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         if (grid[y][x]) {
-          // Calculate position and size
           const px = Math.round((x / width) * 24 * 100) / 100
           const py = Math.round((y / height) * 24 * 100) / 100
           const pw = Math.round((1 / width) * 24 * 100) / 100
           const ph = Math.round((1 / height) * 24 * 100) / 100
           
           svgContent += `<rect x="${px}" y="${py}" width="${pw}" height="${ph}"/>`
+        }
+      }
+    }
+    
+    if (!svgContent) {
+      console.log("No content found in PNG for SVG conversion, trying grayscale...")
+      const { data: grayData, info: grayInfo } = await image
+        .resize(gridSize, gridSize, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+        .grayscale()
+        .raw()
+        .toBuffer({ resolveWithObject: true })
+      
+      const gw = grayInfo.width
+      const gh = grayInfo.height
+      const grayThreshold = 128
+      
+      for (let y = 0; y < gh; y++) {
+        for (let x = 0; x < gw; x++) {
+          const idx = y * gw + x
+          const pixel = grayData[idx]
+          if (pixel < grayThreshold) {
+            const px = Math.round((x / gw) * 24 * 100) / 100
+            const py = Math.round((y / gh) * 24 * 100) / 100
+            const pw = Math.round((1 / gw) * 24 * 100) / 100
+            const ph = Math.round((1 / gh) * 24 * 100) / 100
+            
+            svgContent += `<rect x="${px}" y="${py}" width="${pw}" height="${ph}"/>`
+          }
         }
       }
     }
@@ -174,7 +193,7 @@ export async function POST(request: NextRequest) {
     const icons: Array<{
       png?: { url: string; key: string }
       svg?: { code: string; url: string; key: string }
-      preview?: string
+      preview: string
       prompt: string
     }> = []
 
@@ -213,6 +232,7 @@ export async function POST(request: NextRequest) {
       // Upload PNG
       pngKey = `users/${userId}/icons/${timestamp}-${index}-${prompt.replace(/\s+/g, "-").slice(0, 20)}.png`
       pngUrl = await uploadFile(pngKey, pngBuffer, "image/png")
+      // Use base64 for immediate preview
       preview = `data:image/png;base64,${pngBuffer.toString("base64")}`
 
       // Convert PNG to SVG
@@ -230,6 +250,7 @@ export async function POST(request: NextRequest) {
       // Save to database
       const iconData = {
         user_id: userId,
+        name: iconPromptText,
         prompt: iconPromptText,
         style,
         png_url: pngUrl || null,
@@ -238,7 +259,15 @@ export async function POST(request: NextRequest) {
         svg_key: svgKey || null,
       }
 
-      await supabaseAdmin.from("generated_icons").insert(iconData)
+      console.log("Saving icon to database:", JSON.stringify(iconData))
+      
+      const { error: dbError } = await supabaseAdmin.from("generated_icons").insert(iconData)
+      
+      if (dbError) {
+        console.error("Failed to save icon to database:", dbError)
+      } else {
+        console.log("Icon saved successfully to database")
+      }
 
       icons.push({
         png: pngUrl ? { url: pngUrl, key: pngKey } : undefined,

@@ -1,32 +1,88 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, Suspense } from "react"
+import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { HiEllipsisVertical, HiArrowDownTray, HiTrash, HiCheck } from "react-icons/hi2"
+import { HiEllipsisVertical, HiArrowDownTray, HiTrash, HiCheck, HiArrowLeft, HiX } from "react-icons/hi2"
 import { cn } from "@/lib/utils"
+import { toast } from "sonner"
 
-const libraryIcons = [
-  { id: 1, prompt: "Shopping cart icon", date: "2 hours ago", format: "SVG" },
-  { id: 2, prompt: "Notification bell", date: "5 hours ago", format: "PNG" },
-  { id: 3, prompt: "Settings gear", date: "1 day ago", format: "SVG" },
-  { id: 4, prompt: "User profile avatar", date: "2 days ago", format: "PNG" },
-  { id: 5, prompt: "Message bubble", date: "3 days ago", format: "SVG" },
-  { id: 6, prompt: "Chart dashboard", date: "4 days ago", format: "PNG" },
-  { id: 7, prompt: "Calendar icon", date: "5 days ago", format: "SVG" },
-  { id: 8, prompt: "Search magnifier", date: "1 week ago", format: "PNG" },
-  { id: 9, prompt: "Download arrow", date: "1 week ago", format: "SVG" },
-  { id: 10, prompt: "Upload cloud", date: "2 weeks ago", format: "PNG" },
-  { id: 11, prompt: "Lock security", date: "2 weeks ago", format: "SVG" },
-  { id: 12, prompt: "Play button", date: "3 weeks ago", format: "PNG" },
-]
+interface HistoryPack {
+  id: string
+  prompt: string
+  iconCount: number
+  preview: string | null
+  created_at: string
+}
 
-export default function LibraryPage() {
+interface PackIcon {
+  id: string
+  prompt: string
+  png_key: string | null
+  svg_key: string | null
+  created_at: string
+}
+
+function LibraryContent() {
+  const searchParams = useSearchParams()
+  const packId = searchParams.get("pack")
+  
   const [isSelectMode, setIsSelectMode] = useState(false)
-  const [selectedIds, setSelectedIds] = useState<number[]>([])
-  const [activeMenuId, setActiveMenuId] = useState<number | null>(null)
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [activeMenuId, setActiveMenuId] = useState<string | null>(null)
+  const [icons, setIcons] = useState<PackIcon[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [packPrompt, setPackPrompt] = useState("")
+  const router = useRouter()
+  
+  // User's packs (for default library view)
+  const [userPacks, setUserPacks] = useState<HistoryPack[]>([])
+  const [isLoadingPacks, setIsLoadingPacks] = useState(true)
 
-  const toggleSelect = (id: number) => {
+  useEffect(() => {
+    if (packId) {
+      fetchPackIcons(packId)
+    } else {
+      fetchPacks()
+    }
+  }, [packId])
+
+  const fetchPacks = async () => {
+    setIsLoadingPacks(true)
+    try {
+      const response = await fetch("/api/history")
+      const data = await response.json()
+      if (data.success) {
+        setUserPacks(data.icons)
+      }
+    } catch (error) {
+      console.error("Failed to fetch packs:", error)
+    } finally {
+      setIsLoadingPacks(false)
+    }
+  }
+
+  const fetchPackIcons = async (id: string) => {
+    setIsLoading(true)
+    try {
+      const response = await fetch(`/api/pack/${id}`)
+      const data = await response.json()
+      
+      if (data.success && data.icons) {
+        setIcons(data.icons)
+        setPackPrompt(data.prompt || "")
+      } else {
+        toast.error("Failed to load pack")
+      }
+    } catch (error) {
+      toast.error("Something went wrong")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const toggleSelect = (id: string) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     )
@@ -38,167 +94,201 @@ export default function LibraryPage() {
     setActiveMenuId(null)
   }
 
-  const handleDownload = (id: number) => {
-    console.log("Download", id)
+  const handleDownloadPng = (key: string) => {
+    const downloadUrl = `/api/download/${encodeURIComponent(key)}`
+    const a = document.createElement("a")
+    a.href = downloadUrl
+    a.download = key.split("/").pop() || "icon.png"
+    a.click()
+    toast.success("PNG downloading...")
     setActiveMenuId(null)
   }
 
-  const handleDelete = (id: number) => {
-    console.log("Delete", id)
+  const handleDownloadSvg = (key: string) => {
+    const downloadUrl = `/api/download/${encodeURIComponent(key)}`
+    const a = document.createElement("a")
+    a.href = downloadUrl
+    a.download = key.split("/").pop() || "icon.svg"
+    a.click()
+    toast.success("SVG downloading...")
     setActiveMenuId(null)
   }
 
-  return (
-    <div className="flex-1 flex flex-col overflow-hidden">
-      {/* Header */}
-      <header className="h-auto sm:h-14 bg-white border-b border-zinc-200 px-4 sm:px-6 py-3 sm:py-0 flex items-center justify-between gap-2 shrink-0">
-        <h1 className="text-base sm:text-lg font-bold text-zinc-900 truncate">My Library</h1>
+  // Pack view
+  if (packId) {
+    const handleDeletePack = async () => {
+      if (!confirm("Delete this pack?")) return
+      try {
+        const response = await fetch(`/api/pack/${packId}`, { method: "DELETE" })
+        const data = await response.json()
+        if (data.success) {
+          toast.success("Pack deleted")
+          router.push("/library")
+        } else {
+          toast.error("Failed to delete pack")
+        }
+      } catch {
+        toast.error("Something went wrong")
+      }
+    }
 
-        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-          {isSelectMode && (
-            <span className="text-sm text-zinc-500 hidden sm:inline">
-              {selectedIds.length} selected
-            </span>
-          )}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={toggleSelectMode}
-            className={cn(
-              "h-10 sm:h-8 px-3 sm:px-4 brutalist-border-2 rounded-lg text-sm",
-              isSelectMode && "bg-zinc-900 text-white hover:bg-zinc-800"
-            )}
-          >
-            {isSelectMode ? "Cancel" : "Select"}
-          </Button>
-        </div>
-      </header>
+    const handleDeleteIcon = async (iconId: string) => {
+      try {
+        const response = await fetch(`/api/icon/${iconId}`, { method: "DELETE" })
+        const data = await response.json()
+        if (data.success) {
+          setIcons(prev => prev.filter(i => i.id !== iconId))
+          toast.success("Icon deleted")
+        } else {
+          toast.error("Failed to delete icon")
+        }
+      } catch {
+        toast.error("Something went wrong")
+      }
+    }
 
-      {/* Grid Content */}
-      <main className="flex-1 overflow-auto p-4 sm:p-6 pb-20 lg:pb-6">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4">
-          {libraryIcons.map((icon) => (
-            <Card
-              key={icon.id}
-              className={cn(
-                "group relative aspect-square rounded-xl sm:rounded-2xl border-2 bg-white p-3 sm:p-4 cursor-pointer transition-all duration-200 overflow-hidden",
-                selectedIds.includes(icon.id)
-                  ? "border-[#B9FF66] ring-2 ring-[#B9FF66]"
-                  : "border-zinc-200 hover:border-zinc-300 hover:shadow-lg"
-              )}
-              onClick={() => isSelectMode && toggleSelect(icon.id)}
-            >
-              {/* Selection Check */}
-              {isSelectMode && (
-                <div
-                  className={cn(
-                    "absolute top-2 left-2 z-10 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors",
-                    selectedIds.includes(icon.id)
-                      ? "bg-[#B9FF66] border-[#B9FF66]"
-                      : "bg-white border-zinc-300"
-                  )}
-                >
-                  {selectedIds.includes(icon.id) && (
-                    <HiCheck className="h-3.5 w-3.5 text-black" />
-                  )}
-                </div>
-              )}
-
-              {/* Context Menu - Touch Friendly */}
-              {!isSelectMode && (
-                <div className="absolute top-2 right-2 z-10">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setActiveMenuId(activeMenuId === icon.id ? null : icon.id)
-                    }}
-                    className="w-9 h-9 sm:w-8 sm:h-8 bg-white rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-50"
-                  >
-                    <HiEllipsisVertical className="h-4 w-4 text-zinc-500" />
-                  </Button>
-                  
-                  {/* Menu - Show on click for mobile, hover for desktop */}
-                  {activeMenuId === icon.id && (
-                    <div className="absolute right-0 top-full mt-1 bg-white rounded-lg border border-zinc-200 shadow-lg py-1 min-w-[130px] z-20">
-                      <Button
-                        variant="ghost"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleDownload(icon.id)
-                        }}
-                        className="w-full px-3 py-2.5 sm:py-2 text-sm text-left flex items-center gap-2 hover:bg-zinc-50 text-zinc-900 justify-start"
-                      >
-                        <HiArrowDownTray className="h-4 w-4" />
-                        Download
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleDelete(icon.id)
-                        }}
-                        className="w-full px-3 py-2.5 sm:py-2 text-sm text-left flex items-center gap-2 hover:bg-zinc-50 text-red-500 justify-start"
-                      >
-                        <HiTrash className="h-4 w-4" />
-                        Delete
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Icon Placeholder */}
-              <div className="w-full h-full flex items-center justify-center bg-zinc-50 rounded-lg sm:rounded-xl">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-zinc-200 rounded-lg sm:rounded-xl flex items-center justify-center">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    className="w-8 h-8 sm:w-10 sm:h-10 text-zinc-400"
-                  >
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                    <path d="M2 17l10 5 10-5" />
-                    <path d="M2 12l10 5 10-5" />
-                  </svg>
-                </div>
+    return (
+      <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="icon" onClick={() => router.back()}>
+                <HiArrowLeft className="h-5 w-5" />
+              </Button>
+              <div>
+                <h1 className="text-xl sm:text-2xl font-bold text-zinc-900">{packPrompt || "Pack"}</h1>
+                <p className="text-sm text-zinc-500">{icons.length} icons</p>
               </div>
-            </Card>
-          ))}
-        </div>
-
-        {/* Selected Actions - Mobile Bottom Bar */}
-        {isSelectMode && selectedIds.length > 0 && (
-          <div className="fixed bottom-16 lg:bottom-6 left-2 right-2 sm:left-1/2 sm:-translate-x-1/2 sm:w-auto bg-white border-2 border-black brutalist-shadow rounded-xl p-2 flex flex-col sm:flex-row items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full sm:w-auto h-11 sm:h-9 brutalist-border-2 rounded-lg touch-manipulation"
-            >
-              <HiArrowDownTray className="h-4 w-4 mr-1.5" />
-              Download Selected
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full sm:w-auto h-11 sm:h-9 brutalist-border-2 rounded-lg text-red-500 hover:text-red-600 touch-manipulation"
-            >
-              <HiTrash className="h-4 w-4 mr-1.5" />
-              Delete Selected
+            </div>
+            <Button variant="ghost" className="text-red-500 hover:text-red-600 hover:bg-red-50" onClick={handleDeletePack}>
+              <HiTrash className="h-4 w-4 mr-2" />
+              Delete Pack
             </Button>
           </div>
-        )}
-      </main>
 
-      {/* Click outside to close menu */}
-      {activeMenuId !== null && (
-        <div
-          className="fixed inset-0 z-10 lg:hidden"
-          onClick={() => setActiveMenuId(null)}
-        />
-      )}
+          {isLoading ? (
+            <div className="text-center py-12 text-zinc-500">Loading...</div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+              {icons.map((icon) => (
+                <div
+                  key={icon.id}
+                  className={cn(
+                    "bg-white rounded-xl border-2 border-black brutalist-shadow-sm overflow-hidden hover:shadow-md transition-shadow",
+                    isSelectMode && selectedIds.includes(icon.id) && "ring-2 ring-[#B9FF66]"
+                  )}
+                >
+                  <div className="aspect-square p-3 sm:p-4 flex items-center justify-center bg-zinc-50">
+                    {icon.png_key ? (
+                      <img
+                        src={`/api/download/${encodeURIComponent(icon.png_key)}`}
+                        alt={icon.prompt}
+                        className="max-w-full max-h-full object-contain"
+                      />
+                    ) : (
+                      <div className="text-zinc-400 text-xs">No preview</div>
+                    )}
+                  </div>
+                  <div className="p-2 sm:p-3 border-t border-zinc-100">
+                    <p className="text-xs sm:text-sm font-medium text-zinc-900 truncate mb-2">
+                      {icon.prompt}
+                    </p>
+                    <div className="flex gap-1">
+                      {icon.png_key && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-6 text-xs border border-black rounded flex-1"
+                          onClick={() => handleDownloadPng(icon.png_key!)}
+                        >
+                          PNG
+                        </Button>
+                      )}
+                      {icon.svg_key && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-6 text-xs border border-black rounded flex-1"
+                          onClick={() => handleDownloadSvg(icon.svg_key!)}
+                        >
+                          SVG
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 text-xs text-red-500 hover:text-red-600 hover:bg-red-50 p-1"
+                        onClick={() => handleDeleteIcon(icon.id)}
+                      >
+                        <HiTrash className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // Default library view - show user's generated packs
+  return (
+    <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center justify-between mb-6 sm:mb-8">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-zinc-900">Library</h1>
+            <p className="text-sm text-zinc-500">Your saved icons</p>
+          </div>
+        </div>
+
+        {isLoadingPacks ? (
+          <div className="text-center py-12 text-zinc-500">Loading...</div>
+        ) : userPacks.length === 0 ? (
+          <div className="text-center py-12 sm:py-16">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-zinc-100 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 border-2 border-zinc-200">
+              <HiCheck className="h-6 w-6 sm:h-8 sm:w-8 text-zinc-400" />
+            </div>
+            <h2 className="text-lg sm:text-xl font-bold text-zinc-900 mb-2">No icons yet</h2>
+            <p className="text-zinc-500 text-sm sm:text-base">Start generating icons to see them here</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+            {userPacks.map((pack) => (
+              <Card
+                key={pack.id}
+                className="bg-white rounded-xl border-2 border-black brutalist-shadow-sm overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => router.push(`/library?pack=${pack.id}`)}
+              >
+                <div className="aspect-square p-3 sm:p-4 flex items-center justify-center bg-zinc-50">
+                  {pack.preview ? (
+                    <img src={pack.preview} alt={pack.prompt} className="max-w-full max-h-full object-contain" />
+                  ) : (
+                    <div className="w-12 h-12 bg-zinc-200 rounded-lg" />
+                  )}
+                </div>
+                <div className="p-2 sm:p-3 border-t border-zinc-100">
+                  <p className="text-xs sm:text-sm font-medium text-zinc-900 truncate mb-1">
+                    {pack.prompt}
+                  </p>
+                  <p className="text-xs text-zinc-500">{pack.iconCount} icons</p>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
+  )
+}
+
+// Main page component that wraps LibraryContent with Suspense
+export default function LibraryPage() {
+  return (
+    <Suspense fallback={<div className="flex-1 flex items-center justify-center">Loading...</div>}>
+      <LibraryContent />
+    </Suspense>
   )
 }
