@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { UserArea } from "@/components/user-area"
+import { ConfirmDialog } from "@/components/confirm-dialog"
 
 interface HistoryPack {
   id: string
@@ -53,6 +54,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [historyPacks, setHistoryPacks] = useState<HistoryPack[]>([])
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [packToDelete, setPackToDelete] = useState<{ id: string; prompt: string } | null>(null)
   const isGeneratePage = pathname === "/generate"
 
   useEffect(() => {
@@ -74,15 +77,19 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     router.push(`/library?pack=${packId}`)
   }
 
-  const handleDeletePack = async (packId: string, e: React.MouseEvent) => {
+  const handleDeletePack = (packId: string, packPrompt: string, e: React.MouseEvent) => {
     e.stopPropagation()
-    if (!confirm("Delete this pack?")) return
-    
+    setPackToDelete({ id: packId, prompt: packPrompt })
+    setDeleteDialogOpen(true)
+  }
+
+  const confirmDeletePack = async () => {
+    if (!packToDelete) return
     try {
-      const response = await fetch(`/api/pack/${packId}`, { method: "DELETE" })
+      const response = await fetch(`/api/pack/${packToDelete.id}`, { method: "DELETE" })
       const data = await response.json()
       if (data.success) {
-        setHistoryPacks(prev => prev.filter(p => p.id !== packId))
+        setHistoryPacks(prev => prev.filter(p => p.id !== packToDelete.id))
       }
     } catch (error) {
       console.error("Failed to delete pack:", error)
@@ -164,7 +171,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                             variant="ghost" 
                             size="icon" 
                             className="p-1 h-auto w-auto opacity-0 group-hover:opacity-100 hover:bg-zinc-200 text-red-500"
-                            onClick={(e) => handleDeletePack(pack.id, e)}
+                            onClick={(e) => handleDeletePack(pack.id, pack.prompt, e)}
                           >
                             <HiTrash className="h-3.5 w-3.5" />
                           </Button>
@@ -337,7 +344,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                     variant="ghost" 
                     size="icon" 
                     className="p-1 h-auto w-auto opacity-0 group-hover:opacity-100 hover:bg-zinc-200 text-red-500"
-                    onClick={(e) => handleDeletePack(pack.id, e)}
+                    onClick={(e) => handleDeletePack(pack.id, pack.prompt, e)}
                   >
                     <HiTrash className="h-3.5 w-3.5" />
                   </Button>
@@ -377,6 +384,17 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
       {/* Mobile Bottom Padding for Dock */}
       <div className="lg:hidden h-24" />
+
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Delete Pack"
+        description={`Are you sure you want to delete "${packToDelete?.prompt}"? This will remove all icons in this pack.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
+        onConfirm={confirmDeletePack}
+      />
     </div>
   )
 }
