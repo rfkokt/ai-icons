@@ -174,14 +174,16 @@ export default function GeneratePage() {
                           </Button>
                         )}
 
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-6 text-xs border border-zinc-300 rounded flex-1 text-zinc-400 cursor-not-allowed"
-                          disabled
-                        >
-                          SVG
-                        </Button>
+                        {icon.svg && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-6 text-xs border border-black rounded flex-1"
+                            onClick={() => handleDownloadSvg(icon.svg!.key, icon.prompt)}
+                          >
+                            SVG
+                          </Button>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -240,16 +242,12 @@ export default function GeneratePage() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 px-2 sm:px-3 pb-2 sm:pb-3">
             <div className="flex items-center gap-2 overflow-x-auto">
               <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-9 gap-1.5 text-xs sm:text-sm brutalist-border-2 rounded-lg flex-shrink-0"
-                    disabled={isGenerating}
-                  >
-                    <HiAdjustmentsHorizontal className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                    Options
-                  </Button>
+                <DropdownMenuTrigger 
+                  className="h-9 gap-1.5 text-xs sm:text-sm brutalist-border-2 rounded-lg flex-shrink-0 inline-flex items-center justify-center border border-black bg-white px-3 py-2 text-sm font-medium transition-colors hover:bg-zinc-100 disabled:opacity-50 cursor-pointer"
+                  disabled={isGenerating}
+                >
+                  <HiAdjustmentsHorizontal className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  Options
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-48">
                   <div className="px-2 py-1.5">
@@ -272,16 +270,12 @@ export default function GeneratePage() {
               </DropdownMenu>
 
               <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-9 text-xs sm:text-sm text-zinc-500 flex-shrink-0"
-                    disabled={isGenerating}
-                  >
-                    Style: {STYLES.find(s => s.id === selectedStyle)?.name || selectedStyle}
-                    <HiChevronDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 ml-1" />
-                  </Button>
+                <DropdownMenuTrigger 
+                  className="h-9 text-xs sm:text-sm text-zinc-500 inline-flex items-center justify-center transition-colors hover:bg-zinc-100 disabled:opacity-50 cursor-pointer"
+                  disabled={isGenerating}
+                >
+                  Style: {STYLES.find(s => s.id === selectedStyle)?.name || selectedStyle}
+                  <HiChevronDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 ml-1" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-56">
                   <div className="space-y-1 p-1">
