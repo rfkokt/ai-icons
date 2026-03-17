@@ -30,6 +30,31 @@ export async function uploadFile(
   return `${PUBLIC_URL}/${key}`
 }
 
+export async function getObject(key: string): Promise<Buffer | null> {
+  try {
+    const command = new GetObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: key,
+    })
+
+    const response = await s3Client.send(command)
+    
+    if (!response.Body) {
+      return null
+    }
+
+    const chunks: Uint8Array[] = []
+    for await (const chunk of response.Body as AsyncIterable<Uint8Array>) {
+      chunks.push(chunk)
+    }
+    
+    return Buffer.concat(chunks)
+  } catch (error) {
+    console.error("GetObject error:", error)
+    return null
+  }
+}
+
 export async function getSignedUploadUrl(
   key: string,
   contentType: string,

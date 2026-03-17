@@ -44,9 +44,9 @@ export default function Navigation() {
       <div className="hidden lg:flex items-center gap-3">
         <Show when="signed-out">
           <SignInButton mode="modal">
-            <button className="px-4 py-2 text-sm font-bold text-zinc-800 hover:text-[#88cc33] transition-colors">
+            <Button variant="ghost" className="text-sm font-bold text-zinc-800 hover:text-[#88cc33]">
               Sign In
-            </button>
+            </Button>
           </SignInButton>
           <SignUpButton mode="modal">
             <Button
@@ -85,9 +85,9 @@ export default function Navigation() {
             ))}
             <Show when="signed-out">
               <SignInButton mode="modal">
-                <button className="w-full px-4 py-3 text-lg font-bold text-zinc-800 border-2 border-black rounded-xl mt-4">
+                <Button variant="outline" className="w-full py-3 text-lg font-bold border-2 border-black rounded-xl mt-4">
                   Sign In
-                </button>
+                </Button>
               </SignInButton>
               <SignUpButton mode="modal">
                 <Button
