@@ -23,10 +23,11 @@ import {
   HiClock,
 } from "react-icons/hi2"
 import { cn } from "@/lib/utils"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { UserArea } from "@/components/user-area"
 import { ConfirmDialog } from "@/components/confirm-dialog"
+import gsap from "gsap"
 
 interface HistoryPack {
   id: string
@@ -56,6 +57,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [packToDelete, setPackToDelete] = useState<{ id: string; prompt: string } | null>(null)
+  const sidebarRef = useRef<HTMLDivElement>(null)
+  const overlayRef = useRef<HTMLDivElement>(null)
   const isGeneratePage = pathname === "/generate"
 
   useEffect(() => {
@@ -72,6 +75,20 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         .finally(() => setIsLoadingHistory(false))
     }
   }, [isGeneratePage])
+
+  useEffect(() => {
+    if (sidebarRef.current && overlayRef.current) {
+      if (mobileMenuOpen) {
+        sidebarRef.current.style.transform = 'translateX(0)'
+        overlayRef.current.style.opacity = '1'
+        overlayRef.current.style.visibility = 'visible'
+      } else {
+        sidebarRef.current.style.transform = 'translateX(-100%)'
+        overlayRef.current.style.opacity = '0'
+        overlayRef.current.style.visibility = 'hidden'
+      }
+    }
+  }, [mobileMenuOpen])
 
   const handlePackClick = (packId: string) => {
     router.push(`/library?pack=${packId}`)
@@ -188,14 +205,28 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       </header>
 
       {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-black/50" onClick={() => setMobileMenuOpen(false)}>
-          <div 
-            className="absolute left-0 top-0 bottom-0 w-64 bg-white shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-4 border-b border-zinc-200">
+      <div 
+        ref={overlayRef}
+        className="lg:hidden fixed inset-0 z-40 bg-black/50 transition-opacity duration-200"
+        onClick={() => setMobileMenuOpen(false)}
+        style={{ opacity: mobileMenuOpen ? 1 : 0, pointerEvents: mobileMenuOpen ? 'auto' : 'none' }}
+      >
+        <div 
+          ref={sidebarRef}
+          className="absolute left-0 top-0 bottom-0 w-72 bg-white shadow-xl transition-transform duration-300 ease-out z-50"
+          style={{ transform: mobileMenuOpen ? 'translateX(0)' : 'translateX(-100%)' }}
+          onClick={(e) => e.stopPropagation()}
+        >
+            <div className="p-4 border-b border-zinc-200 flex items-center justify-between">
               <span className="text-xl font-bold text-[#B9FF66]">AI Icons</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-10 h-10 rounded-xl hover:bg-zinc-100"
+              >
+                <HiXMark className="h-5 w-5 text-zinc-500" />
+              </Button>
             </div>
             <nav className="p-2">
               {menuItems.map((item) => {
@@ -236,7 +267,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </div>
-      )}
 
       {/* Desktop Left Sidebar */}
       <aside className="hidden lg:flex w-16 bg-white border-r border-zinc-200 flex-col items-center py-4 shrink-0">
@@ -355,35 +385,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
       )}
-
-      {/* Mobile Bottom Dock */}
-      <nav className="lg:hidden fixed bottom-4 left-4 right-4 z-50">
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] px-2 py-2">
-          <div className="flex items-center justify-around">
-            {menuItems.slice(0, 5).map((item) => {
-              const isActive = pathname === item.href
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-all duration-200 min-w-[52px]",
-                    isActive
-                      ? "bg-[#B9FF66] text-black"
-                      : "text-zinc-500 hover:bg-zinc-100"
-                  )}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span className="text-[10px] font-semibold">{item.label}</span>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
-      </nav>
-
-      {/* Mobile Bottom Padding for Dock */}
-      <div className="lg:hidden h-24" />
 
       <ConfirmDialog
         open={deleteDialogOpen}
