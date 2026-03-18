@@ -10,7 +10,7 @@ ai-icons/
 ├── app/(auth)/, (main)/      # Auth & protected routes
 ├── components/ui/             # ShadCN components
 ├── components/*.tsx           # Custom components
-├── hooks/*.ts                 # Custom hooks
+├── hooks/*.ts                # Custom hooks
 ├── lib/store.ts              # Zustand stores
 └── lib/utils.ts              # cn(), formatDate
 ```
@@ -19,13 +19,6 @@ ai-icons/
 
 ### UI Components
 Use ShadCN: `Button`, `Card`, `Dialog`, `Sheet`, `Badge`, `Input`, `DropdownMenu`, `Separator`, `Tabs`, `Avatar`, `Popover`, `Tooltip`
-
-### Import Order
-1. React/Next.js
-2. Third-party (GSAP, etc.)
-3. `@/components/ui/*`
-4. `@/components/*`
-5. `@/lib/*`
 
 ### Coding
 - `"use client"` only for hooks/GSAP
@@ -36,30 +29,40 @@ Use ShadCN: `Button`, `Card`, `Dialog`, `Sheet`, `Badge`, `Input`, `DropdownMenu
 
 ## Available Hooks
 ```tsx
-useDownload()      // download(key, prompt, "png"|"svg")
-useConfirmDialog() // confirmType, setConfirmType, handleConfirm
-useScrollAnimation({ y, duration, stagger })
-useLightbox(totalItems)
-useShareIcon()     // shareToCommunity(iconId)
+useDownload()           // download(key, prompt, "png"|"svg")
+useConfirmDialog()     // confirmType, setConfirmType, handleConfirm
+useScrollAnimation()   // GSAP scroll animations
+useLightbox()          // lightbox state management
+useShareIcon()         // shareToCommunity(iconId)
+usePackDownload()      // downloadPack(icons, prompt, format), downloadPackById(packId, format)
 useTabState()
-useStaggerAnimation(deps, { selector, y, duration, stagger })
+useStaggerAnimation()
 ```
 
 ## Available Components
-`IconCard`, `IconActionBar`, `PackCard`, `PackAccordion`, `EmptyState`, `GeneratingOverlay`, `ConfirmDialog`, `ActionConfirm`, `FilterTabs`, `IconGrid`, `CopyLinkButton`, `QuickPromptButton`, `StatCard`, `UserCard`, `PageHero`, `BrutalistIconBox`, `HowItWorks`
+| Component | Description |
+|-----------|-------------|
+| `IconCard` | Icon card (community/library/generated) |
+| `IconActionBar` | Share + dropdown with confirm |
+| `IconActions` | Dropdown + confirm for lightbox |
+| `IconGrid` | Responsive icon grid |
+| `PackCard` | Pack preview card |
+| `PackAccordion` | Expandable pack |
+| `PackActions` | Pack action buttons |
+| `PageHeader` | Page header with stats/actions |
+| `LoadingSkeleton` | Loading skeleton grid |
+| `EmptyState` | Empty state placeholder |
+| `GeneratingOverlay` | Loading animation overlay |
+| `ConfirmDialog` | Confirmation dialog |
+| `StyleSelector` | Icon style dropdown |
+| `CountSelector` | Icon count dropdown |
+| `FilterTabs`, `CopyLinkButton`, `QuickPromptButton`, `StatCard`, `UserCard` |
 
 ## Zustand Stores
 ```tsx
 useAuthStore()      // user, isAuthenticated, login, logout
 useSidebarStore()   // collapsed, toggle
 useDashboardStore() // pagination, searchValue
-```
-
-## Auth Store Pattern
-```tsx
-login({ id, email, name, role }, "token")
-logout()
-const user = useAuthStore((state) => state.user)
 ```
 
 ## Route Protection
@@ -96,16 +99,52 @@ npm run dev/build/start/lint
 | `supabase` | Database operations |
 
 ### Supabase MCP Tools
-- `supabase_list_tables`, `supabase_execute_sql`, `supabase_apply_migration`, `supabase_get_logs`
+`supabase_list_tables`, `supabase_execute_sql`, `supabase_apply_migration`, `supabase_get_logs`
 
-### Available Skills
-| Skill | Purpose |
-|-------|---------|
-| `shadcn` | ShadCN component management |
-| `next-best-practices` | Next.js patterns & RSC |
-| `frontend-design` | High-quality UI design |
+### Skills
+`shadcn`, `next-best-practices`, `frontend-design`
+
+## Component Usage Examples
+
+### PageHeader
+```tsx
+<PageHeader
+  icon={<HiFolderOpen className="h-8 w-8" />}
+  title="Your Library"
+  variant="lime"
+  stats={[{ label: "packs", value: 5 }]}
+  actions={<Button>Action</Button>}
+/>
+```
+
+### IconGrid + LoadingSkeleton
+```tsx
+<IconGrid>
+  {items.map(item => <IconCard key={item.id} {...item} />)}
+</IconGrid>
+
+// or loading state
+<LoadingSkeleton count={12} />
+```
+
+### StyleSelector + CountSelector
+```tsx
+<CountSelector count={8} onCountChange={setCount} />
+<StyleSelector selectedStyle={style} onStyleChange={setStyle} />
+```
+
+### PackActions
+```tsx
+<PackActions
+  packId="123"
+  showShare
+  onDelete={() => handleDelete()}
+/>
+```
 
 ## Refactoring Status
 - ✅ use-download, use-confirm-dialog, use-stagger-animation, use-lightbox, use-share-icon
+- ✅ use-pack-download (NEW)
+- ✅ PageHeader, LoadingSkeleton, IconGrid, StyleSelector, CountSelector, PackActions
 - ✅ EmptyState, FilterTabs, CopyLinkButton consistency
-- Pending: Supabase client export, useHistory/useUserPacks hooks
+- Pending: Supabase client export

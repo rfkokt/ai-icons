@@ -11,7 +11,13 @@ import { PackCard } from "@/components/pack-card"
 import { EmptyState } from "@/components/empty-state"
 import { IconActions } from "@/components/icon-actions"
 import { ConfirmDialog } from "@/components/confirm-dialog"
+import { PageHeader } from "@/components/page-header"
+import { LoadingSkeleton } from "@/components/loading-skeleton"
+import { IconGrid } from "@/components/icon-grid"
+import { PackActions } from "@/components/pack-actions"
 import { useDownload } from "@/hooks/use-download"
+import { usePackDownload } from "@/hooks/use-pack-download"
+import { useShareIcon } from "@/hooks/use-share-icon"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 import gsap from "gsap"
@@ -53,6 +59,8 @@ function LibraryContent() {
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [currentIconIndex, setCurrentIconIndex] = useState(0)
   const { download } = useDownload()
+  const { downloadPackById } = usePackDownload()
+  const { shareToCommunity } = useShareIcon()
 
   useEffect(() => {
     if (packId) {
@@ -141,86 +149,37 @@ function LibraryContent() {
     setCurrentIconIndex((prev) => (prev === icons.length - 1 ? 0 : prev + 1))
   }
 
-  const handleShareToCommunity = async (iconId: string) => {
+  const handleDeletePack = async () => {
     try {
-      const response = await fetch(`/api/icon/${iconId}/share`, { method: "POST" })
+      const response = await fetch(`/api/pack/${packId}`, { method: "DELETE" })
       const data = await response.json()
       if (data.success) {
-        toast.success(data.message)
+        toast.success("Pack deleted")
+        router.push("/library")
       } else {
-        toast.error(data.error || "Failed to share")
+        toast.error("Failed to delete pack")
       }
     } catch {
       toast.error("Something went wrong")
     }
   }
 
-  const handleDownloadPack = async (packId: string, format: "png" | "svg") => {
+  const handleDeleteIcon = async (iconId: string) => {
     try {
-      toast.loading(`Downloading ${format.toUpperCase()} pack...`)
-      const downloadUrl = `/api/pack/${packId}/download?format=${format}`
-      const response = await fetch(downloadUrl)
-
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || "Failed to download")
+      const response = await fetch(`/api/icon/${iconId}`, { method: "DELETE" })
+      const data = await response.json()
+      if (data.success) {
+        setIcons(prev => prev.filter(i => i.id !== iconId))
+        toast.success("Icon deleted")
+      } else {
+        toast.error("Failed to delete icon")
       }
-
-      const contentDisposition = response.headers.get("Content-Disposition")
-      let filename = `pack-icons.${format}.zip`
-      if (contentDisposition) {
-        const match = contentDisposition.match(/filename="(.+)"/)
-        if (match?.[1]) filename = match[1]
-      }
-
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = filename
-      document.body.appendChild(a)
-      a.click()
-      window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
-
-      toast.success(`Pack downloaded as ${format.toUpperCase()}!`)
-    } catch (error) {
-      console.error("Download pack error:", error)
-      toast.error(error instanceof Error ? error.message : "Failed to download pack")
+    } catch {
+      toast.error("Something went wrong")
     }
   }
 
   if (packId) {
-    const handleDeletePack = async () => {
-      try {
-        const response = await fetch(`/api/pack/${packId}`, { method: "DELETE" })
-        const data = await response.json()
-        if (data.success) {
-          toast.success("Pack deleted")
-          router.push("/library")
-        } else {
-          toast.error("Failed to delete pack")
-        }
-      } catch {
-        toast.error("Something went wrong")
-      }
-    }
-
-    const handleDeleteIcon = async (iconId: string) => {
-      try {
-        const response = await fetch(`/api/icon/${iconId}`, { method: "DELETE" })
-        const data = await response.json()
-        if (data.success) {
-          setIcons(prev => prev.filter(i => i.id !== iconId))
-          toast.success("Icon deleted")
-        } else {
-          toast.error("Failed to delete icon")
-        }
-      } catch {
-        toast.error("Something went wrong")
-      }
-    }
-
     return (
       <div className="flex-1 min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 overflow-y-auto">
         <div className="bg-[#B9FF66] border-b-4 border-black px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
@@ -262,13 +221,7 @@ function LibraryContent() {
         <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-40 sm:pb-12">
           <div className="max-w-7xl mx-auto">
             {isLoading ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                {[...Array(12)].map((_, i) => (
-                  <div key={i} className="animate-pulse">
-                    <div className="bg-zinc-200 aspect-square rounded-2xl border-2 border-black" />
-                  </div>
-                ))}
-              </div>
+              <LoadingSkeleton count={12} />
             ) : icons.length === 0 ? (
               <EmptyState
                 variant="brutalist"
@@ -277,7 +230,7 @@ function LibraryContent() {
                 description="Generate some icons to fill this pack!"
               />
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+              <IconGrid>
                 {icons.map((icon, index) => (
                   <IconCard
                     key={icon.id}
@@ -288,12 +241,12 @@ function LibraryContent() {
                     format={icon.png_key || undefined}
                     variant="library"
                     onClick={() => openLightbox(index)}
-                    onShare={() => handleShareToCommunity(icon.id)}
+                    onShare={() => shareToCommunity(icon.id)}
                     onDelete={() => handleDeleteIcon(icon.id)}
                     showActionBar
                   />
                 ))}
-              </div>
+              </IconGrid>
             )}
           </div>
         </div>
@@ -319,7 +272,7 @@ function LibraryContent() {
                 <IconActions
                   iconKey={icons[currentIconIndex].png_key!}
                   prompt={icons[currentIconIndex].prompt}
-                  onShare={() => handleShareToCommunity(icons[currentIconIndex].id)}
+                  onShare={() => shareToCommunity(icons[currentIconIndex].id)}
                   onDelete={() => handleDeleteIcon(icons[currentIconIndex].id)}
                 />
               )}
@@ -342,49 +295,28 @@ function LibraryContent() {
 
   return (
     <div className="flex-1 min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 overflow-y-auto">
-      <div className="bg-[#B9FF66] border-b-4 border-black px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="bg-black text-white p-3 rounded-2xl shadow-[4px_4px_0px_0px_#B9FF66]">
-              <HiFolderOpen className="h-8 w-8" />
-            </div>
-            <div>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-black">
-                Your Library
-              </h1>
-              <p className="text-base sm:text-lg font-medium text-zinc-800 mt-1">
-                {userPacks.length} pack{userPacks.length !== 1 ? "s" : ""} saved
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 flex-wrap">
-            <div className="bg-white border-3 border-black rounded-xl px-4 py-2 shadow-[3px_3px_0px_0px_#000000]">
-              <span className="text-sm font-bold text-zinc-700">
-                {userPacks.reduce((sum, p) => sum + p.iconCount, 0)} total icons
-              </span>
-            </div>
-            <button
-              className="bg-black text-white border-3 border-black rounded-xl px-4 py-2 shadow-[3px_3px_0px_0px_#B9FF66] hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer"
-              onClick={() => router.push("/generate")}
-            >
-              <span className="text-sm font-bold">
-                Start creating →
-              </span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        icon={<HiFolderOpen className="h-8 w-8" />}
+        title="Your Library"
+        variant="lime"
+        stats={[
+          { label: "packs saved", value: userPacks.length },
+          { label: "total icons", value: userPacks.reduce((sum, p) => sum + p.iconCount, 0) }
+        ]}
+        actions={
+          <button
+            className="bg-black text-white border-3 border-black rounded-xl px-4 py-2 shadow-[3px_3px_0px_0px_#B9FF66] hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer"
+            onClick={() => router.push("/generate")}
+          >
+            <span className="text-sm font-bold">Start creating →</span>
+          </button>
+        }
+      />
 
       <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-40 sm:pb-12">
         <div className="max-w-7xl mx-auto">
           {isLoadingPacks ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-              {[...Array(8)].map((_, i) => (
-                <div key={i} className="animate-pulse">
-                  <div className="bg-zinc-200 aspect-square rounded-2xl border-3 border-black" />
-                </div>
-              ))}
-            </div>
+            <LoadingSkeleton count={8} />
           ) : userPacks.length === 0 ? (
             <EmptyState
               variant="brutalist"
@@ -398,7 +330,7 @@ function LibraryContent() {
               }}
             />
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <IconGrid>
               {userPacks.map((pack) => (
                 <PackCard
                   key={pack.id}
@@ -407,16 +339,16 @@ function LibraryContent() {
                   prompt={pack.prompt}
                   iconCount={pack.iconCount}
                   onClick={() => router.push(`/library?pack=${pack.id}`)}
-                  onShare={() => handleShareToCommunity(pack.id)}
-                  onDownloadPng={() => handleDownloadPack(pack.id, "png")}
-                  onDownloadSvg={() => handleDownloadPack(pack.id, "svg")}
+                  onShare={() => shareToCommunity(pack.id)}
+                  onDownloadPng={() => downloadPackById(pack.id, "png")}
+                  onDownloadSvg={() => downloadPackById(pack.id, "svg")}
                   onDelete={() => {
                     setPackToDelete({ id: pack.id, prompt: pack.prompt })
                     setDeleteDialogOpen(true)
                   }}
                 />
               ))}
-            </div>
+            </IconGrid>
           )}
         </div>
       </div>

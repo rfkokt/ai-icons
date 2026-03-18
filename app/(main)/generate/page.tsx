@@ -3,28 +3,19 @@
 import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { HiSparkles, HiAdjustmentsHorizontal, HiChevronDown, HiCheck } from "react-icons/hi2"
+import { HiSparkles, HiCheck } from "react-icons/hi2"
 import { ConfirmDialog } from "@/components/confirm-dialog"
 import { QuickPromptButton } from "@/components/quick-prompt-button"
 import { IconCard } from "@/components/icon-card"
 import { GeneratingOverlay } from "@/components/generating-overlay"
-import { EmptyState } from "@/components/empty-state"
 import { PackAccordion } from "@/components/pack-accordion"
+import { StyleSelector } from "@/components/style-selector"
+import { CountSelector } from "@/components/count-selector"
 import { useDownload } from "@/hooks/use-download"
+import { usePackDownload } from "@/hooks/use-pack-download"
+import { useShareIcon } from "@/hooks/use-share-icon"
 import { toast } from "sonner"
 import gsap from "gsap"
-
-const STYLES = [
-  { id: "minimalist", name: "Minimalist", description: "Clean, simple lines", color: "bg-zinc-100" },
-  { id: "outline", name: "Outline", description: "Line art style", color: "bg-white border-2 border-black" },
-  { id: "filled", name: "Filled", description: "Solid filled icons", color: "bg-black" },
-  { id: "duotone", name: "Duotone", description: "Two-tone style", color: "bg-gradient-to-br from-zinc-200 to-zinc-400" },
-  { id: "3d", name: "3D", description: "Three dimensional", color: "bg-zinc-300 shadow-[4px_4px_0px_0px_#000000]" },
-  { id: "flat", name: "Flat", description: "Flat design", color: "bg-zinc-200" },
-  { id: "hand-drawn", name: "Hand Drawn", description: "Organic sketch look", color: "bg-yellow-100" },
-  { id: "neon", name: "Neon", description: "Glowing neon style", color: "bg-[#B9FF66] shadow-[0_0_20px_#B9FF66]" },
-]
 
 interface GeneratedIcon {
   preview: string
@@ -54,7 +45,8 @@ export default function GeneratePage() {
   const generatingRef = useRef<HTMLDivElement>(null)
   const successRef = useRef<HTMLDivElement>(null)
   const { download } = useDownload()
-
+  const { downloadPack } = usePackDownload()
+  const { shareToCommunity } = useShareIcon()
 
   useEffect(() => {
     if (generatedPacks.length > 0) {
@@ -202,46 +194,10 @@ export default function GeneratePage() {
     }
   }
 
-  const handleDownloadPack = async (packId: string, downloadFormat: "png" | "svg") => {
+  const handleDownloadPack = (packId: string, downloadFormat: "png" | "svg") => {
     const pack = generatedPacks.find(p => p.id === packId)
     if (!pack) return
-
-    const loadingId = toast.loading(`Creating ZIP file...`)
-
-    try {
-      const JSZip = (await import("jszip")).default
-      const zip = new JSZip()
-
-      for (let i = 0; i < pack.icons.length; i++) {
-        const icon = pack.icons[i]
-        const downloadUrl = `/api/download/${encodeURIComponent(icon.png.key)}?format=${downloadFormat}`
-
-        try {
-          const response = await fetch(downloadUrl)
-          const blob = await response.blob()
-          zip.file(`${pack.prompt.replace(/\s+/g, "-")}-${i + 1}.${downloadFormat}`, blob)
-        } catch (err) {
-          console.error(`Failed to add icon ${i} to ZIP:`, err)
-        }
-      }
-
-      const zipBlob = await zip.generateAsync({ type: "blob" })
-      const url = window.URL.createObjectURL(zipBlob)
-
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `${pack.prompt.replace(/\s+/g, "-")}-${downloadFormat.toUpperCase()}-icons.zip`
-      document.body.appendChild(a)
-      a.click()
-      window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
-
-      toast.dismiss(loadingId)
-      toast.success(`Pack downloaded: ${pack.icons.length} ${downloadFormat.toUpperCase()} icons`)
-    } catch (error) {
-      console.error("Download pack error:", error)
-      toast.error("Failed to download pack")
-    }
+    downloadPack(pack.icons, pack.prompt, downloadFormat)
   }
 
   return (
@@ -322,68 +278,16 @@ export default function GeneratePage() {
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-3 mb-3">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger
-                      className="h-9 sm:h-11 gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold rounded-lg sm:rounded-xl inline-flex items-center justify-center border-2 sm:border-3 border-black bg-white px-2.5 sm:px-4 shadow-[2px_2px_0px_0px_#000000] sm:shadow-[3px_3px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all disabled:opacity-50 cursor-pointer"
-                      disabled={isGenerating}
-                    >
-                      <HiAdjustmentsHorizontal className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                      <span className="hidden sm:inline">{format.count} Icons</span>
-                      <span className="sm:hidden">{format.count}</span>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-56 bg-white border-3 border-black rounded-xl shadow-[4px_4px_0px_0px_#000000]">
-                      <div className="px-4 py-4">
-                        <p className="text-sm font-black mb-3">Number of Icons</p>
-                        <div className="grid grid-cols-4 gap-2">
-                          {[4, 8, 12, 16].map((count) => (
-                            <Button
-                              key={count}
-                              variant={format.count === count ? "default" : "outline"}
-                              size="sm"
-                              className={`h-10 text-sm font-bold ${format.count === count ? 'bg-[#B9FF66] text-black border-2 border-black' : 'border-2 border-black hover:bg-zinc-100'}`}
-                              onClick={() => setFormat({ count })}
-                            >
-                              {count}
-                            </Button>
-                          ))}
-                        </div>
-                      </div>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-
-                  <DropdownMenu>
-                    <DropdownMenuTrigger
-                      className="h-9 sm:h-11 text-xs sm:text-sm font-bold inline-flex items-center justify-center border-2 sm:border-3 border-black bg-white px-2.5 sm:px-4 rounded-lg sm:rounded-xl shadow-[2px_2px_0px_0px_#000000] sm:shadow-[3px_3px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all disabled:opacity-50 cursor-pointer"
-                      disabled={isGenerating}
-                    >
-                      <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-zinc-300 mr-1.5 sm:mr-2" />
-                      <span className="max-w-[100px] sm:max-w-none truncate">{STYLES.find(s => s.id === selectedStyle)?.name || selectedStyle}</span>
-                      <HiChevronDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 ml-1" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-72 bg-white border-3 border-black rounded-xl shadow-[4px_4px_0px_0px_#000000]">
-                      <div className="p-3">
-                        <p className="text-xs font-bold text-zinc-500 mb-2 px-1">ICON STYLE</p>
-                        <div className="space-y-1 max-h-64 overflow-y-auto">
-                          {STYLES.map((style) => (
-                            <DropdownMenuItem
-                              key={style.id}
-                              className={`flex items-center justify-between cursor-pointer py-3 px-3 rounded-xl border-2 ${selectedStyle === style.id ? 'bg-[#B9FF66] border-black' : 'border-transparent hover:bg-zinc-100'}`}
-                              onClick={() => setSelectedStyle(style.id)}
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className={`w-8 h-8 rounded-lg ${style.color} border-2 border-black flex-shrink-0`} />
-                                <div>
-                                  <div className="text-sm font-bold">{style.name}</div>
-                                  <div className="text-xs text-zinc-500">{style.description}</div>
-                                </div>
-                              </div>
-                              {selectedStyle === style.id && <HiCheck className="h-5 w-5 text-black" />}
-                            </DropdownMenuItem>
-                          ))}
-                        </div>
-                      </div>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <CountSelector
+                    count={format.count}
+                    onCountChange={(count) => setFormat({ count })}
+                    disabled={isGenerating}
+                  />
+                  <StyleSelector
+                    selectedStyle={selectedStyle}
+                    onStyleChange={setSelectedStyle}
+                    disabled={isGenerating}
+                  />
                 </div>
 
                 <Button
