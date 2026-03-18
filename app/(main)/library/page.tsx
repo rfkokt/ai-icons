@@ -127,7 +127,6 @@ function LibraryContent() {
                     key={icon.id}
                     id={icon.id}
                     src={icon.png_key ? `/api/download/${encodeURIComponent(icon.png_key)}` : undefined}
-                    alt={icon.prompt}
                     prompt={icon.prompt}
                     format={icon.png_key || undefined}
                     variant="library"
@@ -135,6 +134,7 @@ function LibraryContent() {
                     onShare={() => shareToCommunity(icon.id)}
                     onDelete={() => handleDeleteIcon(icon.id)}
                     showActionBar
+                    showDelete
                   />
                 ))}
               </IconGrid>

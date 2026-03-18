@@ -5,15 +5,16 @@ import { HiClock } from "react-icons/hi2"
 import { PageHeader } from "@/components/page-header"
 import { EmptyState } from "@/components/empty-state"
 import { IconCard } from "@/components/icon-card"
+import { IconGrid } from "@/components/icon-grid"
 import { PageLoading } from "@/components/page-loading"
-import { useDownload } from "@/hooks/use-download"
+import { useDeletePack } from "@/hooks/use-delete-pack"
 import { toast } from "sonner"
 import type { HistoryIcon } from "@/types/icon"
 
 export default function HistoryPage() {
   const [icons, setIcons] = useState<HistoryIcon[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const { download } = useDownload()
+  const { deleteIconFromPack } = useDeletePack()
 
   useEffect(() => {
     fetchHistory()
@@ -37,20 +38,9 @@ export default function HistoryPage() {
   }
 
   const handleDelete = async (id: string) => {
-    try {
-      const response = await fetch(`/api/history/${id}`, {
-        method: "DELETE",
-      })
-      const data = await response.json()
-      
-      if (data.success) {
-        setIcons((prev) => prev.filter((icon) => icon.id !== id))
-        toast.success("Icon deleted")
-      } else {
-        toast.error("Failed to delete icon")
-      }
-    } catch {
-      toast.error("Something went wrong")
+    const success = await deleteIconFromPack("", id)
+    if (success) {
+      setIcons((prev) => prev.filter((icon) => icon.id !== id))
     }
   }
 
@@ -76,22 +66,22 @@ export default function HistoryPage() {
             description="Start generating icons to see them here"
           />
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+          <IconGrid>
             {icons.map((icon) => (
               <IconCard
                 key={icon.id}
                 id={icon.id}
                 src={icon.png_url}
-                alt={icon.prompt}
                 prompt={icon.prompt}
                 format={icon.png_key || undefined}
                 date={new Date(icon.created_at).toLocaleDateString()}
                 variant="library"
                 onDelete={() => handleDelete(icon.id)}
                 showActionBar
+                showDelete
               />
             ))}
-          </div>
+          </IconGrid>
         )}
       </div>
     </div>

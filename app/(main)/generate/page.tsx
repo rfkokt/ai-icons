@@ -197,11 +197,11 @@ export default function GeneratePage() {
                           key={`${icon.png.key}-${index}`}
                           id={`${pack.id}-${index}`}
                           src={icon.preview}
-                          alt={icon.prompt}
                           prompt={icon.prompt}
                           format={icon.png.key}
                           variant="generated"
-                          onShare={() => icon.id && handleShareToCommunity(icon.id)}
+                          showActionBar
+                          onShare={() => icon.id && shareToCommunity(icon.id)}
                         />
                       ))}
                     </div>
