@@ -4,12 +4,12 @@ import { useState, useEffect, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { HiArrowDownTray, HiTrash, HiArrowLeft, HiShare, HiSparkles, HiFolderOpen, HiEllipsisVertical } from "react-icons/hi2"
+import { HiArrowLeft, HiSparkles, HiFolderOpen, HiTrash } from "react-icons/hi2"
 import { FeatureCarousel } from "@/components/ui/feature-carousel"
 import { IconCard } from "@/components/icon-card"
 import { PackCard } from "@/components/pack-card"
 import { EmptyState } from "@/components/empty-state"
+import { ActionConfirm } from "@/components/action-confirm"
 import { ConfirmDialog } from "@/components/confirm-dialog"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
@@ -327,6 +327,19 @@ function LibraryContent() {
 
         <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
           <DialogContent className="max-w-4xl w-full bg-white border-3 border-black rounded-2xl shadow-[8px_8px_0px_0px_#000000] p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-100 rounded-full border-2 border-black">
+                <span className="text-sm font-bold text-zinc-700">{currentIconIndex + 1} / {icons.length}</span>
+              </div>
+              {icons[currentIconIndex] && (
+                <ActionConfirm
+                  iconKey={icons[currentIconIndex].png_key!}
+                  prompt={icons[currentIconIndex].prompt}
+                  onShare={() => handleShareToCommunity(icons[currentIconIndex].id)}
+                  onDelete={() => handleDeleteIcon(icons[currentIconIndex].id)}
+                />
+              )}
+            </div>
             <FeatureCarousel
               images={icons.map((icon) => ({
                 src: icon.png_key ? `/api/download/${encodeURIComponent(icon.png_key)}` : '',
@@ -337,49 +350,6 @@ function LibraryContent() {
               onPrev={goToPrevIcon}
               onIndexChange={setCurrentIconIndex}
             />
-            <div className="text-center mt-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-100 rounded-full border-2 border-black mb-4">
-                <span className="text-sm font-bold text-zinc-700">{currentIconIndex + 1} / {icons.length}</span>
-              </div>
-              {icons[currentIconIndex] && (
-                <div className="flex items-center justify-center gap-3 flex-wrap">
-                  <Button
-                    className="bg-white hover:bg-[#B9FF66] border-3 border-black rounded-xl px-6 py-3 text-base font-bold shadow-[4px_4px_0px_0px_#000000] hover:shadow-[2px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
-                    onClick={() => {
-                      const icon = icons[currentIconIndex]
-                      if (icon.png_key) {
-                        const downloadUrl = `/api/download/${encodeURIComponent(icon.png_key)}?format=png`
-                        const a = document.createElement("a")
-                        a.href = downloadUrl
-                        a.download = `${icon.prompt.replace(/\s+/g, "-")}.png`
-                        a.click()
-                        toast.success("PNG downloading...")
-                      }
-                    }}
-                  >
-                    <HiArrowDownTray className="h-5 w-5 mr-2" />
-                    PNG
-                  </Button>
-                  <Button
-                    className="bg-white hover:bg-[#B9FF66] border-3 border-black rounded-xl px-6 py-3 text-base font-bold shadow-[4px_4px_0px_0px_#000000] hover:shadow-[2px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
-                    onClick={() => {
-                      const icon = icons[currentIconIndex]
-                      if (icon.png_key) {
-                        const downloadUrl = `/api/download/${encodeURIComponent(icon.png_key)}?format=svg`
-                        const a = document.createElement("a")
-                        a.href = downloadUrl
-                        a.download = `${icon.prompt.replace(/\s+/g, "-")}.svg`
-                        a.click()
-                        toast.success("SVG downloading...")
-                      }
-                    }}
-                  >
-                    <HiArrowDownTray className="h-5 w-5 mr-2" />
-                    SVG
-                  </Button>
-                </div>
-              )}
-            </div>
           </DialogContent>
         </Dialog>
       </div>

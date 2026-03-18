@@ -40,7 +40,12 @@ ai-icons/
 │   ├── sidebar-layout.tsx   # Main layout with sidebar
 │   ├── page-header.tsx      # Page header component
 │   ├── page-tabs.tsx        # Tab navigation component
-│   ├── icon-card.tsx        # Reusable icon card (community/library)
+│   ├── icon-card.tsx        # Reusable icon card (community/library/generated)
+│   ├── icon-action-bar.tsx  # Icon actions with share + confirm
+│   ├── pack-card.tsx       # Pack preview card
+│   ├── pack-accordion.tsx  # Expandable pack with header
+│   ├── action-confirm.tsx   # Dropdown + confirm for lightbox
+│   ├── generating-overlay.tsx # Loading animation overlay
 │   ├── stat-card.tsx        # Reusable stat card (referral)
 │   ├── user-card.tsx        # Reusable user card (leaderboard)
 │   ├── quick-prompt-button.tsx  # Quick prompt button (generate)
@@ -216,6 +221,11 @@ import { formatDateStandard, formatDateSingleLine, formatDateNoTime, DAYS, MONTH
 | Component | Description | Usage |
 |-----------|-------------|-------|
 | `IconCard` | Icon card for community/library grid | Community, Library pages |
+| `IconActionBar` | Icon actions with share + confirm dialog | Icon cards, packs |
+| `PackCard` | Pack preview card with count badge | Library page |
+| `PackAccordion` | Expandable pack with header actions | Generate page |
+| `ActionConfirm` | Dropdown + confirm for lightbox | Library lightbox |
+| `GeneratingOverlay` | Loading animation overlay | Generate page |
 | `StatCard` | Stats card with icon, value, label | Referral page |
 | `UserCard` | User card for leaderboard | Leaderboard page |
 | `QuickPromptButton` | Quick suggestion button for prompts | Generate page |
@@ -243,16 +253,91 @@ import { IconCard } from "@/components/icon-card"
 // Community variant
 <IconCard id={1} prompt="Shopping cart" likes={128} date="2 hours ago" variant="community" />
 
-// Library variant with select mode
+// Library variant with actions
 <IconCard 
   id={1} 
   prompt="Shopping cart" 
-  format="SVG" 
   variant="library"
-  isSelectMode={true}
-  isSelected={true}
-  onSelect={(id) => console.log(id)}
+  src={iconUrl}
+  onShare={() => handleShare()}
+  onDelete={() => handleDelete()}
 />
+
+// Generated variant
+<IconCard 
+  id={1} 
+  src={previewUrl}
+  alt="Shopping cart"
+  variant="generated"
+  onShare={() => handleShare()}
+  onDownloadPng={() => download("png")}
+  onDownloadSvg={() => download("svg")}
+/>
+```
+
+### IconActionBar Usage
+```tsx
+import { IconActionBar } from "@/components/icon-action-bar"
+
+<IconActionBar
+  onShare={() => handleShare()}
+  onDownloadPng={() => download("png")}
+  onDownloadSvg={() => download("svg")}
+  onDelete={() => handleDelete()}
+  showShare={true}
+  showDelete={true}
+/>
+```
+
+### PackCard Usage
+```tsx
+import { PackCard } from "@/components/pack-card"
+
+<PackCard
+  id="pack-1"
+  prompt="Shopping icons"
+  iconCount={8}
+  preview={previewUrl}
+  onClick={() => router.push(`/library?pack=${id}`)}
+  onDelete={() => handleDelete()}
+/>
+```
+
+### PackAccordion Usage
+```tsx
+import { PackAccordion } from "@/components/pack-accordion"
+
+<PackAccordion
+  id="pack-1"
+  prompt="Shopping icons"
+  iconCount={8}
+  defaultExpanded
+  onDelete={() => handleDelete()}
+  onDownloadPng={() => downloadPack("png")}
+  onDownloadSvg={() => downloadPack("svg")}
+>
+  <div className="grid ...">...</div>
+</PackAccordion>
+```
+
+### ActionConfirm Usage (Lightbox)
+```tsx
+import { ActionConfirm } from "@/components/action-confirm"
+
+<ActionConfirm
+  iconKey={icon.png_key}
+  prompt={icon.prompt}
+  onShare={() => handleShare(icon.id)}
+  onDelete={() => handleDelete(icon.id)}
+/>
+```
+
+### GeneratingOverlay Usage
+```tsx
+import { GeneratingOverlay } from "@/components/generating-overlay"
+
+// Show overlay when generating
+{isGenerating && <GeneratingOverlay iconCount={8} />}
 ```
 
 ### StatCard Usage
