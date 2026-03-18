@@ -131,7 +131,6 @@ function LibraryContent() {
     setCurrentIconIndex(index)
     setLightboxOpen(true)
   }
-
   const goToPrevIcon = () => {
     setCurrentIconIndex((prev) => (prev === 0 ? icons.length - 1 : prev - 1))
   }
@@ -288,6 +287,24 @@ function LibraryContent() {
           variant="destructive"
           onConfirm={handleDeletePack}
         />
+
+        <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+          <DialogContent className="max-w-4xl w-full bg-white border-2 border-black rounded-2xl p-6">
+            <FeatureCarousel
+              images={icons.map((icon) => ({
+                src: icon.png_key ? `/api/download/${encodeURIComponent(icon.png_key)}` : '',
+                alt: icon.prompt,
+              })).filter(img => img.src)}
+              currentIndex={currentIconIndex}
+              onNext={goToNextIcon}
+              onPrev={goToPrevIcon}
+              onIndexChange={setCurrentIconIndex}
+            />
+            <div className="text-center mt-2">
+              <p className="text-sm text-zinc-500">{currentIconIndex + 1} / {icons.length}</p>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     )
   }
@@ -394,24 +411,6 @@ function LibraryContent() {
             .catch(() => toast.error("Something went wrong"))
         }}
       />
-
-      <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
-        <DialogContent className="max-w-4xl w-full bg-white border-2 border-black rounded-2xl p-6">
-          <FeatureCarousel
-            images={icons.map((icon) => ({
-              src: icon.png_key ? `/api/download/${encodeURIComponent(icon.png_key)}` : '',
-              alt: icon.prompt,
-            })).filter(img => img.src)}
-            currentIndex={currentIconIndex}
-            onNext={goToNextIcon}
-            onPrev={goToPrevIcon}
-            onIndexChange={setCurrentIconIndex}
-          />
-          <div className="text-center mt-2">
-            <p className="text-sm text-zinc-500">{currentIconIndex + 1} / {icons.length}</p>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

@@ -1,7 +1,6 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 interface FeatureCarouselProps {
@@ -63,22 +62,20 @@ export function FeatureCarousel({
               }}
               onClick={() => onIndexChange(index)}
             >
-              <Card className="w-full h-full bg-white rounded-xl border-2 border-black brutalist-shadow-sm overflow-hidden">
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="object-contain w-full h-full p-2"
-                />
-              </Card>
+              <img
+                src={image.src}
+                alt={image.alt}
+                className="object-contain w-full h-full"
+              />
             </div>
           );
         })}
       </div>
-      
+
       <Button
         variant="outline"
         size="icon"
-        className="absolute left-0 top-1/2 -translate-y-1/2 rounded-full h-10 w-10 z-20 bg-white border-2 border-black hover:bg-[#B9FF66]"
+        className="absolute left-0 top-1/2 -translate-y-1/2 rounded-full h-10 w-10 z-50 bg-white border-2 border-black hover:bg-[#B9FF66] pointer-events-auto"
         onClick={onPrev}
       >
         <ChevronLeft className="h-5 w-5" />
@@ -86,7 +83,7 @@ export function FeatureCarousel({
       <Button
         variant="outline"
         size="icon"
-        className="absolute right-0 top-1/2 -translate-y-1/2 rounded-full h-10 w-10 z-20 bg-white border-2 border-black hover:bg-[#B9FF66]"
+        className="absolute right-0 top-1/2 -translate-y-1/2 rounded-full h-10 w-10 z-50 bg-white border-2 border-black hover:bg-[#B9FF66] pointer-events-auto"
         onClick={onNext}
       >
         <ChevronRight className="h-5 w-5" />
