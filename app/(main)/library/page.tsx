@@ -246,7 +246,7 @@ function LibraryContent() {
                     )}
                       <DropdownMenu>
                         <DropdownMenuTrigger
-                          className="absolute top-1 right-1 h-6 w-6 bg-white/90 hover:bg-white text-zinc-500 hover:text-zinc-900 rounded-md border border-zinc-200 z-10 inline-flex items-center justify-center cursor-pointer opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all"
+                          className="absolute top-1 right-1 h-6 w-6 bg-white/90 hover:bg-white text-zinc-500 hover:text-zinc-900 rounded-md border border-zinc-200 z-10 inline-flex items-center justify-center cursor-pointer opacity-100 lg:opacity-0 lg:pointer-events-none lg:group-hover:opacity-100 lg:group-hover:pointer-events-auto transition-all"
                           onClick={(e) => e.stopPropagation()}
                         >
                           <HiEllipsisVertical className="h-3.5 w-3.5" />
@@ -300,8 +300,50 @@ function LibraryContent() {
               onPrev={goToPrevIcon}
               onIndexChange={setCurrentIconIndex}
             />
-            <div className="text-center mt-2">
-              <p className="text-sm text-zinc-500">{currentIconIndex + 1} / {icons.length}</p>
+            <div className="text-center mt-4">
+              <p className="text-sm text-zinc-500 mb-4">{currentIconIndex + 1} / {icons.length}</p>
+              {icons[currentIconIndex] && (
+                <div className="flex items-center justify-center gap-3">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="bg-white border-2 border-black hover:bg-[#B9FF66] hover:border-[#B9FF66] brutalist-shadow-sm px-6 py-3 text-base font-bold"
+                    onClick={() => {
+                      const icon = icons[currentIconIndex]
+                      if (icon.png_key) {
+                        const downloadUrl = `/api/download/${encodeURIComponent(icon.png_key)}?format=png`
+                        const a = document.createElement("a")
+                        a.href = downloadUrl
+                        a.download = `${icon.prompt.replace(/\s+/g, "-")}.png`
+                        a.click()
+                        toast.success("PNG downloading...")
+                      }
+                    }}
+                  >
+                    <HiArrowDownTray className="h-5 w-5 mr-2" />
+                    PNG
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="bg-white border-2 border-black hover:bg-[#B9FF66] hover:border-[#B9FF66] brutalist-shadow-sm px-6 py-3 text-base font-bold"
+                    onClick={() => {
+                      const icon = icons[currentIconIndex]
+                      if (icon.png_key) {
+                        const downloadUrl = `/api/download/${encodeURIComponent(icon.png_key)}?format=svg`
+                        const a = document.createElement("a")
+                        a.href = downloadUrl
+                        a.download = `${icon.prompt.replace(/\s+/g, "-")}.svg`
+                        a.click()
+                        toast.success("SVG downloading...")
+                      }
+                    }}
+                  >
+                    <HiArrowDownTray className="h-5 w-5 mr-2" />
+                    SVG
+                  </Button>
+                </div>
+              )}
             </div>
           </DialogContent>
         </Dialog>
@@ -343,7 +385,7 @@ function LibraryContent() {
             {userPacks.map((pack) => (
               <div key={pack.id} className="group relative">
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="absolute -top-1 -right-1 h-7 w-7 bg-white hover:bg-zinc-100 text-zinc-400 hover:text-zinc-900 opacity-0 group-hover:opacity-100 transition-all duration-150 rounded-lg border-2 border-black inline-flex items-center justify-center cursor-pointer z-10">
+                  <DropdownMenuTrigger className="absolute -top-1 -right-1 h-7 w-7 bg-white hover:bg-zinc-100 text-zinc-400 hover:text-zinc-900 opacity-100 lg:opacity-0 group-hover:lg:opacity-100 transition-all duration-150 rounded-lg border-2 border-black inline-flex items-center justify-center cursor-pointer z-10">
                     <HiEllipsisVertical className="h-3.5 w-3.5" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-40 bg-white border-2 border-black rounded-xl z-20">

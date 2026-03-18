@@ -1,6 +1,5 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface FeatureCarouselProps {
@@ -31,7 +30,7 @@ export function FeatureCarousel({
   }, [onNext, onPrev])
 
   return (
-    <div className="relative w-full h-[280px] md:h-[320px] flex items-center justify-center [perspective:1000px]">
+    <div className="relative w-full h-[320px] md:h-[380px] flex items-center justify-center [perspective:1000px]">
       <div className="relative w-full h-full flex items-center justify-center">
         {images.map((image, index) => {
           const offset = index - currentIndex;
@@ -51,10 +50,10 @@ export function FeatureCarousel({
                 'absolute transition-all duration-300 ease-out flex items-center justify-center'
               )}
               style={{
-                width: isCenter ? '180px' : isAdjacent ? '140px' : '100px',
-                height: isCenter ? '180px' : isAdjacent ? '140px' : '100px',
+                width: isCenter ? '280px' : isAdjacent ? '200px' : '140px',
+                height: isCenter ? '280px' : isAdjacent ? '200px' : '140px',
                 transform: `
-                  translateX(${(pos) * 60}%) 
+                  translateX(${(pos) * 55}%)
                   scale(${isCenter ? 1 : isAdjacent ? 0.8 : 0.6})
                 `,
                 zIndex: isCenter ? 10 : isAdjacent ? 5 : 1,
@@ -65,29 +64,31 @@ export function FeatureCarousel({
               <img
                 src={image.src}
                 alt={image.alt}
-                className="object-contain w-full h-full"
+                className="object-contain w-full h-full pointer-events-none"
               />
             </div>
           );
         })}
       </div>
 
-      <Button
-        variant="outline"
-        size="icon"
-        className="absolute left-0 top-1/2 -translate-y-1/2 rounded-full h-10 w-10 z-50 bg-white border-2 border-black hover:bg-[#B9FF66] pointer-events-auto"
-        onClick={onPrev}
+      <button
+        className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full h-14 w-14 z-50 bg-white border-2 border-black hover:bg-[#B9FF66] pointer-events-auto flex items-center justify-center transition-colors shadow-lg"
+        onClick={(e) => {
+          e.stopPropagation()
+          onPrev()
+        }}
       >
-        <ChevronLeft className="h-5 w-5" />
-      </Button>
-      <Button
-        variant="outline"
-        size="icon"
-        className="absolute right-0 top-1/2 -translate-y-1/2 rounded-full h-10 w-10 z-50 bg-white border-2 border-black hover:bg-[#B9FF66] pointer-events-auto"
-        onClick={onNext}
+        <ChevronLeft className="h-7 w-7" />
+      </button>
+      <button
+        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full h-14 w-14 z-50 bg-white border-2 border-black hover:bg-[#B9FF66] pointer-events-auto flex items-center justify-center transition-colors shadow-lg"
+        onClick={(e) => {
+          e.stopPropagation()
+          onNext()
+        }}
       >
-        <ChevronRight className="h-5 w-5" />
-      </Button>
+        <ChevronRight className="h-7 w-7" />
+      </button>
     </div>
   );
 }
