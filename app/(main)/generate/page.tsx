@@ -502,10 +502,10 @@ export default function GeneratePage() {
                           {pack.icons.map((icon, index) => (
                             <div
                               key={`${icon.png.key}-${index}`}
-                              className="icon-card group relative"
+                              className="icon-card group relative rounded-xl border-3 border-transparent shadow-[4px_4px_0px_0px_#000000] hover:shadow-[8px_8px_0px_0px_#000000] hover:-translate-y-1 hover:translate-x-1 transition-all duration-300"
                             >
                               {/* Icon Card - 3 per row */}
-                              <Card className="bg-white rounded-xl border-3 border-black shadow-[4px_4px_0px_0px_#000000] hover:shadow-[8px_8px_0px_0px_#000000] hover:-translate-y-1 hover:translate-x-1 transition-all duration-300 cursor-pointer overflow-hidden">
+                              <Card className="bg-white rounded-xl border-3 border-black shadow-[4px_4px_0px_0px_#000000] transition-all duration-300 cursor-pointer overflow-hidden">
                                 <div className="aspect-square p-4 sm:p-6 flex items-center justify-center bg-gradient-to-br from-white via-zinc-50 to-zinc-100">
                                   {icon.preview ? (
                                     <img src={icon.preview} alt={icon.prompt} className="max-w-[75%] max-h-[75%] object-contain" />
