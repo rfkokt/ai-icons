@@ -20,8 +20,7 @@ const STYLES = [
 
 interface GeneratedIcon {
   preview: string
-  png?: { url: string; key: string }
-  svg?: { code: string; url: string; key: string }
+  png: { url: string; key: string }
   prompt: string
 }
 
@@ -92,7 +91,7 @@ export default function GeneratePage() {
   }
 
   const handleDownloadPng = (key: string, prompt: string) => {
-    const downloadUrl = `/api/download/${encodeURIComponent(key)}`
+    const downloadUrl = `/api/download/${encodeURIComponent(key)}?format=png`
     const a = document.createElement("a")
     a.href = downloadUrl
     a.download = `${prompt.replace(/\s+/g, "-")}.png`
@@ -101,7 +100,7 @@ export default function GeneratePage() {
   }
 
   const handleDownloadSvg = (key: string, prompt: string) => {
-    const downloadUrl = `/api/download/${encodeURIComponent(key)}`
+    const downloadUrl = `/api/download/${encodeURIComponent(key)}?format=svg`
     const a = document.createElement("a")
     a.href = downloadUrl
     a.download = `${prompt.replace(/\s+/g, "-")}.svg`
@@ -162,31 +161,27 @@ export default function GeneratePage() {
                   {pack.isExpanded && (
                     <div className="p-4 sm:p-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 bg-zinc-50">
                       {pack.icons.map((icon, index) => (
-                        <div key={`${icon.png?.key || icon.svg?.key || index}-${index}`} className="bg-white rounded-2xl border-2 border-black brutalist-shadow-sm overflow-hidden hover:brutalist-shadow hover:-translate-y-1 hover:translate-x-1 transition-all duration-200">
+                        <div key={`${icon.png.key}-${index}`} className="bg-white rounded-2xl border-2 border-black brutalist-shadow-sm overflow-hidden hover:brutalist-shadow hover:-translate-y-1 hover:translate-x-1 transition-all duration-200">
                           <div className="aspect-square p-4 sm:p-6 flex items-center justify-center bg-gradient-to-br from-zinc-50 to-white">
                             {icon.preview ? <img src={icon.preview} alt={icon.prompt} className="max-w-[85%] max-h-[85%] object-contain drop-shadow-lg" /> : <div className="text-zinc-400 text-sm">Loading...</div>}
                           </div>
                           <div className="p-3 sm:p-4 border-t-2 border-black flex gap-2">
-                            {icon.png?.key && (
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
-                                className="h-8 text-xs sm:text-sm border-2 border-black rounded-lg font-medium hover:bg-[#B9FF66] hover:border-[#B9FF66] flex-1"
-                                onClick={() => handleDownloadPng(icon.png!.key, icon.prompt)}
-                              >
-                                PNG
-                              </Button>
-                            )}
-                            {icon.svg?.key && (
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
-                                className="h-8 text-xs sm:text-sm border-2 border-black rounded-lg font-medium hover:bg-[#B9FF66] hover:border-[#B9FF66] flex-1"
-                                onClick={() => handleDownloadSvg(icon.svg!.key, icon.prompt)}
-                              >
-                                SVG
-                              </Button>
-                            )}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 text-xs sm:text-sm border-2 border-black rounded-lg font-medium hover:bg-[#B9FF66] hover:border-[#B9FF66] flex-1"
+                              onClick={() => handleDownloadPng(icon.png.key, icon.prompt)}
+                            >
+                              PNG
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 text-xs sm:text-sm border-2 border-black rounded-lg font-medium hover:bg-[#B9FF66] hover:border-[#B9FF66] flex-1"
+                              onClick={() => handleDownloadSvg(icon.png.key, icon.prompt)}
+                            >
+                              SVG
+                            </Button>
                           </div>
                         </div>
                       ))}

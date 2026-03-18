@@ -108,7 +108,7 @@ function LibraryContent() {
   }
 
   const handleDownloadPng = (key: string) => {
-    const downloadUrl = `/api/download/${encodeURIComponent(key)}`
+    const downloadUrl = `/api/download/${encodeURIComponent(key)}?format=png`
     const a = document.createElement("a")
     a.href = downloadUrl
     a.download = key.split("/").pop() || "icon.png"
@@ -118,10 +118,10 @@ function LibraryContent() {
   }
 
   const handleDownloadSvg = (key: string) => {
-    const downloadUrl = `/api/download/${encodeURIComponent(key)}`
+    const downloadUrl = `/api/download/${encodeURIComponent(key)}?format=svg`
     const a = document.createElement("a")
     a.href = downloadUrl
-    a.download = key.split("/").pop() || "icon.svg"
+    a.download = key.split("/").pop()?.replace(".png", ".svg") || "icon.svg"
     a.click()
     toast.success("SVG downloading...")
     setActiveMenuId(null)
@@ -246,25 +246,21 @@ function LibraryContent() {
                       <div className="text-zinc-400 text-xs">No preview</div>
                     )}
                       <DropdownMenu>
-                        <DropdownMenuTrigger 
-                          className="absolute top-1 right-1 h-6 w-6 bg-white/90 hover:bg-white text-zinc-500 hover:text-zinc-900 rounded-md border border-zinc-200 z-10 inline-flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                        <DropdownMenuTrigger
+                          className="absolute top-1 right-1 h-6 w-6 bg-white/90 hover:bg-white text-zinc-500 hover:text-zinc-900 rounded-md border border-zinc-200 z-10 inline-flex items-center justify-center cursor-pointer opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all"
                           onClick={(e) => e.stopPropagation()}
                         >
                           <HiEllipsisVertical className="h-3.5 w-3.5" />
                         </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-40 bg-white border-2 border-black rounded-xl z-50" onClick={(e) => e.stopPropagation()}>
-                        {icon.png_key && (
-                          <DropdownMenuItem onClick={() => handleDownloadPng(icon.png_key!)} className="cursor-pointer rounded-lg">
-                            <HiArrowDownTray className="h-4 w-4 mr-2" />
-                            Download PNG
-                          </DropdownMenuItem>
-                        )}
-                        {icon.svg_key && (
-                          <DropdownMenuItem onClick={() => handleDownloadSvg(icon.svg_key!)} className="cursor-pointer rounded-lg">
-                            <HiArrowDownTray className="h-4 w-4 mr-2" />
-                            Download SVG
-                          </DropdownMenuItem>
-                        )}
+                        <DropdownMenuItem onClick={() => handleDownloadPng(icon.png_key!)} className="cursor-pointer rounded-lg">
+                          <HiArrowDownTray className="h-4 w-4 mr-2" />
+                          Download PNG
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDownloadSvg(icon.png_key!)} className="cursor-pointer rounded-lg">
+                          <HiArrowDownTray className="h-4 w-4 mr-2" />
+                          Download SVG
+                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleShareToCommunity(icon.id)} className="cursor-pointer rounded-lg">
                           <HiShare className="h-4 w-4 mr-2" />
                           Share to Community

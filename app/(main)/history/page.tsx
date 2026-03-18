@@ -43,7 +43,7 @@ export default function HistoryPage() {
   }
 
   const handleDownloadPng = (key: string, prompt: string) => {
-    const downloadUrl = `/api/download/${encodeURIComponent(key)}`
+    const downloadUrl = `/api/download/${encodeURIComponent(key)}?format=png`
     const a = document.createElement("a")
     a.href = downloadUrl
     a.download = `${prompt.replace(/\s+/g, "-")}.png`
@@ -52,7 +52,7 @@ export default function HistoryPage() {
   }
 
   const handleDownloadSvg = (key: string, prompt: string) => {
-    const downloadUrl = `/api/download/${encodeURIComponent(key)}`
+    const downloadUrl = `/api/download/${encodeURIComponent(key)}?format=svg`
     const a = document.createElement("a")
     a.href = downloadUrl
     a.download = `${prompt.replace(/\s+/g, "-")}.svg`
@@ -157,28 +157,24 @@ export default function HistoryPage() {
                   </p>
                   
                   <div className="flex gap-1">
-                    {icon.png_key && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-6 text-xs border border-black rounded flex-1"
-                        onClick={() => handleDownloadPng(icon.png_key!, icon.prompt)}
-                      >
-                        <HiArrowDownTray className="h-3 w-3 mr-1" />
-                        PNG
-                      </Button>
-                    )}
-                    {icon.svg_key && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-6 text-xs border border-black rounded flex-1"
-                        onClick={() => handleDownloadSvg(icon.svg_key!, icon.prompt)}
-                      >
-                        <HiArrowDownTray className="h-3 w-3 mr-1" />
-                        SVG
-                      </Button>
-                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-6 text-xs border border-black rounded flex-1"
+                      onClick={() => handleDownloadPng(icon.png_key!, icon.prompt)}
+                    >
+                      <HiArrowDownTray className="h-3 w-3 mr-1" />
+                      PNG
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-6 text-xs border border-black rounded flex-1"
+                      onClick={() => handleDownloadSvg(icon.png_key!, icon.prompt)}
+                    >
+                      <HiArrowDownTray className="h-3 w-3 mr-1" />
+                      SVG
+                    </Button>
                   </div>
                 </div>
               </div>
