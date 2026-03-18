@@ -3,14 +3,16 @@
 import { useState, useEffect, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { HiArrowDownTray, HiTrash, HiArrowLeft, HiShare, HiSparkles, HiFolderOpen, HiEllipsisVertical } from "react-icons/hi2"
 import { FeatureCarousel } from "@/components/ui/feature-carousel"
+import { IconCard } from "@/components/icon-card"
+import { PackCard } from "@/components/pack-card"
+import { EmptyState } from "@/components/empty-state"
+import { ConfirmDialog } from "@/components/confirm-dialog"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
-import { ConfirmDialog } from "@/components/confirm-dialog"
 import gsap from "gsap"
 
 interface HistoryPack {
@@ -35,22 +37,18 @@ function LibraryContent() {
 
   const [isSelectMode, setIsSelectMode] = useState(false)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
-  const [activeMenuId, setActiveMenuId] = useState<string | null>(null)
   const [icons, setIcons] = useState<PackIcon[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [packPrompt, setPackPrompt] = useState("")
   const router = useRouter()
 
-  // User's packs (for default library view)
   const [userPacks, setUserPacks] = useState<HistoryPack[]>([])
   const [isLoadingPacks, setIsLoadingPacks] = useState(true)
 
-  // Delete dialog state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [packToDelete, setPackToDelete] = useState<{ id: string; prompt: string } | null>(null)
   const [deletePackDialogOpen, setDeletePackDialogOpen] = useState(false)
 
-  // Lightbox state
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [currentIconIndex, setCurrentIconIndex] = useState(0)
 
@@ -62,7 +60,6 @@ function LibraryContent() {
     }
   }, [packId])
 
-  // Animate cards on load
   useEffect(() => {
     if (!isLoadingPacks && userPacks.length > 0 && !packId) {
       gsap.from(".pack-card", {
@@ -127,7 +124,6 @@ function LibraryContent() {
   const toggleSelectMode = () => {
     setIsSelectMode(!isSelectMode)
     setSelectedIds([])
-    setActiveMenuId(null)
   }
 
   const handleDownloadPng = (key: string) => {
@@ -137,7 +133,6 @@ function LibraryContent() {
     a.download = key.split("/").pop() || "icon.png"
     a.click()
     toast.success("PNG downloading...")
-    setActiveMenuId(null)
   }
 
   const handleDownloadSvg = (key: string) => {
@@ -147,13 +142,13 @@ function LibraryContent() {
     a.download = key.split("/").pop()?.replace(".png", ".svg") || "icon.svg"
     a.click()
     toast.success("SVG downloading...")
-    setActiveMenuId(null)
   }
 
   const openLightbox = (index: number) => {
     setCurrentIconIndex(index)
     setLightboxOpen(true)
   }
+
   const goToPrevIcon = () => {
     setCurrentIconIndex((prev) => (prev === 0 ? icons.length - 1 : prev - 1))
   }
@@ -187,7 +182,6 @@ function LibraryContent() {
         throw new Error(error.error || "Failed to download")
       }
 
-      // Get filename from Content-Disposition header
       const contentDisposition = response.headers.get("Content-Disposition")
       let filename = `pack-icons.${format}.zip`
       if (contentDisposition) {
@@ -195,7 +189,6 @@ function LibraryContent() {
         if (match?.[1]) filename = match[1]
       }
 
-      // Download the file
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement("a")
@@ -213,7 +206,6 @@ function LibraryContent() {
     }
   }
 
-  // Pack view
   if (packId) {
     const handleDeletePack = async () => {
       try {
@@ -247,14 +239,16 @@ function LibraryContent() {
 
     return (
       <div className="flex-1 min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 overflow-y-auto">
-        {/* Hero Header */}
         <div className="bg-[#B9FF66] border-b-4 border-black px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="bg-white border-3 border-black p-2 rounded-xl shadow-[4px_4px_0px_0px_#000000] hover:shadow-[2px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer" onClick={() => router.back()}>
+                <button
+                  className="bg-white border-3 border-black p-2 rounded-xl shadow-[4px_4px_0px_0px_#000000] hover:shadow-[2px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer"
+                  onClick={() => router.back()}
+                >
                   <HiArrowLeft className="h-5 w-5 text-black" />
-                </div>
+                </button>
                 <div className="flex-1">
                   <div className="flex items-center gap-3">
                     <div className="bg-black text-white px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">
@@ -281,7 +275,6 @@ function LibraryContent() {
           </div>
         </div>
 
-        {/* Icons Grid */}
         <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-40 sm:pb-12">
           <div className="max-w-7xl mx-auto">
             {isLoading ? (
@@ -293,84 +286,28 @@ function LibraryContent() {
                 ))}
               </div>
             ) : icons.length === 0 ? (
-              <div className="text-center py-16 sm:py-24">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-zinc-100 rounded-3xl border-3 border-black mb-6 shadow-[6px_6px_0px_0px_#000000]">
-                  <HiFolderOpen className="h-10 w-10 text-zinc-400" />
-                </div>
-                <h2 className="text-2xl sm:text-3xl font-black tracking-tighter text-zinc-900 mb-3">No icons yet</h2>
-                <p className="text-zinc-500">Generate some icons to fill this pack!</p>
-              </div>
+              <EmptyState
+                variant="brutalist"
+                icon={<HiFolderOpen className="h-10 w-10 text-zinc-400" />}
+                title="No icons yet"
+                description="Generate some icons to fill this pack!"
+              />
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
                 {icons.map((icon, index) => (
-                  <div
+                  <IconCard
                     key={icon.id}
-                    className="icon-card group relative"
-                  >
-                    {/* Icon Card */}
-                    <Card
-                      className={cn(
-                        "bg-white rounded-xl border-3 border-black shadow-[4px_4px_0px_0px_#000000] hover:shadow-[8px_8px_0px_0px_#000000] hover:-translate-y-1 hover:translate-x-1 transition-all duration-300 cursor-pointer overflow-hidden",
-                        isSelectMode && selectedIds.includes(icon.id) && "ring-4 ring-[#B9FF66]"
-                      )}
-                      onClick={() => openLightbox(index)}
-                    >
-                      <div className="aspect-square p-3 flex items-center justify-center bg-gradient-to-br from-white via-zinc-50 to-zinc-100">
-                        {icon.png_key ? (
-                          <img
-                            src={`/api/download/${encodeURIComponent(icon.png_key)}`}
-                            alt={icon.prompt}
-                            className="max-w-[85%] max-h-[85%] object-contain"
-                          />
-                        ) : (
-                          <div className="w-12 h-12 bg-zinc-200 rounded-xl border-2 border-zinc-300 flex items-center justify-center">
-                            <HiSparkles className="h-6 w-6 text-zinc-400" />
-                          </div>
-                        )}
-                      </div>
-                    </Card>
-
-                    {/* Action Bar - Outside Card, Always visible on mobile, hover on desktop */}
-                    <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto">
-                      <button
-                        onClick={() => handleShareToCommunity(icon.id)}
-                        className="flex-1 h-10 bg-white hover:bg-[#B9FF66] border-3 border-black rounded-full flex items-center justify-center gap-1.5 shadow-[3px_3px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs font-bold uppercase"
-                        title="Share"
-                      >
-                        <HiShare className="h-4 w-4" />
-                        <span>Share</span>
-                      </button>
-
-                      <DropdownMenu>
-                        <DropdownMenuTrigger
-                          className="h-10 w-10 bg-white hover:bg-zinc-50 border-3 border-black rounded-xl flex items-center justify-center shadow-[3px_3px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-zinc-700 cursor-pointer"
-                        >
-                          <HiEllipsisVertical className="h-5 w-5" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
-                          <DropdownMenuItem
-                            onClick={() => handleDownloadPng(icon.png_key!)}
-                          >
-                            <HiArrowDownTray className="h-4 w-4 mr-2" />
-                            <span>Download PNG</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDownloadSvg(icon.png_key!)}
-                          >
-                            <HiArrowDownTray className="h-4 w-4 mr-2" />
-                            <span>Download SVG</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            variant="destructive"
-                            onClick={() => handleDeleteIcon(icon.id)}
-                          >
-                            <HiTrash className="h-4 w-4 mr-2" />
-                            <span>Delete</span>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </div>
+                    id={icon.id}
+                    src={icon.png_key ? `/api/download/${encodeURIComponent(icon.png_key)}` : undefined}
+                    alt={icon.prompt}
+                    variant="library"
+                    onClick={() => openLightbox(index)}
+                    onShare={() => handleShareToCommunity(icon.id)}
+                    onDownloadPng={() => icon.png_key && handleDownloadPng(icon.png_key)}
+                    onDownloadSvg={() => icon.png_key && handleDownloadSvg(icon.png_key)}
+                    onDelete={() => handleDeleteIcon(icon.id)}
+                    showActionBar
+                  />
                 ))}
               </div>
             )}
@@ -449,10 +386,8 @@ function LibraryContent() {
     )
   }
 
-  // Default library view - show user's generated packs
   return (
     <div className="flex-1 min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 overflow-y-auto">
-      {/* Hero Header */}
       <div className="bg-[#B9FF66] border-b-4 border-black px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-4 mb-4">
@@ -468,23 +403,24 @@ function LibraryContent() {
               </p>
             </div>
           </div>
-          {/* Stats Bar */}
           <div className="flex items-center gap-3 flex-wrap">
             <div className="bg-white border-3 border-black rounded-xl px-4 py-2 shadow-[3px_3px_0px_0px_#000000]">
               <span className="text-sm font-bold text-zinc-700">
                 {userPacks.reduce((sum, p) => sum + p.iconCount, 0)} total icons
               </span>
             </div>
-            <div className="bg-black text-white border-3 border-black rounded-xl px-4 py-2 shadow-[3px_3px_0px_0px_#B9FF66]">
+            <button
+              className="bg-black text-white border-3 border-black rounded-xl px-4 py-2 shadow-[3px_3px_0px_0px_#B9FF66] hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer"
+              onClick={() => router.push("/generate")}
+            >
               <span className="text-sm font-bold">
                 Start creating →
               </span>
-            </div>
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Packs Grid */}
       <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-40 sm:pb-12">
         <div className="max-w-7xl mx-auto">
           {isLoadingPacks ? (
@@ -496,106 +432,35 @@ function LibraryContent() {
               ))}
             </div>
           ) : userPacks.length === 0 ? (
-            <div className="text-center py-16 sm:py-24">
-              <div className="inline-flex items-center justify-center w-24 h-24 bg-[#B9FF66] rounded-3xl border-3 border-black mb-6 shadow-[6px_6px_0px_0px_#000000]">
-                <HiSparkles className="h-12 w-12 text-black" />
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-black tracking-tighter text-zinc-900 mb-4">
-                Your library is empty
-              </h2>
-              <p className="text-zinc-500 text-lg max-w-md mx-auto mb-6">
-                Start generating icons to see them appear here
-              </p>
-              <Button
-                className="bg-[#B9FF66] hover:bg-[#a8e655] text-black border-3 border-black rounded-xl px-8 py-3 text-lg font-bold shadow-[4px_4px_0px_0px_#000000] hover:shadow-[2px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
-                onClick={() => router.push("/generate")}
-              >
-                <HiSparkles className="h-5 w-5 mr-2" />
-                Generate Icons
-              </Button>
-            </div>
+            <EmptyState
+              variant="brutalist"
+              icon={<HiSparkles className="h-12 w-12 text-black" />}
+              title="Your library is empty"
+              description="Start generating icons to see them appear here"
+              action={{
+                label: "Generate Icons",
+                onClick: () => router.push("/generate"),
+                icon: <HiSparkles className="h-5 w-5" />
+              }}
+            />
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
               {userPacks.map((pack) => (
-                <div
+                <PackCard
                   key={pack.id}
-                  className="pack-card group relative"
-                >
-                  {/* Icon Count Badge */}
-                  <div className="absolute -top-3 -left-3 z-10">
-                    <div className="bg-[#B9FF66] border-3 border-black rounded-xl px-2.5 py-1 shadow-[3px_3px_0px_0px_#000000] min-w-[28px] flex items-center justify-center">
-                      <span className="text-xs font-black text-black">{pack.iconCount}</span>
-                    </div>
-                  </div>
-
-                  {/* Pack Card */}
-                  <Card
-                    className="bg-white rounded-xl border-3 border-black shadow-[4px_4px_0px_0px_#000000] hover:shadow-[8px_8px_0px_0px_#000000] hover:-translate-y-1 hover:translate-x-1 transition-all duration-300 cursor-pointer overflow-hidden"
-                    onClick={() => router.push(`/library?pack=${pack.id}`)}
-                  >
-                    <div className="aspect-square p-4 flex items-center justify-center bg-gradient-to-br from-white via-zinc-50 to-zinc-100">
-                      {pack.preview ? (
-                        <img src={pack.preview} alt={pack.prompt} className="max-w-[80%] max-h-[80%] object-contain" />
-                      ) : (
-                        <div className="w-16 h-16 bg-zinc-200 rounded-2xl border-2 border-zinc-300 flex items-center justify-center">
-                          <HiSparkles className="h-8 w-8 text-zinc-400" />
-                        </div>
-                      )}
-                    </div>
-                  </Card>
-
-                  {/* Action Bar - Outside Card, Always visible on mobile, hover on desktop */}
-                  <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto">
-                    <button
-                      onClick={() => handleShareToCommunity(pack.id)}
-                      className="flex-1 h-10 bg-white hover:bg-[#B9FF66] border-3 border-black rounded-full flex items-center justify-center gap-1.5 shadow-[3px_3px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs font-bold uppercase"
-                      title="Share"
-                    >
-                      <HiShare className="h-4 w-4" />
-                      <span>Share</span>
-                    </button>
-
-                    <DropdownMenu>
-                      <DropdownMenuTrigger
-                        className="h-10 w-10 bg-white hover:bg-zinc-50 border-3 border-black rounded-xl flex items-center justify-center shadow-[3px_3px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-zinc-700 cursor-pointer"
-                      >
-                        <HiEllipsisVertical className="h-5 w-5" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48">
-                        <DropdownMenuItem
-                          onClick={() => {
-                            router.push(`/library?pack=${pack.id}`)
-                          }}
-                        >
-                          <HiSparkles className="h-4 w-4 mr-2" />
-                          <span>Open Pack</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleDownloadPack(pack.id, "png")}
-                        >
-                          <HiArrowDownTray className="h-4 w-4 mr-2" />
-                          <span>Download All PNG</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleDownloadPack(pack.id, "svg")}
-                        >
-                          <HiArrowDownTray className="h-4 w-4 mr-2" />
-                          <span>Download All SVG</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          variant="destructive"
-                          onClick={() => {
-                            setPackToDelete({ id: pack.id, prompt: pack.prompt })
-                            setDeleteDialogOpen(true)
-                          }}
-                        >
-                          <HiTrash className="h-4 w-4 mr-2" />
-                          <span>Delete Pack</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
+                  id={pack.id}
+                  preview={pack.preview}
+                  prompt={pack.prompt}
+                  iconCount={pack.iconCount}
+                  onClick={() => router.push(`/library?pack=${pack.id}`)}
+                  onShare={() => handleShareToCommunity(pack.id)}
+                  onDownloadPng={() => handleDownloadPack(pack.id, "png")}
+                  onDownloadSvg={() => handleDownloadPack(pack.id, "svg")}
+                  onDelete={() => {
+                    setPackToDelete({ id: pack.id, prompt: pack.prompt })
+                    setDeleteDialogOpen(true)
+                  }}
+                />
               ))}
             </div>
           )}
@@ -629,7 +494,6 @@ function LibraryContent() {
   )
 }
 
-// Main page component that wraps LibraryContent with Suspense
 export default function LibraryPage() {
   return (
     <Suspense fallback={

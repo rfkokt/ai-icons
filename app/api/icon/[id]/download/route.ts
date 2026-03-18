@@ -47,7 +47,7 @@ export async function GET(
         return NextResponse.json({ error: "Failed to fetch PNG" }, { status: 500 })
       }
 
-      return new NextResponse(pngBuffer, {
+      return new NextResponse(new Uint8Array(pngBuffer), {
         headers: {
           "Content-Type": "image/png",
           "Content-Disposition": `attachment; filename="${icon.name}.png"`,
