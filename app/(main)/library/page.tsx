@@ -140,6 +140,20 @@ function LibraryContent() {
     setCurrentIconIndex((prev) => (prev === icons.length - 1 ? 0 : prev + 1))
   }
 
+  const handleShareToCommunity = async (iconId: string) => {
+    try {
+      const response = await fetch(`/api/icon/${iconId}/share`, { method: "POST" })
+      const data = await response.json()
+      if (data.success) {
+        toast.success(data.message)
+      } else {
+        toast.error(data.error || "Failed to share")
+      }
+    } catch {
+      toast.error("Something went wrong")
+    }
+  }
+
   // Pack view
   if (packId) {
     const handleDeletePack = async () => {
@@ -212,14 +226,14 @@ function LibraryContent() {
             </div>
           ) : (
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-4">
-              {icons.map((icon) => (
+              {icons.map((icon, index) => (
                 <Card
                   key={icon.id}
                   className={cn(
                     "group bg-white rounded-xl border-2 border-black brutalist-shadow-sm overflow-hidden hover:brutalist-shadow hover:-translate-y-0.5 hover:translate-x-0.5 transition-all duration-150 cursor-pointer",
                     isSelectMode && selectedIds.includes(icon.id) && "ring-4 ring-[#B9FF66]"
                   )}
-                  onClick={() => openLightbox(icons.indexOf(icon))}
+                  onClick={() => openLightbox(index)}
                 >
                   <div className="aspect-square p-2 sm:p-3 flex items-center justify-center bg-gradient-to-br from-zinc-50 to-zinc-100 relative">
                     {icon.png_key ? (
@@ -232,7 +246,10 @@ function LibraryContent() {
                       <div className="text-zinc-400 text-xs">No preview</div>
                     )}
                       <DropdownMenu>
-                        <DropdownMenuTrigger className="absolute top-1 right-1 h-6 w-6 bg-white/90 hover:bg-white text-zinc-500 hover:text-zinc-900 rounded-md border border-zinc-200 z-10 inline-flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                        <DropdownMenuTrigger 
+                          className="absolute top-1 right-1 h-6 w-6 bg-white/90 hover:bg-white text-zinc-500 hover:text-zinc-900 rounded-md border border-zinc-200 z-10 inline-flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           <HiEllipsisVertical className="h-3.5 w-3.5" />
                         </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-40 bg-white border-2 border-black rounded-xl z-50" onClick={(e) => e.stopPropagation()}>
@@ -248,7 +265,7 @@ function LibraryContent() {
                             Download SVG
                           </DropdownMenuItem>
                         )}
-                        <DropdownMenuItem className="cursor-pointer rounded-lg">
+                        <DropdownMenuItem onClick={() => handleShareToCommunity(icon.id)} className="cursor-pointer rounded-lg">
                           <HiShare className="h-4 w-4 mr-2" />
                           Share to Community
                         </DropdownMenuItem>
@@ -317,7 +334,7 @@ function LibraryContent() {
                     <HiEllipsisVertical className="h-3.5 w-3.5" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-40 bg-white border-2 border-black rounded-xl z-20">
-                    <DropdownMenuItem className="cursor-pointer rounded-lg">
+                    <DropdownMenuItem onClick={() => handleShareToCommunity(pack.id)} className="cursor-pointer rounded-lg">
                       <HiShare className="h-4 w-4 mr-2" />
                       Share to Community
                     </DropdownMenuItem>

@@ -3,7 +3,8 @@ import sharp from "sharp"
 export async function convertSvgToPng(svgCode: string, size = 512): Promise<Buffer> {
   return sharp(Buffer.from(svgCode))
     .resize(size, size)
-    .png()
+    .ensureAlpha()
+    .png({ force: true })
     .toBuffer()
 }
 

@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  serverExternalPackages: ["potrace"],
 };
 
 export default nextConfig;

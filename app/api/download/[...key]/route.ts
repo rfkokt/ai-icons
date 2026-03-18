@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getObject } from "@/lib/r2"
+import sharp from "sharp"
 
 export async function GET(
   request: NextRequest,
@@ -15,9 +16,19 @@ export async function GET(
       return NextResponse.json({ error: "File not found" }, { status: 404 })
     }
 
-    const contentType = decodedKey.endsWith(".png") ? "image/png" : "image/svg+xml"
+    const isPng = decodedKey.endsWith(".png")
+    const contentType = isPng ? "image/png" : "image/svg+xml"
 
-    return new NextResponse(new Uint8Array(data), {
+    // For PNG files, ensure alpha channel is preserved (transparent background)
+    let outputData: Buffer | Uint8Array = data
+    if (isPng) {
+      outputData = await sharp(data)
+        .ensureAlpha()
+        .png({ force: true })
+        .toBuffer()
+    }
+
+    return new NextResponse(new Uint8Array(outputData), {
       headers: {
         "Content-Type": contentType,
         "Content-Disposition": `attachment; filename="${decodedKey.split("/").pop()}"`,
