@@ -1,8 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { HiArrowDownTray, HiTrash, HiClock, HiSparkles } from "react-icons/hi2"
+import { HiClock } from "react-icons/hi2"
+import { PageHeader } from "@/components/page-header"
+import { EmptyState } from "@/components/empty-state"
+import { IconCard } from "@/components/icon-card"
+import { useDownload } from "@/hooks/use-download"
 import { toast } from "sonner"
 
 interface HistoryIcon {
@@ -20,6 +23,7 @@ export default function HistoryPage() {
   const [icons, setIcons] = useState<HistoryIcon[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const { download } = useDownload()
 
   useEffect(() => {
     fetchHistory()
@@ -40,24 +44,6 @@ export default function HistoryPage() {
     } finally {
       setIsLoading(false)
     }
-  }
-
-  const handleDownloadPng = (key: string, prompt: string) => {
-    const downloadUrl = `/api/download/${encodeURIComponent(key)}?format=png`
-    const a = document.createElement("a")
-    a.href = downloadUrl
-    a.download = `${prompt.replace(/\s+/g, "-")}.png`
-    a.click()
-    toast.success("PNG downloading...")
-  }
-
-  const handleDownloadSvg = (key: string, prompt: string) => {
-    const downloadUrl = `/api/download/${encodeURIComponent(key)}?format=svg`
-    const a = document.createElement("a")
-    a.href = downloadUrl
-    a.download = `${prompt.replace(/\s+/g, "-")}.svg`
-    a.click()
-    toast.success("SVG downloading...")
   }
 
   const handleDelete = async (id: string) => {
@@ -81,21 +67,6 @@ export default function HistoryPage() {
     }
   }
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    const now = new Date()
-    const diffMs = now.getTime() - date.getTime()
-    const diffMins = Math.floor(diffMs / 60000)
-    const diffHours = Math.floor(diffMs / 3600000)
-    const diffDays = Math.floor(diffMs / 86400000)
-
-    if (diffMins < 1) return "Just now"
-    if (diffMins < 60) return `${diffMins} minutes ago`
-    if (diffHours < 24) return `${diffHours} hours ago`
-    if (diffDays < 7) return `${diffDays} days ago`
-    return date.toLocaleDateString()
-  }
-
   if (isLoading) {
     return (
       <div className="flex-1 flex items-center justify-center">
@@ -106,78 +77,36 @@ export default function HistoryPage() {
 
   return (
     <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex items-center gap-3 mb-6 sm:mb-8">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#B9FF66] rounded-xl sm:rounded-2xl flex items-center justify-center border-2 border-black brutalist-shadow-sm">
-            <HiClock className="h-5 w-5 sm:h-6 sm:w-6 text-black" />
-          </div>
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-zinc-900">History</h1>
-            <p className="text-sm text-zinc-500">Your generated icons</p>
-          </div>
-        </div>
+      <PageHeader
+        icon={<HiClock className="h-6 w-6" />}
+        title="History"
+        description="Your generated icons"
+        variant="white"
+      />
 
+      <div className="max-w-6xl mx-auto mt-6 sm:mt-8">
         {icons.length === 0 ? (
-          <div className="text-center py-12 sm:py-16">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-zinc-100 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 border-2 border-zinc-200">
-              <HiSparkles className="h-6 w-6 sm:h-8 sm:w-8 text-zinc-400" />
-            </div>
-            <h2 className="text-lg sm:text-xl font-bold text-zinc-900 mb-2">
-              No icons yet
-            </h2>
-            <p className="text-zinc-500 text-sm sm:text-base">
-              Start generating icons to see them here
-            </p>
-          </div>
+          <EmptyState
+            variant="minimal"
+            icon={<HiClock className="h-8 w-8 text-zinc-400" />}
+            title="No icons yet"
+            description="Start generating icons to see them here"
+          />
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
             {icons.map((icon) => (
-              <div
+              <IconCard
                 key={icon.id}
-                className="bg-white rounded-xl border-2 border-black brutalist-shadow-sm overflow-hidden hover:shadow-md transition-shadow"
-              >
-                <div className="aspect-square p-3 sm:p-4 flex items-center justify-center bg-zinc-50">
-                  {icon.png_url ? (
-                    <img
-                      src={icon.png_url}
-                      alt={icon.prompt}
-                      className="max-w-full max-h-full object-contain"
-                    />
-                  ) : (
-                    <div className="text-zinc-400 text-xs">No preview</div>
-                  )}
-                </div>
-                
-                <div className="p-2 sm:p-3 border-t border-zinc-100">
-                  <p className="text-xs sm:text-sm font-medium text-zinc-900 truncate mb-1">
-                    {icon.prompt}
-                  </p>
-                  <p className="text-xs text-zinc-500 mb-2">
-                    {formatDate(icon.created_at)}
-                  </p>
-                  
-                  <div className="flex gap-1">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-6 text-xs border border-black rounded flex-1"
-                      onClick={() => handleDownloadPng(icon.png_key!, icon.prompt)}
-                    >
-                      <HiArrowDownTray className="h-3 w-3 mr-1" />
-                      PNG
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-6 text-xs border border-black rounded flex-1"
-                      onClick={() => handleDownloadSvg(icon.png_key!, icon.prompt)}
-                    >
-                      <HiArrowDownTray className="h-3 w-3 mr-1" />
-                      SVG
-                    </Button>
-                  </div>
-                </div>
-              </div>
+                id={icon.id}
+                src={icon.png_url}
+                alt={icon.prompt}
+                prompt={icon.prompt}
+                format={icon.png_key || undefined}
+                date={new Date(icon.created_at).toLocaleDateString()}
+                variant="library"
+                onDelete={() => handleDelete(icon.id)}
+                showActionBar
+              />
             ))}
           </div>
         )}

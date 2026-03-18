@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
 import { HiClock, HiHeart } from "react-icons/hi2"
 import { IconCard } from "@/components/icon-card"
-import { cn } from "@/lib/utils"
+import { FilterTabs } from "@/components/filter-tabs"
+import { IconGrid } from "@/components/icon-grid"
 
 const communityIcons = [
   { id: 1, prompt: "Shopping cart", likes: 128, date: "2 hours ago" },
@@ -35,49 +35,24 @@ export default function CommunityPage() {
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      {/* Header */}
       <header className="h-auto sm:h-14 bg-white border-b border-zinc-200 px-4 sm:px-6 py-3 sm:py-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 shrink-0">
         <div>
           <h1 className="text-lg font-bold text-zinc-900">Community</h1>
           <p className="text-xs text-zinc-500 hidden sm:block">Explore icons created by the community</p>
         </div>
-
-        {/* Filter Tabs */}
-        <div className="flex items-center gap-1 p-1 bg-zinc-100 rounded-lg w-full sm:w-auto">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setFilter("latest")}
-            className={cn(
-              "h-10 sm:h-9 flex-1 sm:flex-none px-4 rounded-md text-sm font-medium transition-colors",
-              filter === "latest"
-                ? "bg-zinc-900 text-white hover:bg-zinc-800"
-                : "text-zinc-600 hover:text-zinc-900 hover:bg-transparent"
-            )}
-          >
-            <HiClock className="h-4 w-4 mr-1.5" />
-            Latest
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setFilter("mostLoved")}
-            className={cn(
-              "h-10 sm:h-9 flex-1 sm:flex-none px-4 rounded-md text-sm font-medium transition-colors",
-              filter === "mostLoved"
-                ? "bg-zinc-900 text-white hover:bg-zinc-800"
-                : "text-zinc-600 hover:text-zinc-900 hover:bg-transparent"
-            )}
-          >
-            <HiHeart className="h-4 w-4 mr-1.5" />
-            Most Loved
-          </Button>
-        </div>
+        <FilterTabs
+          tabs={[
+            { key: "latest", label: "Latest", icon: <HiClock className="h-4 w-4" /> },
+            { key: "mostLoved", label: "Most Loved", icon: <HiHeart className="h-4 w-4" /> }
+          ]}
+          activeTab={filter}
+          onTabChange={(key) => setFilter(key as FilterType)}
+          className="w-full sm:w-auto"
+        />
       </header>
 
-      {/* Grid Content */}
       <main className="flex-1 overflow-auto p-4 sm:p-6 pb-20 lg:pb-6">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4">
+        <IconGrid>
           {sortedIcons.map((icon) => (
             <IconCard
               key={icon.id}
@@ -87,7 +62,7 @@ export default function CommunityPage() {
               date={icon.date}
             />
           ))}
-        </div>
+        </IconGrid>
       </main>
     </div>
   )

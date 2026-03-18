@@ -56,7 +56,7 @@ useStaggerAnimation()
 | `ConfirmDialog` | Confirmation dialog |
 | `StyleSelector` | Icon style dropdown |
 | `CountSelector` | Icon count dropdown |
-| `FilterTabs`, `CopyLinkButton`, `QuickPromptButton`, `StatCard`, `UserCard` |
+| `FilterTabs`, `CopyLinkButton`, `QuickPromptButton`, `StatCard`, `UserCard`, `HowItWorks` |
 
 ## Zustand Stores
 ```tsx
@@ -143,8 +143,7 @@ npm run dev/build/start/lint
 ```
 
 ## Refactoring Status
-- ✅ use-download, use-confirm-dialog, use-stagger-animation, use-lightbox, use-share-icon
-- ✅ use-pack-download (NEW)
-- ✅ PageHeader, LoadingSkeleton, IconGrid, StyleSelector, CountSelector, PackActions
-- ✅ EmptyState, FilterTabs, CopyLinkButton consistency
+- ✅ All hooks implemented (use-download, use-confirm-dialog, use-stagger-animation, use-lightbox, use-share-icon, use-pack-download)
+- ✅ All components: PageHeader, LoadingSkeleton, IconGrid, StyleSelector, CountSelector, PackActions, FilterTabs, CopyLinkButton, EmptyState, HowItWorks, UserCard, IconCard
+- ✅ All pages refactored: generate, library, community, referral, leaderboard, history
 - Pending: Supabase client export
