@@ -11,6 +11,7 @@ import { IconCard } from "@/components/icon-card"
 import { GeneratingOverlay } from "@/components/generating-overlay"
 import { EmptyState } from "@/components/empty-state"
 import { PackAccordion } from "@/components/pack-accordion"
+import { useDownload } from "@/hooks/use-download"
 import { toast } from "sonner"
 import gsap from "gsap"
 
@@ -52,6 +53,7 @@ export default function GeneratePage() {
 
   const generatingRef = useRef<HTMLDivElement>(null)
   const successRef = useRef<HTMLDivElement>(null)
+  const { download } = useDownload()
 
 
   useEffect(() => {
@@ -134,24 +136,6 @@ export default function GeneratePage() {
     } finally {
       setIsGenerating(false)
     }
-  }
-
-  const handleDownloadPng = (key: string, prompt: string) => {
-    const downloadUrl = `/api/download/${encodeURIComponent(key)}?format=png`
-    const a = document.createElement("a")
-    a.href = downloadUrl
-    a.download = `${prompt.replace(/\s+/g, "-")}.png`
-    a.click()
-    toast.success("PNG downloading...")
-  }
-
-  const handleDownloadSvg = (key: string, prompt: string) => {
-    const downloadUrl = `/api/download/${encodeURIComponent(key)}?format=svg`
-    const a = document.createElement("a")
-    a.href = downloadUrl
-    a.download = `${prompt.replace(/\s+/g, "-")}.svg`
-    a.click()
-    toast.success("SVG downloading...")
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -293,10 +277,10 @@ export default function GeneratePage() {
                           id={`${pack.id}-${index}`}
                           src={icon.preview}
                           alt={icon.prompt}
+                          prompt={icon.prompt}
+                          format={icon.png.key}
                           variant="generated"
                           onShare={() => icon.id && handleShareToCommunity(icon.id)}
-                          onDownloadPng={() => handleDownloadPng(icon.png.key, icon.prompt)}
-                          onDownloadSvg={() => handleDownloadSvg(icon.png.key, icon.prompt)}
                         />
                       ))}
                     </div>

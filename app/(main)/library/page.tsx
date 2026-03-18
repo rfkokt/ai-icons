@@ -9,8 +9,9 @@ import { FeatureCarousel } from "@/components/ui/feature-carousel"
 import { IconCard } from "@/components/icon-card"
 import { PackCard } from "@/components/pack-card"
 import { EmptyState } from "@/components/empty-state"
-import { ActionConfirm } from "@/components/action-confirm"
+import { IconActions } from "@/components/icon-actions"
 import { ConfirmDialog } from "@/components/confirm-dialog"
+import { useDownload } from "@/hooks/use-download"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 import gsap from "gsap"
@@ -51,6 +52,7 @@ function LibraryContent() {
 
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [currentIconIndex, setCurrentIconIndex] = useState(0)
+  const { download } = useDownload()
 
   useEffect(() => {
     if (packId) {
@@ -124,24 +126,6 @@ function LibraryContent() {
   const toggleSelectMode = () => {
     setIsSelectMode(!isSelectMode)
     setSelectedIds([])
-  }
-
-  const handleDownloadPng = (key: string) => {
-    const downloadUrl = `/api/download/${encodeURIComponent(key)}?format=png`
-    const a = document.createElement("a")
-    a.href = downloadUrl
-    a.download = key.split("/").pop() || "icon.png"
-    a.click()
-    toast.success("PNG downloading...")
-  }
-
-  const handleDownloadSvg = (key: string) => {
-    const downloadUrl = `/api/download/${encodeURIComponent(key)}?format=svg`
-    const a = document.createElement("a")
-    a.href = downloadUrl
-    a.download = key.split("/").pop()?.replace(".png", ".svg") || "icon.svg"
-    a.click()
-    toast.success("SVG downloading...")
   }
 
   const openLightbox = (index: number) => {
@@ -300,11 +284,11 @@ function LibraryContent() {
                     id={icon.id}
                     src={icon.png_key ? `/api/download/${encodeURIComponent(icon.png_key)}` : undefined}
                     alt={icon.prompt}
+                    prompt={icon.prompt}
+                    format={icon.png_key || undefined}
                     variant="library"
                     onClick={() => openLightbox(index)}
                     onShare={() => handleShareToCommunity(icon.id)}
-                    onDownloadPng={() => icon.png_key && handleDownloadPng(icon.png_key)}
-                    onDownloadSvg={() => icon.png_key && handleDownloadSvg(icon.png_key)}
                     onDelete={() => handleDeleteIcon(icon.id)}
                     showActionBar
                   />
@@ -332,7 +316,7 @@ function LibraryContent() {
                 <span className="text-sm font-bold text-zinc-700">{currentIconIndex + 1} / {icons.length}</span>
               </div>
               {icons[currentIconIndex] && (
-                <ActionConfirm
+                <IconActions
                   iconKey={icons[currentIconIndex].png_key!}
                   prompt={icons[currentIconIndex].prompt}
                   onShare={() => handleShareToCommunity(icons[currentIconIndex].id)}

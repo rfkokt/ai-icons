@@ -1,4 +1,16 @@
-# Project Standards & Guidelines
+# AI Icons - Project Standards & Guidelines
+
+## Table of Contents
+1. [Core Architecture](#1-core-architecture)
+2. [Coding Standards](#2-coding-standards)
+3. [Design System](#3-design-system)
+4. [Component Guidelines](#4-component-guidelines)
+5. [Refactoring & Clean Code](#6-refactoring--clean-code)
+6. [Best Practices](#7-best-practices)
+7. [Responsive Design](#8-responsive-design-mobile-first)
+8. [Scripts](#10-scripts)
+
+---
 
 ## 1. Core Architecture
 
@@ -782,7 +794,250 @@ npm run start    # Start production server
 npm run lint     # Run ESLint
 ```
 
-## 11. Notes
+## 11. Refactoring & Clean Code
+
+### Overview
+This project follows a continuous refactoring approach to maintain clean, reusable, and maintainable code.
+
+### Priority Issues (High → Low)
+
+| Issue | Priority | Files | Solution | Status |
+|-------|----------|-------|----------|--------|
+| Download function duplication | HIGH | 5 files | Create `use-download` hook | ✅ DONE |
+| Confirmation dialog logic duplication | HIGH | 2 files | Create `use-confirm-dialog` hook | ✅ DONE |
+| Supabase client recreation | HIGH | 7+ routes | Export from `lib/supabase.ts` | Pending |
+| Inline fetch functions | HIGH | 3 pages | Create `useHistory`, `useUserPacks` hooks | Pending |
+| Filter tabs duplication | MEDIUM | 3 files | Use existing `FilterTabs` component | ✅ DONE |
+| EmptyState component inconsistency | MEDIUM | 3 pages | Use existing component everywhere | ✅ DONE |
+| GSAP animation patterns | MEDIUM | 2 pages | Create `use-stagger-animation` hook | ✅ DONE |
+| Copy link duplication | MEDIUM | 2 files | Use existing `CopyLinkButton` | ✅ DONE |
+
+### Refactoring Progress (2024-03-19)
+
+#### Completed Refactoring Tasks:
+1. **icon-action-bar.tsx** - Refactored to use `use-download` and `use-confirm-dialog` hooks
+2. **icon-card.tsx** - Updated to pass `iconKey` and `prompt` to `IconActionBar` internally
+3. **generate/page.tsx** - Removed inline download handlers, now uses `use-download` hook
+4. **library/page.tsx** - Removed inline download handlers, now uses `use-download` hook
+5. **dashboard-layout.tsx** - Fixed mobile sidebar close animation with delayed visibility change
+
+#### Key Changes:
+- `IconCard` now accepts `format` and `prompt` props instead of `onDownloadPng`/`onDownloadSvg` callbacks
+- `IconActionBar` handles downloads internally using `use-download` hook
+- Mobile sidebar overlay visibility now uses delayed transition (300ms) for smooth animation
+
+### Required Hooks to Create
+
+#### 1. use-download.ts (HIGH PRIORITY)
+```tsx
+// hooks/use-download.ts
+"use client"
+
+import { toast } from "sonner"
+
+interface UseDownloadOptions {
+  onSuccess?: (format: string) => void
+}
+
+export function useDownload(options?: UseDownloadOptions) {
+  const download = async (key: string, prompt: string, format: "png" | "svg") => {
+    const a = document.createElement("a")
+    a.href = `/api/download/${encodeURIComponent(key)}?format=${format}`
+    a.download = `${prompt.replace(/\s+/g, "-")}.${format}`
+    a.click()
+    toast.success(`${format.toUpperCase()} downloading...`)
+    options?.onSuccess?.(format)
+  }
+  return { download }
+}
+```
+
+#### 2. use-confirm-dialog.ts (HIGH PRIORITY)
+```tsx
+// hooks/use-confirm-dialog.ts
+"use client"
+
+import { useState } from "react"
+import { toast } from "sonner"
+
+interface UseConfirmDialogOptions {
+  onConfirm: () => void
+  type: "share" | "delete"
+}
+
+export function useConfirmDialog() {
+  const [confirmType, setConfirmType] = useState<"share" | "delete" | null>(null)
+
+  const handleConfirm = (onShare?: () => void, onDelete?: () => void) => {
+    if (confirmType === "share" && onShare) {
+      onShare()
+      toast.success("Shared to community!")
+    } else if (confirmType === "delete" && onDelete) {
+      onDelete()
+      toast.success("Deleted")
+    }
+    setConfirmType(null)
+  }
+
+  return { confirmType, setConfirmType, handleConfirm }
+}
+```
+
+#### 3. use-stagger-animation.ts (MEDIUM PRIORITY)
+```tsx
+// hooks/use-stagger-animation.ts
+"use client"
+
+import { useEffect, useRef } from "react"
+import gsap from "gsap"
+
+interface UseStaggerAnimationOptions {
+  selector: string
+  y?: number
+  duration?: number
+  stagger?: number
+  ease?: string
+}
+
+export function useStaggerAnimation(
+  deps: unknown[],
+  options: UseStaggerAnimationOptions
+) {
+  const { selector, y = 40, duration = 0.5, stagger = 0.1, ease = "back.out(1.7)" } = options
+  const ref = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    if (!ref.current) return
+    gsap.from(ref.current.querySelectorAll(selector), {
+      y,
+      opacity: 0,
+      duration,
+      stagger,
+      ease,
+    })
+  }, deps)
+
+  return ref
+}
+```
+
+#### 4. use-lightbox.ts (MEDIUM PRIORITY)
+```tsx
+// hooks/use-lightbox.ts
+"use client"
+
+import { useState } from "react"
+
+export function useLightbox(totalItems: number) {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isOpen, setIsOpen] = useState(false)
+
+  const goToPrev = () => setCurrentIndex(prev => prev === 0 ? totalItems - 1 : prev - 1)
+  const goToNext = () => setCurrentIndex(prev => prev === totalItems - 1 ? 0 : prev + 1)
+  const open = (index: number) => { setCurrentIndex(index); setIsOpen(true) }
+  const close = () => setIsOpen(false)
+
+  return { currentIndex, isOpen, goToPrev, goToNext, open, close, setCurrentIndex }
+}
+```
+
+#### 5. use-share-icon.ts (MEDIUM PRIORITY)
+```tsx
+// hooks/use-share-icon.ts
+"use client"
+
+import { toast } from "sonner"
+
+export function useShareIcon() {
+  const shareToCommunity = async (iconId: string) => {
+    try {
+      const response = await fetch(`/api/icon/${iconId}/share`, { method: "POST" })
+      const data = await response.json()
+      if (data.success) {
+        toast.success(data.message)
+      } else {
+        toast.error(data.error || "Failed to share")
+      }
+    } catch {
+      toast.error("Something went wrong")
+    }
+  }
+  return { shareToCommunity }
+}
+```
+
+### Code Patterns to Avoid (DUPLICATE CODE)
+
+#### ❌ BAD: Repeated download logic
+```tsx
+// In every page - DON'T DO THIS
+const handleDownloadPng = (key: string, prompt: string) => {
+  const a = document.createElement("a")
+  a.href = `/api/download/${encodeURIComponent(key)}?format=png`
+  a.download = `${prompt.replace(/\s+/g, "-")}.png`
+  a.click()
+  toast.success("PNG downloading...")
+}
+```
+
+#### ✅ GOOD: Use use-download hook
+```tsx
+import { useDownload } from "@/hooks/use-download"
+
+export function MyPage() {
+  const { download } = useDownload()
+  
+  return <button onClick={() => download(key, prompt, "png")}>Download</button>
+}
+```
+
+### Component Consistency Checklist
+
+- [x] All pages use `EmptyState` component (not inline implementations)
+- [x] All filter tabs use `FilterTabs` component
+- [x] All copy buttons use `CopyLinkButton` component
+- [ ] All icon grids use consistent breakpoints via `IconGrid`
+- [x] All destructive actions have confirmation dialogs
+- [x] All download actions use `use-download` hook
+
+### File Organization
+
+```
+components/
+├── ui/                  # ShadCN components (EDIT WITH CAUTION)
+├── layout/              # Layout components
+│   ├── sidebar-layout.tsx
+│   ├── mobile-menu.tsx  # NEW: Extract mobile menu
+│   └── page-header.tsx
+├── icons/               # Icon-related components
+│   ├── icon-card.tsx
+│   ├── icon-action-bar.tsx
+│   ├── icon-grid.tsx
+│   └── icon-lightbox.tsx  # NEW: Extract lightbox
+├── packs/               # Pack-related components
+│   ├── pack-card.tsx
+│   ├── pack-accordion.tsx
+│   └── pack-download.tsx  # NEW: Extract pack download
+└── shared/              # Shared UI components
+    ├── empty-state.tsx
+    ├── generating-overlay.tsx
+    ├── action-confirm.tsx
+    └── confirm-dialog.tsx
+
+hooks/
+├── use-download.ts      # ✅ DONE
+├── use-confirm-dialog.ts # ✅ DONE
+├── use-stagger-animation.ts # ✅ DONE
+├── use-lightbox.ts      # ✅ DONE
+├── use-share-icon.ts    # ✅ DONE
+├── use-tab-state.ts
+├── use-scroll-animation.ts
+└── use-auth-sync.ts
+```
+
+---
+
+## 12. Notes
 
 - Project: Landing page + Dashboard (protected routes)
 - Design: Neo-Brutalist dengan primary accent `#B9FF66`

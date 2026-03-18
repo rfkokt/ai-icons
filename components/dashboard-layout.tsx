@@ -85,8 +85,18 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       } else {
         sidebarRef.current.style.transform = 'translateX(-100%)'
         overlayRef.current.style.opacity = '0'
-        overlayRef.current.style.visibility = 'hidden'
       }
+    }
+  }, [mobileMenuOpen])
+
+  useEffect(() => {
+    if (!mobileMenuOpen && overlayRef.current) {
+      const timer = setTimeout(() => {
+        if (overlayRef.current) {
+          overlayRef.current.style.visibility = 'hidden'
+        }
+      }, 300)
+      return () => clearTimeout(timer)
     }
   }, [mobileMenuOpen])
 

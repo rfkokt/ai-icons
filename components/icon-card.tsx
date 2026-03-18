@@ -19,8 +19,6 @@ interface IconCardProps {
   onSelect?: (id: string | number) => void
   onClick?: () => void
   onShare?: () => void
-  onDownloadPng?: () => void
-  onDownloadSvg?: () => void
   onDelete?: () => void
   showActionBar?: boolean
   actionBarPosition?: "inside" | "outside"
@@ -42,8 +40,6 @@ export function IconCard({
   onSelect,
   onClick,
   onShare,
-  onDownloadPng,
-  onDownloadSvg,
   onDelete,
   showActionBar = true,
   actionBarPosition = "outside",
@@ -97,9 +93,9 @@ export function IconCard({
             actionBarPosition === "inside" ? "opacity-0 group-hover:opacity-100" : "opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
           )}>
             <IconActionBar
+              iconKey={format}
+              prompt={prompt}
               onShare={onShare}
-              onDownloadPng={onDownloadPng}
-              onDownloadSvg={onDownloadSvg}
               showShare={!!onShare}
             />
           </div>
@@ -146,9 +142,9 @@ export function IconCard({
             actionBarPosition === "inside" ? "opacity-0 group-hover:opacity-100" : "opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
           )}>
             <IconActionBar
+              iconKey={format}
+              prompt={prompt}
               onShare={onShare}
-              onDownloadPng={onDownloadPng}
-              onDownloadSvg={onDownloadSvg}
               onDelete={onDelete}
               showShare={!!onShare}
               showDelete={!!onDelete}
