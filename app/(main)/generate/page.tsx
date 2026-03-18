@@ -16,6 +16,7 @@ import { useDownload } from "@/hooks/use-download"
 import { usePackDownload } from "@/hooks/use-pack-download"
 import { useShareIcon } from "@/hooks/use-share-icon"
 import { useStaggerAnimation } from "@/hooks/use-stagger-animation"
+import { usePromptSuggestions } from "@/hooks/use-prompt-suggestions"
 import { toast } from "sonner"
 import gsap from "gsap"
 import type { GeneratedIcon, GeneratedPack } from "@/types/icon"
@@ -37,6 +38,14 @@ export default function GeneratePage() {
   const { download } = useDownload()
   const { downloadPack } = usePackDownload()
   const { shareToCommunity } = useShareIcon()
+
+  const { suggestions } = usePromptSuggestions(prompt, { minLength: 2, maxSuggestions: 3 })
+
+  const defaultSuggestions = [
+    "cute kawaii character with big sparkly eyes",
+    "angry warrior with sword and shield",
+    "relaxing at the beach with sunglasses",
+  ]
 
   const staggerRef = useStaggerAnimation([generatedPacks.length], {
     selector: ".generated-pack",
@@ -277,16 +286,29 @@ export default function GeneratePage() {
               </div>
 
               <div className="flex gap-1.5 sm:gap-2 overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory -mx-1 px-1">
-                {["User profile", "Settings gear", "Shopping cart", "Notification bell", "Message bubble", "Search", "Heart icon", "Calendar", "Location", "Camera"].map((suggestion) => (
-                  <div key={suggestion} className="snap-start">
-                    <QuickPromptButton
-                      suggestion={suggestion}
-                      onClick={setPrompt}
-                      disabled={isGenerating}
-                      className="flex-shrink-0"
-                    />
-                  </div>
-                ))}
+                {suggestions.length > 0 ? (
+                  suggestions.map((suggestion) => (
+                    <div key={suggestion} className="snap-start">
+                      <QuickPromptButton
+                        suggestion={suggestion}
+                        onClick={setPrompt}
+                        disabled={isGenerating}
+                        className="flex-shrink-0"
+                      />
+                    </div>
+                  ))
+                ) : (
+                  defaultSuggestions.map((suggestion) => (
+                    <div key={suggestion} className="snap-start">
+                      <QuickPromptButton
+                        suggestion={suggestion}
+                        onClick={setPrompt}
+                        disabled={isGenerating}
+                        className="flex-shrink-0"
+                      />
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>

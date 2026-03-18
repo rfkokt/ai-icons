@@ -22,14 +22,14 @@ interface GenerateRequest {
 }
 
 const STYLE_PROMPTS: Record<string, string> = {
-  minimalist: "Clean, minimalist design with simple geometric shapes, black strokes, floating icon design",
+  minimalist: "Clean, minimalist design with simple geometric shapes, black strokes, transparent background",
   outline: "Outline/stroke style icon, clean line art, black lines, no border/box around the icon",
-  filled: "Filled solid icon, black fill, floating icon design",
-  duotone: "Duotone two-tone icon, two contrasting colors, floating icon",
-  "3d": "3D dimensional icon, depth and perspective, floating design",
-  flat: "Flat design icon, simple 2D shapes, solid colors, floating icon",
-  "hand-drawn": "Hand-drawn sketch style, organic imperfect lines, floating design",
-  neon: "Neon glowing icon, bright colors with glow effect, floating design",
+  filled: "Filled solid icon, black fill, transparent background",
+  duotone: "Duotone two-tone icon, two contrasting colors, transparent background",
+  "3d": "3D dimensional icon, depth and perspective, transparent background",
+  flat: "Flat design icon, simple 2D shapes, solid colors, transparent background",
+  "hand-drawn": "Hand-drawn sketch style, organic imperfect lines, transparent background",
+  neon: "Neon glowing icon, bright colors with glow effect, transparent background",
 }
 
 function buildIconPrompt(userPrompt: string, style: string): string {

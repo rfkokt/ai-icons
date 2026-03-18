@@ -41,6 +41,7 @@ Use ShadCN: `Button`, `Card`, `Dialog`, `Sheet`, `Badge`, `Input`, `DropdownMenu
 | `useSelectMode<T>()` | `isSelectMode, selectedIds, toggleSelect, isSelected` |
 | `usePacks()` | `packs, isLoading, fetchPacks, addPack, removePack, totalIcons` |
 | `usePackIcons(packId)` | `icons, packPrompt, isLoading, removeIcon` |
+| `usePromptSuggestions(input, options)` | `suggestions, isLoading` - generates dynamic prompt suggestions |
 | `useScrollAnimation()` | GSAP scroll animations |
 | `useStaggerAnimation(deps, options)` | `selector, y, duration, stagger` |
 | `useTabState()` | Tab state management |
