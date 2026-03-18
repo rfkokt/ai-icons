@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { HiEllipsisVertical, HiArrowDownTray, HiTrash, HiArrowLeft, HiShare, HiSparkles, HiFolderOpen } from "react-icons/hi2"
+import { HiArrowDownTray, HiTrash, HiArrowLeft, HiShare, HiSparkles, HiFolderOpen, HiEllipsisVertical } from "react-icons/hi2"
 import { FeatureCarousel } from "@/components/ui/feature-carousel"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
@@ -176,6 +176,43 @@ function LibraryContent() {
     }
   }
 
+  const handleDownloadPack = async (packId: string, format: "png" | "svg") => {
+    try {
+      toast.loading(`Downloading ${format.toUpperCase()} pack...`)
+      const downloadUrl = `/api/pack/${packId}/download?format=${format}`
+      const response = await fetch(downloadUrl)
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || "Failed to download")
+      }
+
+      // Get filename from Content-Disposition header
+      const contentDisposition = response.headers.get("Content-Disposition")
+      let filename = `pack-icons.${format}.zip`
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename="(.+)"/)
+        if (match?.[1]) filename = match[1]
+      }
+
+      // Download the file
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = filename
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+
+      toast.success(`Pack downloaded as ${format.toUpperCase()}!`)
+    } catch (error) {
+      console.error("Download pack error:", error)
+      toast.error(error instanceof Error ? error.message : "Failed to download pack")
+    }
+  }
+
   // Pack view
   if (packId) {
     const handleDeletePack = async () => {
@@ -245,7 +282,7 @@ function LibraryContent() {
         </div>
 
         {/* Icons Grid */}
-        <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-40 sm:pb-12">
           <div className="max-w-7xl mx-auto">
             {isLoading ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
@@ -270,51 +307,15 @@ function LibraryContent() {
                     key={icon.id}
                     className="icon-card group relative"
                   >
-                    {/* Quick Actions - Always visible on mobile, hover on desktop */}
-                    <div className="absolute -top-3 -right-3 z-20 flex flex-col gap-1.5 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-200">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleDownloadPng(icon.png_key!)
-                        }}
-                        className="h-7 w-7 bg-[#B9FF66] hover:bg-[#a8e655] border-2 border-black rounded-lg flex items-center justify-center shadow-[2px_2px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
-                        title="Download PNG"
-                      >
-                        <HiArrowDownTray className="h-3.5 w-3.5 text-black" />
-                      </button>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger
-                          className="h-7 w-7 bg-white hover:bg-zinc-50 border-2 border-black rounded-lg flex items-center justify-center shadow-[2px_2px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <HiEllipsisVertical className="h-3.5 w-3.5 text-zinc-700" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-44 bg-white border-3 border-black rounded-xl shadow-[4px_4px_0px_0px_#000000]">
-                          <DropdownMenuItem onClick={() => handleDownloadSvg(icon.png_key!)} className="cursor-pointer py-2.5 rounded-lg">
-                            <HiArrowDownTray className="h-4 w-4 mr-2" />
-                            <span className="font-medium">Download SVG</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleShareToCommunity(icon.id)} className="cursor-pointer py-2.5 rounded-lg">
-                            <HiShare className="h-4 w-4 mr-2" />
-                            <span className="font-medium">Share to Community</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleDeleteIcon(icon.id)} className="cursor-pointer text-red-600 focus:text-red-600 py-2.5 rounded-lg">
-                            <HiTrash className="h-4 w-4 mr-2" />
-                            <span className="font-medium">Delete</span>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-
                     {/* Icon Card */}
                     <Card
                       className={cn(
-                        "aspect-square bg-white rounded-xl border-3 border-black shadow-[4px_4px_0px_0px_#000000] hover:shadow-[6px_6px_0px_0px_#000000] hover:-translate-y-1 hover:translate-x-1 transition-all duration-200 cursor-pointer overflow-hidden",
+                        "bg-white rounded-xl border-3 border-black shadow-[4px_4px_0px_0px_#000000] hover:shadow-[8px_8px_0px_0px_#000000] hover:-translate-y-1 hover:translate-x-1 transition-all duration-300 cursor-pointer overflow-hidden",
                         isSelectMode && selectedIds.includes(icon.id) && "ring-4 ring-[#B9FF66]"
                       )}
                       onClick={() => openLightbox(index)}
                     >
-                      <div className="aspect-square p-3 flex items-center justify-center bg-gradient-to-br from-white via-zinc-50 to-zinc-100 relative">
+                      <div className="aspect-square p-3 flex items-center justify-center bg-gradient-to-br from-white via-zinc-50 to-zinc-100">
                         {icon.png_key ? (
                           <img
                             src={`/api/download/${encodeURIComponent(icon.png_key)}`}
@@ -326,10 +327,49 @@ function LibraryContent() {
                             <HiSparkles className="h-6 w-6 text-zinc-400" />
                           </div>
                         )}
-                        {/* Hover overlay */}
-                        <div className="absolute inset-0 bg-[#B9FF66]/0 group-hover:bg-[#B9FF66]/10 transition-colors duration-200 pointer-events-none" />
                       </div>
                     </Card>
+
+                    {/* Action Bar - Outside Card, Always visible on mobile, hover on desktop */}
+                    <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto">
+                      <button
+                        onClick={() => handleShareToCommunity(icon.id)}
+                        className="flex-1 h-10 bg-white hover:bg-[#B9FF66] border-3 border-black rounded-full flex items-center justify-center gap-1.5 shadow-[3px_3px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs font-bold uppercase"
+                        title="Share"
+                      >
+                        <HiShare className="h-4 w-4" />
+                        <span>Share</span>
+                      </button>
+
+                      <DropdownMenu>
+                        <DropdownMenuTrigger
+                          className="h-10 w-10 bg-white hover:bg-zinc-50 border-3 border-black rounded-xl flex items-center justify-center shadow-[3px_3px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-zinc-700 cursor-pointer"
+                        >
+                          <HiEllipsisVertical className="h-5 w-5" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          <DropdownMenuItem
+                            onClick={() => handleDownloadPng(icon.png_key!)}
+                          >
+                            <HiArrowDownTray className="h-4 w-4 mr-2" />
+                            <span>Download PNG</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleDownloadSvg(icon.png_key!)}
+                          >
+                            <HiArrowDownTray className="h-4 w-4 mr-2" />
+                            <span>Download SVG</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            variant="destructive"
+                            onClick={() => handleDeleteIcon(icon.id)}
+                          >
+                            <HiTrash className="h-4 w-4 mr-2" />
+                            <span>Delete</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -445,7 +485,7 @@ function LibraryContent() {
       </div>
 
       {/* Packs Grid */}
-      <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-40 sm:pb-12">
         <div className="max-w-7xl mx-auto">
           {isLoadingPacks ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
@@ -481,48 +521,19 @@ function LibraryContent() {
                   key={pack.id}
                   className="pack-card group relative"
                 >
-                  {/* Quick Actions - Always visible on mobile, hover on desktop */}
-                  <div className="absolute -top-3 -right-3 z-20 flex gap-1.5 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-200">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger
-                        className="h-8 w-8 bg-white hover:bg-zinc-50 border-2 border-black rounded-lg flex items-center justify-center shadow-[2px_2px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <HiEllipsisVertical className="h-4 w-4 text-zinc-700" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-44 bg-white border-3 border-black rounded-xl shadow-[4px_4px_0px_0px_#000000]">
-                        <DropdownMenuItem onClick={() => handleShareToCommunity(pack.id)} className="cursor-pointer py-2.5 rounded-lg">
-                          <HiShare className="h-4 w-4 mr-2" />
-                          <span className="font-medium">Share to Community</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="cursor-pointer text-red-600 focus:text-red-600 py-2.5 rounded-lg"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setPackToDelete({ id: pack.id, prompt: pack.prompt })
-                            setDeleteDialogOpen(true)
-                          }}
-                        >
-                          <HiTrash className="h-4 w-4 mr-2" />
-                          <span className="font-medium">Delete</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-
                   {/* Icon Count Badge */}
                   <div className="absolute -top-3 -left-3 z-10">
-                    <div className="bg-[#B9FF66] border-3 border-black rounded-xl px-2.5 py-1 shadow-[3px_3px_0px_0px_#000000]">
+                    <div className="bg-[#B9FF66] border-3 border-black rounded-xl px-2.5 py-1 shadow-[3px_3px_0px_0px_#000000] min-w-[28px] flex items-center justify-center">
                       <span className="text-xs font-black text-black">{pack.iconCount}</span>
                     </div>
                   </div>
 
                   {/* Pack Card */}
                   <Card
-                    className="bg-white rounded-xl border-3 border-black shadow-[4px_4px_0px_0px_#000000] hover:shadow-[6px_6px_0px_0px_#000000] hover:-translate-y-1 hover:translate-x-1 transition-all duration-200 cursor-pointer overflow-hidden"
+                    className="bg-white rounded-xl border-3 border-black shadow-[4px_4px_0px_0px_#000000] hover:shadow-[8px_8px_0px_0px_#000000] hover:-translate-y-1 hover:translate-x-1 transition-all duration-300 cursor-pointer overflow-hidden"
                     onClick={() => router.push(`/library?pack=${pack.id}`)}
                   >
-                    <div className="aspect-square p-4 flex items-center justify-center bg-gradient-to-br from-white via-zinc-50 to-zinc-100 relative">
+                    <div className="aspect-square p-4 flex items-center justify-center bg-gradient-to-br from-white via-zinc-50 to-zinc-100">
                       {pack.preview ? (
                         <img src={pack.preview} alt={pack.prompt} className="max-w-[80%] max-h-[80%] object-contain" />
                       ) : (
@@ -530,14 +541,60 @@ function LibraryContent() {
                           <HiSparkles className="h-8 w-8 text-zinc-400" />
                         </div>
                       )}
-                      {/* Hover overlay */}
-                      <div className="absolute inset-0 bg-[#B9FF66]/0 group-hover:bg-[#B9FF66]/10 transition-colors duration-200 pointer-events-none" />
-                    </div>
-                    {/* Pack Title */}
-                    <div className="p-3 bg-white border-t-2 border-black">
-                      <p className="text-xs font-bold text-zinc-800 truncate">{pack.prompt}</p>
                     </div>
                   </Card>
+
+                  {/* Action Bar - Outside Card, Always visible on mobile, hover on desktop */}
+                  <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto">
+                    <button
+                      onClick={() => handleShareToCommunity(pack.id)}
+                      className="flex-1 h-10 bg-white hover:bg-[#B9FF66] border-3 border-black rounded-full flex items-center justify-center gap-1.5 shadow-[3px_3px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs font-bold uppercase"
+                      title="Share"
+                    >
+                      <HiShare className="h-4 w-4" />
+                      <span>Share</span>
+                    </button>
+
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        className="h-10 w-10 bg-white hover:bg-zinc-50 border-3 border-black rounded-xl flex items-center justify-center shadow-[3px_3px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-zinc-700 cursor-pointer"
+                      >
+                        <HiEllipsisVertical className="h-5 w-5" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem
+                          onClick={() => {
+                            router.push(`/library?pack=${pack.id}`)
+                          }}
+                        >
+                          <HiSparkles className="h-4 w-4 mr-2" />
+                          <span>Open Pack</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleDownloadPack(pack.id, "png")}
+                        >
+                          <HiArrowDownTray className="h-4 w-4 mr-2" />
+                          <span>Download All PNG</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleDownloadPack(pack.id, "svg")}
+                        >
+                          <HiArrowDownTray className="h-4 w-4 mr-2" />
+                          <span>Download All SVG</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          variant="destructive"
+                          onClick={() => {
+                            setPackToDelete({ id: pack.id, prompt: pack.prompt })
+                            setDeleteDialogOpen(true)
+                          }}
+                        >
+                          <HiTrash className="h-4 w-4 mr-2" />
+                          <span>Delete Pack</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
               ))}
             </div>

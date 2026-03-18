@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { HiSparkles, HiAdjustmentsHorizontal, HiChevronDown, HiTrash, HiCheck, HiArrowDownTray, HiPhoto } from "react-icons/hi2"
@@ -39,6 +39,9 @@ export default function GeneratePage() {
   const [selectedStyle, setSelectedStyle] = useState("minimalist")
   const [format, setFormat] = useState({ count: 8 })
 
+  const generatingRef = useRef<HTMLDivElement>(null)
+  const successRef = useRef<HTMLDivElement>(null)
+
   // Animate generated packs
   useEffect(() => {
     if (generatedPacks.length > 0) {
@@ -51,6 +54,26 @@ export default function GeneratePage() {
       })
     }
   }, [generatedPacks])
+
+  // Animate generating state
+  useEffect(() => {
+    if (isGenerating && generatingRef.current) {
+      gsap.fromTo(generatingRef.current,
+        { scale: 0.8, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.7)" }
+      )
+
+      // Animate loading dots
+      gsap.to(".loading-dot", {
+        y: -10,
+        duration: 0.4,
+        repeat: -1,
+        yoyo: true,
+        stagger: 0.15,
+        ease: "power1.inOut"
+      })
+    }
+  }, [isGenerating])
 
   const togglePack = (packId: string) => {
     setGeneratedPacks(prev => prev.map(pack =>
@@ -94,6 +117,14 @@ export default function GeneratePage() {
         }
         setGeneratedPacks((prev) => [newPack, ...prev])
         toast.success(`Generated ${data.icons.length} icons!`)
+
+        // Success animation
+        if (successRef.current) {
+          gsap.fromTo(successRef.current,
+            { scale: 0, rotation: -180 },
+            { scale: 1, rotation: 0, duration: 0.6, ease: "back.out(1.7)" }
+          )
+        }
       } else {
         toast.error(data.error || "Failed to generate icons")
       }
@@ -139,130 +170,155 @@ export default function GeneratePage() {
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Generated Icons Display */}
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          <div className="w-full max-w-6xl mx-auto space-y-6">
-            {generatedPacks.length > 0 ? (
-              generatedPacks.map((pack) => (
-                <div key={pack.id} className="generated-pack bg-white rounded-2xl border-3 border-black shadow-[6px_6px_0px_0px_#000000] overflow-hidden">
-                  {/* Pack Header */}
-                  <div
-                    className="p-4 sm:p-5 flex items-center justify-between bg-gradient-to-r from-[#B9FF66] to-[#a8e655] cursor-pointer hover:from-[#B9FF66] hover:to-[#B9FF66] transition-all duration-200 border-b-3 border-black"
-                    onClick={() => togglePack(pack.id)}
-                  >
-                    <div className="flex items-center gap-4">
-                      {/* Preview Grid */}
-                      <div className="grid grid-cols-4 gap-1.5 bg-white p-2 rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000000]">
-                        {pack.icons.slice(0, 4).map((icon, i) => (
-                          <div key={i} className="w-10 h-10 bg-zinc-50 rounded-lg flex items-center justify-center overflow-hidden">
-                            {icon.preview ? (
-                              <img src={icon.preview} alt="" className="w-full h-full object-contain p-1" />
-                            ) : (
-                              <div className="w-4 h-4 bg-zinc-200 rounded" />
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      <div>
-                        <p className="text-base sm:text-lg font-black text-black">{pack.prompt}</p>
-                        <p className="text-xs sm:text-sm font-bold text-zinc-800 mt-0.5 flex items-center gap-1">
-                          <HiSparkles className="h-3.5 w-3.5" />
-                          {pack.icons.length} icons generated
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-red-600 hover:text-red-700 hover:bg-red-100 h-9 px-3 border-2 border-transparent hover:border-red-300 rounded-xl font-bold transition-all"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleDeletePack(pack.id)
-                        }}
-                      >
-                        <HiTrash className="h-4 w-4 sm:mr-1.5" />
-                        <span className="hidden sm:inline">Delete</span>
-                      </Button>
-                      <div className={`h-10 w-10 flex items-center justify-center border-3 border-black rounded-xl bg-white shadow-[2px_2px_0px_0px_#000000] transition-transform duration-200 ${pack.isExpanded ? 'rotate-180' : ''}`}>
-                        <HiChevronDown className="h-5 w-5 text-black" />
-                      </div>
-                    </div>
+          <div className="w-full max-w-6xl mx-auto">
+            {/* Generating Animation */}
+            {isGenerating && (
+              <div ref={generatingRef} className="mb-8 bg-[#B9FF66] rounded-2xl border-3 border-black shadow-[6px_6px_0px_0px_#000000] p-6 sm:p-8">
+                <div className="flex items-center justify-center gap-4">
+                  <div className="relative">
+                    <div className="w-12 h-12 border-4 border-black border-t-transparent rounded-full animate-spin" />
+                    <HiSparkles className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-5 w-5 text-black" />
                   </div>
-
-                  {/* Expanded Icons Grid */}
-                  {pack.isExpanded && (
-                    <div className="p-4 sm:p-6 bg-zinc-50 border-t-3 border-black">
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
-                        {pack.icons.map((icon, index) => (
-                          <div
-                            key={`${icon.png.key}-${index}`}
-                            className="group relative bg-white rounded-xl border-3 border-black shadow-[4px_4px_0px_0px_#000000] hover:shadow-[6px_6px_0px_0px_#000000] hover:-translate-y-1 hover:translate-x-1 transition-all duration-200 overflow-hidden"
-                          >
-                            {/* Quick Download Button */}
-                            <button
-                              onClick={() => handleDownloadPng(icon.png.key, icon.prompt)}
-                              className="absolute top-2 right-2 h-7 w-7 bg-[#B9FF66] hover:bg-[#a8e655] border-2 border-black rounded-lg flex items-center justify-center shadow-[2px_2px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all opacity-0 group-hover:opacity-100 lg:opacity-0 z-10"
-                              title="Download PNG"
-                            >
-                              <HiArrowDownTray className="h-3.5 w-3.5 text-black" />
-                            </button>
-
-                            <div className="aspect-square p-3 flex items-center justify-center bg-gradient-to-br from-white via-zinc-50 to-zinc-100">
-                              {icon.preview ? (
-                                <img src={icon.preview} alt={icon.prompt} className="max-w-[85%] max-h-[85%] object-contain" />
-                              ) : (
-                                <div className="w-10 h-10 bg-zinc-200 rounded-lg animate-pulse" />
-                              )}
-                            </div>
-
-                            {/* Action Buttons */}
-                            <div className="p-2 bg-white border-t-2 border-black flex gap-1.5">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-7 text-xs border-2 border-black rounded-lg font-bold hover:bg-[#B9FF66] hover:border-[#B9FF66] flex-1 shadow-[1px_1px_0px_0px_#000000] hover:shadow-[0.5px_0.5px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
-                                onClick={() => handleDownloadPng(icon.png.key, icon.prompt)}
-                              >
-                                PNG
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-7 text-xs border-2 border-black rounded-lg font-bold hover:bg-[#B9FF66] hover:border-[#B9FF66] flex-1 shadow-[1px_1px_0px_0px_#000000] hover:shadow-[0.5px_0.5px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
-                                onClick={() => handleDownloadSvg(icon.png.key, icon.prompt)}
-                              >
-                                SVG
-                              </Button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))
-            ) : (
-              /* Empty State */
-              <div className="text-center py-16 sm:py-24">
-                <div className="inline-flex items-center justify-center w-28 h-28 bg-[#B9FF66] rounded-3xl border-3 border-black mb-8 shadow-[8px_8px_0px_0px_#000000]">
-                  <HiSparkles className="h-14 w-14 text-black" />
-                </div>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-zinc-900 mb-4">
-                  Create Your Icon
-                </h1>
-                <p className="text-zinc-500 text-lg max-w-md mx-auto">
-                  Describe the icon you want to create and let AI do the magic
-                </p>
-
-                {/* Example Icons */}
-                <div className="flex justify-center gap-4 mt-10">
-                  {["User", "Cart", "Bell", "Gear", "Mail"].map((item) => (
-                    <div key={item} className="w-14 h-14 bg-white rounded-xl border-3 border-black shadow-[3px_3px_0px_0px_#000000] flex items-center justify-center">
-                      <HiPhoto className="h-7 w-7 text-zinc-400" />
-                    </div>
-                  ))}
+                  <div className="text-center">
+                    <h3 className="text-xl sm:text-2xl font-black text-black">Generating your icons...</h3>
+                    <p className="text-sm font-bold text-zinc-800 mt-1 flex items-center justify-center gap-1">
+                      Creating {format.count} amazing icons
+                      <span className="loading-dot">.</span>
+                      <span className="loading-dot">.</span>
+                      <span className="loading-dot">.</span>
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
+
+            <div className="space-y-6">
+              {generatedPacks.length > 0 ? (
+                generatedPacks.map((pack) => (
+                  <div key={pack.id} className="generated-pack bg-white rounded-2xl border-3 border-black shadow-[6px_6px_0px_0px_#000000] overflow-hidden">
+                    {/* Pack Header */}
+                    <div
+                      className="p-4 sm:p-5 flex items-center justify-between bg-gradient-to-r from-[#B9FF66] to-[#a8e655] cursor-pointer hover:from-[#B9FF66] hover:to-[#B9FF66] transition-all duration-200 border-b-3 border-black"
+                      onClick={() => togglePack(pack.id)}
+                    >
+                      <div className="flex items-center gap-4">
+                        {/* Preview Grid */}
+                        <div className="grid grid-cols-4 gap-1.5 bg-white p-2 rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000000]">
+                          {pack.icons.slice(0, 4).map((icon, i) => (
+                            <div key={i} className="w-10 h-10 bg-zinc-50 rounded-lg flex items-center justify-center overflow-hidden">
+                              {icon.preview ? (
+                                <img src={icon.preview} alt="" className="w-full h-full object-contain p-1" />
+                              ) : (
+                                <div className="w-4 h-4 bg-zinc-200 rounded" />
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                        <div>
+                          <p className="text-base sm:text-lg font-black text-black">{pack.prompt}</p>
+                          <p className="text-xs sm:text-sm font-bold text-zinc-800 mt-0.5 flex items-center gap-1">
+                            <HiSparkles className="h-3.5 w-3.5" />
+                            {pack.icons.length} icons generated
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-100 h-9 px-3 border-2 border-transparent hover:border-red-300 rounded-xl font-bold transition-all"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleDeletePack(pack.id)
+                          }}
+                        >
+                          <HiTrash className="h-4 w-4 sm:mr-1.5" />
+                          <span className="hidden sm:inline">Delete</span>
+                        </Button>
+                        <div className={`h-10 w-10 flex items-center justify-center border-3 border-black rounded-xl bg-white shadow-[2px_2px_0px_0px_#000000] transition-transform duration-200 ${pack.isExpanded ? 'rotate-180' : ''}`}>
+                          <HiChevronDown className="h-5 w-5 text-black" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Expanded Icons Grid */}
+                    {pack.isExpanded && (
+                      <div className="p-4 sm:p-6 bg-zinc-50 border-t-3 border-black">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+                          {pack.icons.map((icon, index) => (
+                            <div
+                              key={`${icon.png.key}-${index}`}
+                              className="group relative bg-white rounded-xl border-3 border-black shadow-[4px_4px_0px_0px_#000000] hover:shadow-[6px_6px_0px_0px_#000000] hover:-translate-y-1 hover:translate-x-1 transition-all duration-200 overflow-hidden"
+                            >
+                              {/* Quick Download Button */}
+                              <button
+                                onClick={() => handleDownloadPng(icon.png.key, icon.prompt)}
+                                className="absolute top-2 right-2 h-7 w-7 bg-[#B9FF66] hover:bg-[#a8e655] border-2 border-black rounded-lg flex items-center justify-center shadow-[2px_2px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all opacity-0 group-hover:opacity-100 lg:opacity-0 z-10"
+                                title="Download PNG"
+                              >
+                                <HiArrowDownTray className="h-3.5 w-3.5 text-black" />
+                              </button>
+
+                              <div className="aspect-square p-3 flex items-center justify-center bg-gradient-to-br from-white via-zinc-50 to-zinc-100">
+                                {icon.preview ? (
+                                  <img src={icon.preview} alt={icon.prompt} className="max-w-[85%] max-h-[85%] object-contain" />
+                                ) : (
+                                  <div className="w-10 h-10 bg-zinc-200 rounded-lg animate-pulse" />
+                                )}
+                              </div>
+
+                              {/* Action Buttons */}
+                              <div className="p-2 bg-white border-t-2 border-black flex gap-1.5">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="h-7 text-xs border-2 border-black rounded-lg font-bold hover:bg-[#B9FF66] hover:border-[#B9FF66] flex-1 shadow-[1px_1px_0px_0px_#000000] hover:shadow-[0.5px_0.5px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
+                                  onClick={() => handleDownloadPng(icon.png.key, icon.prompt)}
+                                >
+                                  PNG
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="h-7 text-xs border-2 border-black rounded-lg font-bold hover:bg-[#B9FF66] hover:border-[#B9FF66] flex-1 shadow-[1px_1px_0px_0px_#000000] hover:shadow-[0.5px_0.5px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
+                                  onClick={() => handleDownloadSvg(icon.png.key, icon.prompt)}
+                                >
+                                  SVG
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))
+              ) : (
+                /* Empty State */
+                !isGenerating && (
+                  <div className="text-center py-16 sm:py-24">
+                    <div ref={successRef} className="inline-flex items-center justify-center w-28 h-28 bg-[#B9FF66] rounded-3xl border-3 border-black mb-8 shadow-[8px_8px_0px_0px_#000000]">
+                      <HiSparkles className="h-14 w-14 text-black" />
+                    </div>
+                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-zinc-900 mb-4">
+                      Create Your Icon
+                    </h1>
+                    <p className="text-zinc-500 text-lg max-w-md mx-auto">
+                      Describe the icon you want to create and let AI do the magic
+                    </p>
+
+                    {/* Example Icons */}
+                    <div className="flex justify-center gap-4 mt-10">
+                      {["User", "Cart", "Bell", "Gear", "Mail"].map((item) => (
+                        <div key={item} className="w-14 h-14 bg-white rounded-xl border-3 border-black shadow-[3px_3px_0px_0px_#000000] flex items-center justify-center">
+                          <HiPhoto className="h-7 w-7 text-zinc-400" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
           </div>
         </div>
 
