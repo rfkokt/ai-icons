@@ -123,6 +123,7 @@ export async function POST(request: NextRequest) {
       png: { url: string; key: string }
       preview: string
       prompt: string
+      id?: string
     }> = []
 
     // Generate all icons in parallel
@@ -170,19 +171,24 @@ export async function POST(request: NextRequest) {
       }
 
       console.log("Saving icon to database:", JSON.stringify(iconData))
-      
-      const { error: dbError } = await supabaseAdmin.from("generated_icons").insert(iconData)
-      
+
+      const { data: insertedIcon, error: dbError } = await supabaseAdmin
+        .from("generated_icons")
+        .insert(iconData)
+        .select("id")
+        .single()
+
       if (dbError) {
         console.error("Failed to save icon to database:", dbError)
       } else {
-        console.log("Icon saved successfully to database")
+        console.log("Icon saved successfully to database, ID:", insertedIcon?.id)
       }
 
       icons.push({
         png: { url: pngUrl, key: pngKey },
         preview,
         prompt: iconPromptText,
+        id: insertedIcon?.id,
       })
     }
 
