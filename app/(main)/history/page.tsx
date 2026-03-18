@@ -5,24 +5,14 @@ import { HiClock } from "react-icons/hi2"
 import { PageHeader } from "@/components/page-header"
 import { EmptyState } from "@/components/empty-state"
 import { IconCard } from "@/components/icon-card"
+import { PageLoading } from "@/components/page-loading"
 import { useDownload } from "@/hooks/use-download"
 import { toast } from "sonner"
-
-interface HistoryIcon {
-  id: string
-  prompt: string
-  style: string
-  png_url: string | null
-  png_key: string | null
-  svg_url: string | null
-  svg_key: string | null
-  created_at: string
-}
+import type { HistoryIcon } from "@/types/icon"
 
 export default function HistoryPage() {
   const [icons, setIcons] = useState<HistoryIcon[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [deletingId, setDeletingId] = useState<string | null>(null)
   const { download } = useDownload()
 
   useEffect(() => {
@@ -39,7 +29,7 @@ export default function HistoryPage() {
       } else {
         toast.error("Failed to load history")
       }
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong")
     } finally {
       setIsLoading(false)
@@ -47,7 +37,6 @@ export default function HistoryPage() {
   }
 
   const handleDelete = async (id: string) => {
-    setDeletingId(id)
     try {
       const response = await fetch(`/api/history/${id}`, {
         method: "DELETE",
@@ -60,19 +49,13 @@ export default function HistoryPage() {
       } else {
         toast.error("Failed to delete icon")
       }
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong")
-    } finally {
-      setDeletingId(null)
     }
   }
 
   if (isLoading) {
-    return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="animate-pulse text-zinc-500">Loading...</div>
-      </div>
-    )
+    return <PageLoading message="Loading history..." />
   }
 
   return (

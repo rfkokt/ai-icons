@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card"
-import { HiSparkles, HiHeart, HiCheck, HiCheckCircle } from "react-icons/hi2"
+import { HiSparkles, HiHeart, HiCheck } from "react-icons/hi2"
 import { cn } from "@/lib/utils"
 import { IconActionBar } from "./icon-action-bar"
 

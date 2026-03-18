@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { HiSparkles, HiCheck } from "react-icons/hi2"
+import { HiSparkles } from "react-icons/hi2"
 import { ConfirmDialog } from "@/components/confirm-dialog"
 import { QuickPromptButton } from "@/components/quick-prompt-button"
 import { IconCard } from "@/components/icon-card"
@@ -11,24 +11,14 @@ import { GeneratingOverlay } from "@/components/generating-overlay"
 import { PackAccordion } from "@/components/pack-accordion"
 import { StyleSelector } from "@/components/style-selector"
 import { CountSelector } from "@/components/count-selector"
+import { PageLoading } from "@/components/page-loading"
 import { useDownload } from "@/hooks/use-download"
 import { usePackDownload } from "@/hooks/use-pack-download"
 import { useShareIcon } from "@/hooks/use-share-icon"
+import { useStaggerAnimation } from "@/hooks/use-stagger-animation"
 import { toast } from "sonner"
 import gsap from "gsap"
-
-interface GeneratedIcon {
-  preview: string
-  png: { url: string; key: string }
-  prompt: string
-  id?: string
-}
-
-interface GeneratedPack {
-  id: string
-  prompt: string
-  icons: GeneratedIcon[]
-}
+import type { GeneratedIcon, GeneratedPack } from "@/types/icon"
 
 export default function GeneratePage() {
   const [prompt, setPrompt] = useState("")
@@ -48,35 +38,12 @@ export default function GeneratePage() {
   const { downloadPack } = usePackDownload()
   const { shareToCommunity } = useShareIcon()
 
-  useEffect(() => {
-    if (generatedPacks.length > 0) {
-      gsap.from(".generated-pack", {
-        y: 40,
-        opacity: 0,
-        duration: 0.5,
-        stagger: 0.1,
-        ease: "back.out(1.7)",
-      })
-    }
-  }, [generatedPacks])
-
-  useEffect(() => {
-    if (isGenerating && generatingRef.current) {
-      gsap.fromTo(generatingRef.current,
-        { scale: 0.8, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.7)" }
-      )
-
-      gsap.to(".loading-dot", {
-        y: -10,
-        duration: 0.4,
-        repeat: -1,
-        yoyo: true,
-        stagger: 0.15,
-        ease: "power1.inOut"
-      })
-    }
-  }, [isGenerating])
+  const staggerRef = useStaggerAnimation([generatedPacks.length], {
+    selector: ".generated-pack",
+    y: 40,
+    duration: 0.5,
+    stagger: 0.1
+  })
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
@@ -123,7 +90,7 @@ export default function GeneratePage() {
       } else {
         toast.error(data.error || "Failed to generate icons")
       }
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong")
     } finally {
       setIsGenerating(false)
@@ -151,16 +118,10 @@ export default function GeneratePage() {
           iconIds.map(id =>
             fetch(`/api/icon/${id}`, { method: "DELETE" })
               .then(res => res.json())
-              .then(data => {
-                if (!data.success) {
-                  console.error(`Failed to delete icon ${id}`)
-                }
-              })
               .catch(err => console.error(`Error deleting icon ${id}:`, err))
           )
         )
-      } catch (error) {
-        console.error("Error deleting icons:", error)
+      } catch {
         toast.error("Some icons failed to delete")
       }
     }
@@ -170,7 +131,7 @@ export default function GeneratePage() {
     setPackToDelete(null)
   }
 
-  const handleShareToCommunity = async (iconId: string) => {
+  const handleShareToCommunity = (iconId: string) => {
     setIconToShare(iconId)
     setShareDialogOpen(true)
   }
@@ -197,7 +158,11 @@ export default function GeneratePage() {
   const handleDownloadPack = (packId: string, downloadFormat: "png" | "svg") => {
     const pack = generatedPacks.find(p => p.id === packId)
     if (!pack) return
-    downloadPack(pack.icons, pack.prompt, downloadFormat)
+    downloadPack(
+      pack.icons.map(icon => ({ png_key: icon.png.key, prompt: icon.prompt })),
+      pack.prompt,
+      downloadFormat
+    )
   }
 
   return (
@@ -208,7 +173,7 @@ export default function GeneratePage() {
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          <div className="w-full max-w-6xl mx-auto">
+          <div className="w-full max-w-6xl mx-auto" ref={staggerRef}>
             <div className="space-y-6">
               {generatedPacks.length > 0 ? (
                 generatedPacks.map((pack) => (

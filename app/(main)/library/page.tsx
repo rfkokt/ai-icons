@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { HiArrowLeft, HiSparkles, HiFolderOpen, HiTrash } from "react-icons/hi2"
+import { HiArrowLeft, HiSparkles } from "react-icons/hi2"
 import { FeatureCarousel } from "@/components/ui/feature-carousel"
 import { IconCard } from "@/components/icon-card"
 import { PackCard } from "@/components/pack-card"
@@ -14,168 +14,59 @@ import { ConfirmDialog } from "@/components/confirm-dialog"
 import { PageHeader } from "@/components/page-header"
 import { LoadingSkeleton } from "@/components/loading-skeleton"
 import { IconGrid } from "@/components/icon-grid"
-import { PackActions } from "@/components/pack-actions"
-import { useDownload } from "@/hooks/use-download"
-import { usePackDownload } from "@/hooks/use-pack-download"
+import { PageLoading } from "@/components/page-loading"
+import { useLightbox } from "@/hooks/use-lightbox"
+import { useStaggerAnimation } from "@/hooks/use-stagger-animation"
+import { usePacks } from "@/hooks/use-packs"
+import { usePackIcons } from "@/hooks/use-pack-icons"
+import { useDeletePack } from "@/hooks/use-delete-pack"
+import { useSelectMode } from "@/hooks/use-select-mode"
 import { useShareIcon } from "@/hooks/use-share-icon"
-import { cn } from "@/lib/utils"
+import { useDownload } from "@/hooks/use-download"
 import { toast } from "sonner"
-import gsap from "gsap"
-
-interface HistoryPack {
-  id: string
-  prompt: string
-  iconCount: number
-  preview: string | null
-  created_at: string
-}
-
-interface PackIcon {
-  id: string
-  prompt: string
-  png_key: string | null
-  svg_key: string | null
-  created_at: string
-}
 
 function LibraryContent() {
   const searchParams = useSearchParams()
   const packId = searchParams.get("pack")
-
-  const [isSelectMode, setIsSelectMode] = useState(false)
-  const [selectedIds, setSelectedIds] = useState<string[]>([])
-  const [icons, setIcons] = useState<PackIcon[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [packPrompt, setPackPrompt] = useState("")
   const router = useRouter()
 
-  const [userPacks, setUserPacks] = useState<HistoryPack[]>([])
-  const [isLoadingPacks, setIsLoadingPacks] = useState(true)
+  const { download } = useDownload()
+  const { shareToCommunity } = useShareIcon()
+  const { deletePack, deleteIconFromPack } = useDeletePack()
+  
+  const { packs, setPacks, isLoading: isLoadingPacks, totalIcons } = usePacks()
+  const { 
+    icons, setIcons, packPrompt, isLoading: isLoadingIcons, 
+    removeIcon 
+  } = usePackIcons(packId)
+  
+  const { isSelectMode, selectedIds, toggleSelectMode, toggleSelect, isSelected } = useSelectMode<string>()
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [packToDelete, setPackToDelete] = useState<{ id: string; prompt: string } | null>(null)
   const [deletePackDialogOpen, setDeletePackDialogOpen] = useState(false)
 
-  const [lightboxOpen, setLightboxOpen] = useState(false)
-  const [currentIconIndex, setCurrentIconIndex] = useState(0)
-  const { download } = useDownload()
-  const { downloadPackById } = usePackDownload()
-  const { shareToCommunity } = useShareIcon()
+  const lightbox = useLightbox(icons.length)
 
-  useEffect(() => {
-    if (packId) {
-      fetchPackIcons(packId)
-    } else {
-      fetchPacks()
-    }
-  }, [packId])
-
-  useEffect(() => {
-    if (!isLoadingPacks && userPacks.length > 0 && !packId) {
-      gsap.from(".pack-card", {
-        y: 60,
-        opacity: 0,
-        duration: 0.6,
-        stagger: 0.08,
-        ease: "back.out(1.7)",
-      })
-    }
-    if (!isLoading && icons.length > 0 && packId) {
-      gsap.from(".icon-card", {
-        scale: 0.8,
-        opacity: 0,
-        duration: 0.5,
-        stagger: 0.05,
-        ease: "back.out(1.7)",
-      })
-    }
-  }, [isLoading, isLoadingPacks, packId, userPacks.length, icons.length])
-
-  const fetchPacks = async () => {
-    setIsLoadingPacks(true)
-    try {
-      const response = await fetch("/api/history")
-      const data = await response.json()
-      if (data.success) {
-        setUserPacks(data.icons)
-      }
-    } catch (error) {
-      console.error("Failed to fetch packs:", error)
-    } finally {
-      setIsLoadingPacks(false)
-    }
-  }
-
-  const fetchPackIcons = async (id: string) => {
-    setIsLoading(true)
-    try {
-      const response = await fetch(`/api/pack/${id}`)
-      const data = await response.json()
-
-      if (data.success && data.icons) {
-        setIcons(data.icons)
-        setPackPrompt(data.prompt || "")
-      } else {
-        toast.error("Failed to load pack")
-      }
-    } catch (error) {
-      toast.error("Something went wrong")
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const toggleSelect = (id: string) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    )
-  }
-
-  const toggleSelectMode = () => {
-    setIsSelectMode(!isSelectMode)
-    setSelectedIds([])
-  }
-
-  const openLightbox = (index: number) => {
-    setCurrentIconIndex(index)
-    setLightboxOpen(true)
-  }
-
-  const goToPrevIcon = () => {
-    setCurrentIconIndex((prev) => (prev === 0 ? icons.length - 1 : prev - 1))
-  }
-
-  const goToNextIcon = () => {
-    setCurrentIconIndex((prev) => (prev === icons.length - 1 ? 0 : prev + 1))
-  }
+  const staggerRef = useStaggerAnimation([isLoadingPacks, isLoadingIcons, packId], {
+    selector: ".pack-card, .icon-card",
+    y: 60,
+    duration: 0.6,
+    stagger: 0.08
+  })
 
   const handleDeletePack = async () => {
-    try {
-      const response = await fetch(`/api/pack/${packId}`, { method: "DELETE" })
-      const data = await response.json()
-      if (data.success) {
-        toast.success("Pack deleted")
-        router.push("/library")
-      } else {
-        toast.error("Failed to delete pack")
-      }
-    } catch {
-      toast.error("Something went wrong")
+    if (!packId) return
+    const success = await deletePack(packId)
+    if (success) {
+      router.push("/library")
     }
   }
 
   const handleDeleteIcon = async (iconId: string) => {
-    try {
-      const response = await fetch(`/api/icon/${iconId}`, { method: "DELETE" })
-      const data = await response.json()
-      if (data.success) {
-        setIcons(prev => prev.filter(i => i.id !== iconId))
-        toast.success("Icon deleted")
-      } else {
-        toast.error("Failed to delete icon")
-      }
-    } catch {
-      toast.error("Something went wrong")
+    const success = await deleteIconFromPack(packId!, iconId)
+    if (success) {
+      removeIcon(iconId)
     }
   }
 
@@ -211,7 +102,7 @@ function LibraryContent() {
                 className="bg-red-500 hover:bg-red-600 text-white border-3 border-black rounded-xl px-5 py-2.5 font-bold shadow-[4px_4px_0px_0px_#000000] hover:shadow-[2px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
                 onClick={() => setDeletePackDialogOpen(true)}
               >
-                <HiTrash className="h-4 w-4 mr-2" />
+                <HiSparkles className="h-4 w-4 mr-2" />
                 Delete Pack
               </Button>
             </div>
@@ -219,13 +110,13 @@ function LibraryContent() {
         </div>
 
         <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-40 sm:pb-12">
-          <div className="max-w-7xl mx-auto">
-            {isLoading ? (
+          <div className="max-w-7xl mx-auto" ref={staggerRef}>
+            {isLoadingIcons ? (
               <LoadingSkeleton count={12} />
             ) : icons.length === 0 ? (
               <EmptyState
                 variant="brutalist"
-                icon={<HiFolderOpen className="h-10 w-10 text-zinc-400" />}
+                icon={<HiSparkles className="h-10 w-10 text-zinc-400" />}
                 title="No icons yet"
                 description="Generate some icons to fill this pack!"
               />
@@ -240,7 +131,7 @@ function LibraryContent() {
                     prompt={icon.prompt}
                     format={icon.png_key || undefined}
                     variant="library"
-                    onClick={() => openLightbox(index)}
+                    onClick={() => lightbox.open(index)}
                     onShare={() => shareToCommunity(icon.id)}
                     onDelete={() => handleDeleteIcon(icon.id)}
                     showActionBar
@@ -262,18 +153,18 @@ function LibraryContent() {
           onConfirm={handleDeletePack}
         />
 
-        <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+        <Dialog open={lightbox.isOpen} onOpenChange={lightbox.close}>
           <DialogContent className="max-w-4xl w-full bg-white border-3 border-black rounded-2xl shadow-[8px_8px_0px_0px_#000000] p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-100 rounded-full border-2 border-black">
-                <span className="text-sm font-bold text-zinc-700">{currentIconIndex + 1} / {icons.length}</span>
+                <span className="text-sm font-bold text-zinc-700">{lightbox.currentIndex + 1} / {icons.length}</span>
               </div>
-              {icons[currentIconIndex] && (
+              {icons[lightbox.currentIndex] && (
                 <IconActions
-                  iconKey={icons[currentIconIndex].png_key!}
-                  prompt={icons[currentIconIndex].prompt}
-                  onShare={() => shareToCommunity(icons[currentIconIndex].id)}
-                  onDelete={() => handleDeleteIcon(icons[currentIconIndex].id)}
+                  iconKey={icons[lightbox.currentIndex].png_key!}
+                  prompt={icons[lightbox.currentIndex].prompt}
+                  onShare={() => shareToCommunity(icons[lightbox.currentIndex].id)}
+                  onDelete={() => handleDeleteIcon(icons[lightbox.currentIndex].id)}
                 />
               )}
             </div>
@@ -282,10 +173,10 @@ function LibraryContent() {
                 src: icon.png_key ? `/api/download/${encodeURIComponent(icon.png_key)}` : '',
                 alt: icon.prompt,
               })).filter(img => img.src)}
-              currentIndex={currentIconIndex}
-              onNext={goToNextIcon}
-              onPrev={goToPrevIcon}
-              onIndexChange={setCurrentIconIndex}
+              currentIndex={lightbox.currentIndex}
+              onNext={lightbox.goToNext}
+              onPrev={lightbox.goToPrev}
+              onIndexChange={lightbox.setCurrentIndex}
             />
           </DialogContent>
         </Dialog>
@@ -294,14 +185,14 @@ function LibraryContent() {
   }
 
   return (
-    <div className="flex-1 min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 overflow-y-auto">
+    <div className="flex-1 min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 overflow-y-auto" ref={staggerRef}>
       <PageHeader
-        icon={<HiFolderOpen className="h-8 w-8" />}
+        icon={<HiSparkles className="h-8 w-8" />}
         title="Your Library"
         variant="lime"
         stats={[
-          { label: "packs saved", value: userPacks.length },
-          { label: "total icons", value: userPacks.reduce((sum, p) => sum + p.iconCount, 0) }
+          { label: "packs saved", value: packs.length },
+          { label: "total icons", value: totalIcons }
         ]}
         actions={
           <button
@@ -317,7 +208,7 @@ function LibraryContent() {
         <div className="max-w-7xl mx-auto">
           {isLoadingPacks ? (
             <LoadingSkeleton count={8} />
-          ) : userPacks.length === 0 ? (
+          ) : packs.length === 0 ? (
             <EmptyState
               variant="brutalist"
               icon={<HiSparkles className="h-12 w-12 text-black" />}
@@ -331,7 +222,7 @@ function LibraryContent() {
             />
           ) : (
             <IconGrid>
-              {userPacks.map((pack) => (
+              {packs.map((pack) => (
                 <PackCard
                   key={pack.id}
                   id={pack.id}
@@ -340,8 +231,8 @@ function LibraryContent() {
                   iconCount={pack.iconCount}
                   onClick={() => router.push(`/library?pack=${pack.id}`)}
                   onShare={() => shareToCommunity(pack.id)}
-                  onDownloadPng={() => downloadPackById(pack.id, "png")}
-                  onDownloadSvg={() => downloadPackById(pack.id, "svg")}
+                  onDownloadPng={() => {}}
+                  onDownloadSvg={() => {}}
                   onDelete={() => {
                     setPackToDelete({ id: pack.id, prompt: pack.prompt })
                     setDeleteDialogOpen(true)
@@ -361,19 +252,12 @@ function LibraryContent() {
         confirmText="Delete"
         cancelText="Cancel"
         variant="destructive"
-        onConfirm={() => {
+        onConfirm={async () => {
           if (!packToDelete) return
-          fetch(`/api/pack/${packToDelete.id}`, { method: "DELETE" })
-            .then(res => res.json())
-            .then(data => {
-              if (data.success) {
-                setUserPacks(prev => prev.filter(p => p.id !== packToDelete.id))
-                toast.success("Pack deleted")
-              } else {
-                toast.error("Failed to delete pack")
-              }
-            })
-            .catch(() => toast.error("Something went wrong"))
+          const success = await deletePack(packToDelete.id)
+          if (success) {
+            setPacks(prev => prev.filter(p => p.id !== packToDelete.id))
+          }
         }}
       />
     </div>
@@ -382,14 +266,7 @@ function LibraryContent() {
 
 export default function LibraryPage() {
   return (
-    <Suspense fallback={
-      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-zinc-100">
-        <div className="text-center">
-          <div className="inline-block animate-spin h-12 w-12 border-4 border-black border-t-[#B9FF66] rounded-full mb-4" />
-          <p className="text-lg font-bold text-zinc-700">Loading library...</p>
-        </div>
-      </div>
-    }>
+    <Suspense fallback={<PageLoading message="Loading library..." />}>
       <LibraryContent />
     </Suspense>
   )

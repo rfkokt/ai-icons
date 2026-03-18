@@ -11,6 +11,7 @@ ai-icons/
 ├── components/ui/             # ShadCN components
 ├── components/*.tsx           # Custom components
 ├── hooks/*.ts                # Custom hooks
+├── types/*.ts               # Shared TypeScript types
 ├── lib/store.ts              # Zustand stores
 └── lib/utils.ts              # cn(), formatDate
 ```
@@ -28,18 +29,24 @@ Use ShadCN: `Button`, `Card`, `Dialog`, `Sheet`, `Badge`, `Input`, `DropdownMenu
 - Protected routes: `(main)` group
 
 ## Available Hooks
-```tsx
-useDownload()           // download(key, prompt, "png"|"svg")
-useConfirmDialog()     // confirmType, setConfirmType, handleConfirm
-useScrollAnimation()   // GSAP scroll animations
-useLightbox()          // lightbox state management
-useShareIcon()         // shareToCommunity(iconId)
-usePackDownload()      // downloadPack(icons, prompt, format), downloadPackById(packId, format)
-useTabState()
-useStaggerAnimation()
-```
+
+| Hook | Usage |
+|------|-------|
+| `useDownload()` | `download(key, prompt, "png"\|"svg")` |
+| `useConfirmDialog()` | `confirmType, setConfirmType, handleConfirm` |
+| `useLightbox(totalItems)` | `currentIndex, isOpen, goToPrev, goToNext, open, close` |
+| `useShareIcon()` | `shareToCommunity(iconId)` |
+| `usePackDownload()` | `downloadPack(icons, prompt, format)`, `downloadPackById(packId, format)` |
+| `useDeletePack()` | `deletePack(packId)`, `deleteIconFromPack(packId, iconId)` |
+| `useSelectMode<T>()` | `isSelectMode, selectedIds, toggleSelect, isSelected` |
+| `usePacks()` | `packs, isLoading, fetchPacks, addPack, removePack, totalIcons` |
+| `usePackIcons(packId)` | `icons, packPrompt, isLoading, removeIcon` |
+| `useScrollAnimation()` | GSAP scroll animations |
+| `useStaggerAnimation(deps, options)` | `selector, y, duration, stagger` |
+| `useTabState()` | Tab state management |
 
 ## Available Components
+
 | Component | Description |
 |-----------|-------------|
 | `IconCard` | Icon card (community/library/generated) |
@@ -51,12 +58,26 @@ useStaggerAnimation()
 | `PackActions` | Pack action buttons |
 | `PageHeader` | Page header with stats/actions |
 | `LoadingSkeleton` | Loading skeleton grid |
+| `PageLoading` | Full page loading state |
 | `EmptyState` | Empty state placeholder |
 | `GeneratingOverlay` | Loading animation overlay |
 | `ConfirmDialog` | Confirmation dialog |
+| `ConfirmationModal` | Inline confirmation modal |
 | `StyleSelector` | Icon style dropdown |
 | `CountSelector` | Icon count dropdown |
+| `BrutalistButton` | Pre-styled brutalist button (lime/dark/white/outline) |
 | `FilterTabs`, `CopyLinkButton`, `QuickPromptButton`, `StatCard`, `UserCard`, `HowItWorks` |
+
+## Shared Types (`types/icon.ts`)
+
+```tsx
+interface GeneratedIcon { preview, png, svg?, prompt, id? }
+interface GeneratedPack { id, prompt, icons, created_at? }
+interface HistoryPack { id, prompt, iconCount, preview, created_at }
+interface PackIcon { id, prompt, png_key, svg_key, created_at }
+interface HistoryIcon { id, prompt, style, png_url, png_key, svg_url, svg_key, created_at }
+interface CommunityIcon { id, prompt, likes, date, src? }
+```
 
 ## Zustand Stores
 ```tsx
@@ -98,13 +119,17 @@ npm run dev/build/start/lint
 | `21st-dev-magic` | UI component builder |
 | `supabase` | Database operations |
 
-### Supabase MCP Tools
-`supabase_list_tables`, `supabase_execute_sql`, `supabase_apply_migration`, `supabase_get_logs`
-
 ### Skills
 `shadcn`, `next-best-practices`, `frontend-design`
 
 ## Component Usage Examples
+
+### BrutalistButton
+```tsx
+<BrutalistButton variant="lime" size="md" onClick={handleClick}>
+  Click Me
+</BrutalistButton>
+```
 
 ### PageHeader
 ```tsx
@@ -117,33 +142,25 @@ npm run dev/build/start/lint
 />
 ```
 
-### IconGrid + LoadingSkeleton
+### useSelectMode
 ```tsx
-<IconGrid>
-  {items.map(item => <IconCard key={item.id} {...item} />)}
-</IconGrid>
-
-// or loading state
-<LoadingSkeleton count={12} />
+const { isSelectMode, selectedIds, toggleSelect, isSelected } = useSelectMode<string>()
 ```
 
-### StyleSelector + CountSelector
+### usePacks
 ```tsx
-<CountSelector count={8} onCountChange={setCount} />
-<StyleSelector selectedStyle={style} onStyleChange={setStyle} />
+const { packs, isLoading, totalIcons, removePack } = usePacks()
 ```
 
-### PackActions
+### PageLoading
 ```tsx
-<PackActions
-  packId="123"
-  showShare
-  onDelete={() => handleDelete()}
-/>
+<PageLoading message="Loading..." />
 ```
 
 ## Refactoring Status
-- ✅ All hooks implemented (use-download, use-confirm-dialog, use-stagger-animation, use-lightbox, use-share-icon, use-pack-download)
-- ✅ All components: PageHeader, LoadingSkeleton, IconGrid, StyleSelector, CountSelector, PackActions, FilterTabs, CopyLinkButton, EmptyState, HowItWorks, UserCard, IconCard
-- ✅ All pages refactored: generate, library, community, referral, leaderboard, history
+- ✅ All hooks implemented
+- ✅ All components: BrutalistButton, ConfirmationModal, PageLoading, etc.
+- ✅ All pages refactored
+- ✅ Shared types extracted to `types/icon.ts`
+- ✅ Unused imports cleaned up
 - Pending: Supabase client export
