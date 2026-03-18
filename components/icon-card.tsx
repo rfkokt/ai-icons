@@ -18,6 +18,7 @@ interface IconCardProps {
   date?: string
   isSelectMode?: boolean
   isSelected?: boolean
+  transparentBg?: boolean
   onSelect?: (id: string | number) => void
   onClick?: () => void
   onShare?: () => void
@@ -38,6 +39,7 @@ export function IconCard({
   date,
   isSelectMode = false,
   isSelected = false,
+  transparentBg = false,
   onSelect,
   onClick,
   onShare,
@@ -54,7 +56,7 @@ export function IconCard({
     }
   }
 
-  const renderContent = () => (
+  const renderContent = (isTransparent: boolean) => (
     <>
       {isSelectMode && (
         <div
@@ -66,7 +68,10 @@ export function IconCard({
           {isSelected && <HiCheck className="h-3.5 w-3.5 text-black" />}
         </div>
       )}
-      <div className="aspect-square p-3 sm:p-4 flex items-center justify-center">
+      <div className={cn(
+        "aspect-square p-3 sm:p-4 flex items-center justify-center",
+        isTransparent && "bg-transparent"
+      )}>
         {src ? (
           <img src={src} alt={alt} className="max-w-[85%] max-h-[85%] object-contain" />
         ) : (
@@ -109,6 +114,46 @@ export function IconCard({
     )
   }
 
+  if (variant === "generated" && transparentBg) {
+    return (
+      <div className={cn("group relative", className)}>
+        <div
+          className={cn(
+            "relative rounded-xl border-3 border-black shadow-[4px_4px_0px_0px_#000000] group-hover:shadow-[8px_8px_0px_0px_#000000] group-hover:-translate-y-1 group-hover:translate-x-1 transition-all duration-300 cursor-pointer overflow-hidden",
+            isSelectMode && isSelected && "ring-4 ring-[#B9FF66]"
+          )}
+          onClick={handleClick}
+        >
+          <div className="checkerboard absolute inset-0 z-0" />
+          {src && (
+            <img 
+              src={src} 
+              alt={alt} 
+              className="relative z-10 w-full aspect-square object-contain p-3 sm:p-4" 
+            />
+          )}
+        </div>
+
+        {showActionBar && (
+          <div className={cn(
+            "absolute bottom-3 left-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          )}>
+            <div className="pointer-events-auto">
+              <IconActionBar
+                iconKey={format}
+                prompt={prompt}
+                onShare={onShare}
+                onDelete={onDelete}
+                showShare={!!onShare}
+                showDelete={showDelete && !!onDelete}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className={cn("group relative", className)}>
       <div
@@ -118,7 +163,7 @@ export function IconCard({
         )}
         onClick={handleClick}
       >
-        {renderContent()}
+        {renderContent(false)}
       </div>
 
       {showActionBar && (

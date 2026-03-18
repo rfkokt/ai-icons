@@ -16,7 +16,7 @@ export function useStaggerAnimation(
   options: UseStaggerAnimationOptions
 ) {
   const { selector, y = 40, duration = 0.5, stagger = 0.1, ease = "back.out(1.7)" } = options
-  const ref = useRef<HTMLElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!ref.current) return

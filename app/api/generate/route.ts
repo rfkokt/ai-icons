@@ -22,14 +22,14 @@ interface GenerateRequest {
 }
 
 const STYLE_PROMPTS: Record<string, string> = {
-  minimalist: "Clean, minimalist design with simple geometric shapes, black strokes on white/transparent background",
-  outline: "Outline/stroke style icon, clean line art, black lines on transparent",
-  filled: "Filled solid icon, black fill on transparent background",
-  duotone: "Duotone two-tone icon, two contrasting colors",
-  "3d": "3D dimensional icon, depth and perspective",
-  flat: "Flat design icon, simple 2D shapes, solid colors",
-  "hand-drawn": "Hand-drawn sketch style, organic imperfect lines",
-  neon: "Neon glowing icon, bright colors with glow effect",
+  minimalist: "Clean, minimalist design with simple geometric shapes, black strokes, floating icon design",
+  outline: "Outline/stroke style icon, clean line art, black lines, no border/box around the icon",
+  filled: "Filled solid icon, black fill, floating icon design",
+  duotone: "Duotone two-tone icon, two contrasting colors, floating icon",
+  "3d": "3D dimensional icon, depth and perspective, floating design",
+  flat: "Flat design icon, simple 2D shapes, solid colors, floating icon",
+  "hand-drawn": "Hand-drawn sketch style, organic imperfect lines, floating design",
+  neon: "Neon glowing icon, bright colors with glow effect, floating design",
 }
 
 function buildIconPrompt(userPrompt: string, style: string): string {
@@ -42,9 +42,10 @@ Style: ${stylePrompt}
 Requirements:
 - Professional icon design
 - Transparent background
-- Square format
+- NO square border, NO box, NO frame around the icon
+- Icon should be floating, just the shape/symbol itself
 - High quality
-- No text, no labels`
+- No text, no labels, no borders`
 }
 
 async function generateIconImage(prompt: string, style: string): Promise<Buffer | null> {
@@ -89,17 +90,56 @@ async function generateIconImage(prompt: string, style: string): Promise<Buffer 
 }
 
 async function processPngForPreview(pngBuffer: Buffer): Promise<{ buffer: Buffer; preview: string }> {
-  // Make background transparent for cleaner icon
-  const processedBuffer = await sharp(pngBuffer)
-    .resize(512, 512, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
-    .ensureAlpha()
-    .png()
-    .toBuffer()
+  try {
+    // Step 1: Resize with transparent background
+    let processed = await sharp(pngBuffer)
+      .resize(512, 512, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+      .png()
+      .toBuffer()
 
-  // Generate base64 preview
-  const preview = `data:image/png;base64,${processedBuffer.toString("base64")}`
+    // Step 2: Get raw pixel data with alpha channel
+    const { data, info } = await sharp(processed)
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true })
 
-  return { buffer: processedBuffer, preview }
+    // Step 3: Make light gray/white pixels transparent (RGB >= 230 = light gray)
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i]
+      const g = data[i + 1]
+      const b = data[i + 2]
+      
+      // Remove light gray to white (icon backgrounds typically in this range)
+      if (r >= 230 && g >= 230 && b >= 230) {
+        data[i + 3] = 0
+      }
+    }
+
+    // Step 4: Convert back to PNG
+    const result = await sharp(data, {
+      raw: {
+        width: info.width,
+        height: info.height,
+        channels: 4,
+      }
+    }).png().toBuffer()
+
+    // Step 5: Generate base64 preview
+    const preview = `data:image/png;base64,${result.toString("base64")}`
+
+    return { buffer: result, preview }
+  } catch (error) {
+    console.error("Error processing PNG:", error)
+    // Fallback
+    const fallback = await sharp(pngBuffer)
+      .resize(512, 512, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+      .ensureAlpha()
+      .png()
+      .toBuffer()
+
+    const preview = `data:image/png;base64,${fallback.toString("base64")}`
+    return { buffer: fallback, preview }
+  }
 }
 
 export async function POST(request: NextRequest) {

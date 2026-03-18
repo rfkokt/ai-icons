@@ -200,6 +200,7 @@ export default function GeneratePage() {
                           prompt={icon.prompt}
                           format={icon.png.key}
                           variant="generated"
+                          transparentBg
                           showActionBar
                           onShare={() => icon.id && shareToCommunity(icon.id)}
                         />
