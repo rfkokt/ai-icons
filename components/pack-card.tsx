@@ -56,51 +56,12 @@ export function PackCard({
         </div>
       </div>
 
-      <Card
-        className={cn(
-          "bg-white rounded-xl border-3 border-black transition-all duration-300 cursor-pointer overflow-hidden",
-          "shadow-[4px_4px_0px_0px_#000000]",
-          !disableHover && "hover:shadow-[8px_8px_0px_0px_#000000] hover:-translate-y-1 hover:translate-x-1"
-        )}
-        onClick={onClick}
-      >
-        <div className="aspect-square p-4 flex items-center justify-center bg-gradient-to-br from-white via-zinc-50 to-zinc-100 relative">
-          {preview ? (
-            <LoadableImage src={preview} alt={prompt} className="max-w-[80%] max-h-[80%] object-contain" />
-          ) : (
-            <div className="w-16 h-16 bg-zinc-200 rounded-2xl border-2 border-zinc-300 flex items-center justify-center">
-              <HiSparkles className="h-8 w-8 text-zinc-400" />
-            </div>
-          )}
-          {showSharedBy && sharedBy && (
-            <div className="absolute -bottom-2 left-2 flex items-center gap-1">
-              {sharedByAvatar ? (
-                <img
-                  src={sharedByAvatar}
-                  alt={sharedBy}
-                  className="w-5 h-5 rounded-full object-cover border-2 border-black shadow-sm"
-                />
-              ) : (
-                <div className="w-5 h-5 rounded-full bg-[#B9FF66] border-2 border-black flex items-center justify-center">
-                  <span className="text-[8px] font-black text-black">
-                    {sharedBy.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-              )}
-              <span className="text-[9px] font-bold text-black bg-white/90 px-1.5 py-0.5 rounded border border-black">
-                {sharedBy}
-              </span>
-            </div>
-          )}
-        </div>
-      </Card>
-
       {variant === "community" && (
-        <div className="absolute top-2 right-2 z-20 flex items-center gap-1">
+        <div className="absolute top-2 right-2 z-20 flex items-center gap-1 pointer-events-none group-hover:opacity-100 opacity-100 transition-opacity">
           <DropdownMenu>
             <DropdownMenuTrigger>
               <span
-                className="bg-[#B9FF66] border-2 border-black rounded-lg px-2 py-1 flex items-center gap-1 hover:shadow-[2px_2px_0px_0px_#000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_#000] text-xs font-bold cursor-pointer"
+                className="bg-[#B9FF66] border-2 border-black rounded-lg px-2 py-1 flex items-center gap-1 hover:bg-lime-400 transition-colors shadow-[2px_2px_0px_0px_#000] text-xs font-bold cursor-pointer pointer-events-auto"
               >
                 <HiArrowDownTray className="h-3.5 w-3.5 text-black" />
               </span>
@@ -125,26 +86,67 @@ export function PackCard({
           {onDelete && (
             <button
               onClick={(e) => { e.stopPropagation(); onDelete() }}
-              className="bg-white border-2 border-black rounded-lg px-2 py-1 hover:bg-red-500 hover:border-red-500 hover:shadow-[2px_2px_0px_0px_#000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_#000] text-xs"
+              className="bg-white border-2 border-black rounded-lg px-2 py-1 hover:bg-red-500 hover:border-red-500 transition-colors shadow-[2px_2px_0px_0px_#000] text-xs pointer-events-auto"
               title="Unshare"
             >
               <HiTrash className="h-3.5 w-3.5 text-red-500 hover:text-white transition-colors" />
             </button>
           )}
-          {totalLikes !== undefined && (
-            <button
-              onClick={(e) => { e.stopPropagation(); onLike?.() }}
-              className={cn(
-                "flex items-center gap-1 bg-white border-2 border-black rounded-full px-2.5 py-1 shadow-[2px_2px_0px_0px_#000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-xs font-bold",
-                isLiked && "shadow-[2px_2px_0px_0px_#B9FF66]"
-              )}
-            >
-              <HeartSmooth filled={isLiked} className="h-3.5 w-3.5" />
-              {totalLikes}
-            </button>
-          )}
         </div>
       )}
+
+      <Card
+        className={cn(
+          "bg-white rounded-xl border-3 border-black transition-all duration-300 cursor-pointer overflow-hidden",
+          "shadow-[4px_4px_0px_0px_#000000]",
+          !disableHover && "group-hover:shadow-[8px_8px_0px_0px_#000000] group-hover:-translate-y-1 group-hover:translate-x-1"
+        )}
+        onClick={onClick}
+      >
+        <div className="aspect-square p-4 flex items-center justify-center bg-gradient-to-br from-white via-zinc-50 to-zinc-100 relative">
+          {preview ? (
+            <LoadableImage src={preview} alt={prompt} className="max-w-[80%] max-h-[80%] object-contain" />
+          ) : (
+            <div className="w-16 h-16 bg-zinc-200 rounded-2xl border-2 border-zinc-300 flex items-center justify-center">
+              <HiSparkles className="h-8 w-8 text-zinc-400" />
+            </div>
+          )}
+          {showSharedBy && sharedBy && (
+            <div className="absolute -bottom-2 left-2 right-2 flex items-center justify-between">
+              <div className="flex items-center gap-1">
+                {sharedByAvatar ? (
+                  <img
+                    src={sharedByAvatar}
+                    alt={sharedBy}
+                    className="w-5 h-5 rounded-full object-cover border-2 border-black shadow-sm"
+                  />
+                ) : (
+                  <div className="w-5 h-5 rounded-full bg-[#B9FF66] border-2 border-black flex items-center justify-center">
+                    <span className="text-[8px] font-black text-black">
+                      {sharedBy.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                )}
+                <span className="text-[9px] font-bold text-black bg-white/90 px-1.5 py-0.5 rounded border border-black">
+                  {sharedBy}
+                </span>
+              </div>
+              {totalLikes !== undefined && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); onLike?.() }}
+                  className={cn(
+                    "flex items-center gap-1 bg-white border-2 border-black rounded-full px-2 py-0.5 shadow-[2px_2px_0px_0px_#000] text-xs font-bold",
+                    isLiked && "shadow-[2px_2px_0px_0px_#B9FF66]"
+                  )}
+                >
+                  <HeartSmooth filled={isLiked} className="h-3 w-3" />
+                  {totalLikes}
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      </Card>
 
       {variant === "default" && showActionBar && (
         <div className="absolute bottom-3 left-3 right-3 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto">
@@ -167,9 +169,9 @@ export function PackCard({
             {onDelete && (
               <button
                 onClick={(e) => { e.stopPropagation(); onDelete() }}
-                className="bg-white border-2 border-black rounded-lg px-2 py-1 hover:bg-red-500 hover:shadow-[2px_2px_0px_0px_#000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_#000] text-xs"
+                className="bg-white border-2 border-black rounded-lg px-2 py-1 hover:bg-red-500 hover:border-red-500 transition-colors shadow-[2px_2px_0px_0px_#000] text-xs"
               >
-                <HiTrash className="h-3.5 w-3.5 text-red-500 hover:text-white" />
+                <HiTrash className="h-3.5 w-3.5 text-red-500 hover:text-white transition-colors" />
               </button>
             )}
           </div>
