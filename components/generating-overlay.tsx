@@ -61,9 +61,17 @@ export const GeneratingOverlay = forwardRef<HTMLDivElement, GeneratingOverlayPro
               {/* Dotted Grid Background */}
               <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, black 1px, transparent 0)", backgroundSize: "12px 12px" }}></div>
               
-              {/* Center Shape */}
-              <div className="relative z-10 w-20 h-20 bg-black rounded-lg flex items-center justify-center">
-                <div className="w-8 h-8 bg-[#B9FF66] border-4 border-white animate-[spin_3s_linear_infinite]"></div>
+              {/* Center Pixel Grid */}
+              <div className="relative z-10 w-20 h-20 bg-black rounded-lg flex items-center justify-center p-3.5">
+                <div className="grid grid-cols-3 gap-1.5 w-full h-full">
+                  {[...Array(9)].map((_, i) => (
+                    <div 
+                      key={i} 
+                      className="bg-white rounded-[2px] animate-pulse-pixel"
+                      style={{ animationDelay: `${((i * 7) % 5) * 0.15}s` }}
+                    ></div>
+                  ))}
+                </div>
               </div>
 
               {/* Scanning Laser Line */}
@@ -111,12 +119,12 @@ export const GeneratingOverlay = forwardRef<HTMLDivElement, GeneratingOverlayPro
           .animate-scan-laser {
             animation: scan-laser 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
           }
-          @keyframes pulse-fast {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(0.95); opacity: 0.8; }
+          @keyframes pulse-pixel {
+            0%, 100% { background-color: #ffffff; transform: scale(1); opacity: 1; }
+            50% { background-color: #B9FF66; transform: scale(0.6); opacity: 0.3; }
           }
-          .animate-pulse-fast {
-            animation: pulse-fast 1s ease-in-out infinite;
+          .animate-pulse-pixel {
+            animation: pulse-pixel 1.2s ease-in-out infinite;
           }
           @keyframes pulse-block {
             0%, 100% { background-color: #f4f4f5; opacity: 0.5; }
