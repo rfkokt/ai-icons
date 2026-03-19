@@ -46,4 +46,18 @@ export interface CommunityIcon {
   likes: number
   date: string
   src?: string
+  format?: string
+  sharedBy?: string | null
+  sharedByAvatar?: string | null
+}
+
+export interface CommunityPack {
+  id: string
+  prompt: string
+  preview: string | null
+  iconCount: number
+  totalLikes: number
+  isLiked?: boolean
+  sharedBy?: string | null
+  sharedByAvatar?: string | null
 }

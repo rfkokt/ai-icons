@@ -9,7 +9,17 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from("generated_icons")
-      .select("id, prompt, png_key, created_at")
+      .select(`
+        id,
+        prompt,
+        png_key,
+        created_at,
+        users!inner (
+          clerk_id,
+          name,
+          avatar_url
+        )
+      `)
       .eq("is_public", true)
 
     // Filter by prompt if provided
@@ -34,13 +44,15 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data to match expected format
-    const icons = data.map((icon) => ({
+    const icons = data.map((icon: any) => ({
       id: icon.id,
       prompt: icon.prompt,
       src: icon.png_key ? `/api/download/${encodeURIComponent(icon.png_key)}` : undefined,
       format: icon.png_key ? "png" : undefined,
       likes: 0, // TODO: Add likes column to database
       date: formatDate(icon.created_at),
+      sharedBy: icon.users?.name || null,
+      sharedByAvatar: icon.users?.avatar_url || null,
     }))
 
     return NextResponse.json(icons)

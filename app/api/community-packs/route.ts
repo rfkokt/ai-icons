@@ -8,10 +8,21 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const sort = searchParams.get("sort") || "latest"
 
-    // Get all public icons grouped by prompt
+    // Get all public icons grouped by prompt with user info
     let query = supabase
       .from("generated_icons")
-      .select("id, prompt, png_key, created_at")
+      .select(`
+        id,
+        prompt,
+        png_key,
+        created_at,
+        user_id,
+        users!inner (
+          clerk_id,
+          name,
+          avatar_url
+        )
+      `)
       .eq("is_public", true)
 
     // Sort based on parameter
@@ -28,13 +39,25 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Failed to fetch icons" }, { status: 500 })
     }
 
-    // Group icons by prompt and create packs
+    // Group icons by prompt and create packs, tracking user info
     const groupedPacks = data.reduce((acc: Record<string, any[]>, icon) => {
       const prompt = icon.prompt || "Untitled"
       if (!acc[prompt]) {
         acc[prompt] = []
       }
       acc[prompt].push(icon)
+      return acc
+    }, {})
+
+    // Get the user info for each pack (from the first icon in each group)
+    const packUserInfo = Object.entries(groupedPacks).reduce((acc: Record<string, { name: string | null; avatar_url: string | null }>, [prompt, icons]: [string, any[]]) => {
+      const firstIcon = icons[0]
+      if (firstIcon?.users) {
+        acc[prompt] = {
+          name: firstIcon.users.name,
+          avatar_url: firstIcon.users.avatar_url
+        }
+      }
       return acc
     }, {})
 
@@ -63,13 +86,16 @@ export async function GET(request: NextRequest) {
 
     const packs = Object.entries(groupedPacks).map(([prompt, icons]) => {
       const totalLikes = likesMap[prompt] || 0
+      const userInfo = packUserInfo[prompt] || { name: null, avatar_url: null }
       return {
         id: prompt, // Use prompt as ID for consistent liking
         prompt,
         preview: icons[0]?.png_key ? `/api/download/${encodeURIComponent(icons[0].png_key)}` : null,
         iconCount: icons.length,
         totalLikes,
-        isLiked: userLikes.has(prompt)
+        isLiked: userLikes.has(prompt),
+        sharedBy: userInfo.name,
+        sharedByAvatar: userInfo.avatar_url
       }
     })
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect, Suspense, useTransition } from "react"
 import { useSearchParams } from "next/navigation"
 import { HiClock, HiSparkles, HiArrowLeft } from "react-icons/hi2"
 import { IconCard } from "@/components/icon-card"
@@ -15,26 +15,7 @@ import { HeartSmooth } from "@/components/icons/heart-smooth"
 import { useLightbox } from "@/hooks/use-lightbox"
 import { useStaggerAnimation } from "@/hooks/use-stagger-animation"
 import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-
-type CommunityIcon = {
-  id: string
-  prompt: string
-  src?: string
-  format?: string
-  likes: number
-  date: string
-  isLiked?: boolean
-}
-
-type CommunityPack = {
-  id: string
-  prompt: string
-  preview: string | null
-  iconCount: number
-  totalLikes: number
-  isLiked?: boolean
-}
+import type { CommunityIcon, CommunityPack } from "@/types/icon"
 
 type FilterType = "latest" | "mostLoved"
 
@@ -48,6 +29,8 @@ function CommunityContent() {
   const [isLoading, setIsLoading] = useState(true)
   const [isLoadingPack, setIsLoadingPack] = useState(false)
   const [hoveredLikeButton, setHoveredLikeButton] = useState<string | null>(null)
+  const [animatingHeart, setAnimatingHeart] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
 
   const lightbox = useLightbox(selectedPackIcons.length)
 
@@ -131,6 +114,29 @@ function CommunityContent() {
   const handleLikePack = async (packId: string, e: React.MouseEvent) => {
     e.stopPropagation()
 
+    const pack = packs.find(p => p.id === packId)
+    if (!pack) return
+
+    // Optimistic update - immediately update UI
+    const newLikedState = !pack.isLiked
+    const previousState = pack.isLiked
+    const previousCount = pack.totalLikes
+
+    // Update UI optimistically
+    setPacks(prevPacks =>
+      prevPacks.map(p =>
+        p.id === packId
+          ? { ...p, totalLikes: newLikedState ? p.totalLikes + 1 : p.totalLikes - 1, isLiked: newLikedState }
+          : p
+      )
+    )
+
+    // Trigger floating animation
+    if (newLikedState) {
+      setAnimatingHeart(packId)
+      setTimeout(() => setAnimatingHeart(null), 600)
+    }
+
     try {
       const response = await fetch(`/api/pack/${encodeURIComponent(packId)}/like`, {
         method: "POST"
@@ -139,26 +145,34 @@ function CommunityContent() {
       const data = await response.json()
 
       if (data.success) {
-        // Update pack with new like count and isLiked state from API
+        // Sync with actual server response
         setPacks(prevPacks =>
-          prevPacks.map(pack =>
-            pack.id === packId
-              ? { ...pack, totalLikes: data.likeCount ?? (data.liked ? pack.totalLikes + 1 : pack.totalLikes - 1), isLiked: data.liked }
-              : pack
+          prevPacks.map(p =>
+            p.id === packId
+              ? { ...p, totalLikes: data.likeCount ?? p.totalLikes, isLiked: data.liked }
+              : p
           )
         )
-
-        if (data.liked) {
-          toast.success("Added to liked!")
-        } else {
-          toast.success("Removed from liked")
-        }
       } else {
-        toast.error(data.error || "Failed to update like")
+        // Revert on error
+        setPacks(prevPacks =>
+          prevPacks.map(p =>
+            p.id === packId
+              ? { ...p, totalLikes: previousCount, isLiked: previousState }
+              : p
+          )
+        )
       }
     } catch (error) {
+      // Revert on error
+      setPacks(prevPacks =>
+        prevPacks.map(p =>
+          p.id === packId
+            ? { ...p, totalLikes: previousCount, isLiked: previousState }
+            : p
+        )
+      )
       console.error("Like error:", error)
-      toast.error("Something went wrong")
     }
   }
 
@@ -305,17 +319,20 @@ function CommunityContent() {
                     onClick={() => router.push(`/community?pack=${encodeURIComponent(pack.prompt)}`)}
                     showActionBar={false}
                     disableHover={hoveredLikeButton === pack.id}
+                    sharedBy={pack.sharedBy}
+                    sharedByAvatar={pack.sharedByAvatar}
+                    showSharedBy={true}
                   />
                   {/* Love Button - Instagram style */}
                   <button
                     onClick={(e) => handleLikePack(pack.id, e)}
                     onMouseEnter={() => setHoveredLikeButton(pack.id)}
                     onMouseLeave={() => setHoveredLikeButton(null)}
-                    className="absolute top-3 right-3 z-20 bg-white/90 backdrop-blur-sm rounded-full p-1 flex items-center gap-1 hover:bg-white hover:scale-105 transition-all shadow-sm"
+                    className="absolute top-3 right-3 z-20 bg-white/90 backdrop-blur-sm rounded-full p-1.5 flex items-center gap-1 hover:bg-white hover:scale-105 transition-all shadow-sm"
                   >
                     <HeartSmooth
                       filled={pack.isLiked}
-                      className="h-[18px] w-[18px] transition-all duration-200"
+                      className={`h-5 w-5 transition-all duration-200 ${animatingHeart === pack.id ? 'animate-heart-bounce scale-125' : ''}`}
                     />
                     <span className="text-xs font-semibold text-zinc-700 min-w-[12px]">{pack.totalLikes}</span>
                   </button>

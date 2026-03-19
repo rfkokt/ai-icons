@@ -17,6 +17,9 @@ interface PackCardProps {
   showActionBar?: boolean
   disableHover?: boolean
   className?: string
+  sharedBy?: string | null
+  sharedByAvatar?: string | null
+  showSharedBy?: boolean
 }
 
 export function PackCard({
@@ -32,9 +35,12 @@ export function PackCard({
   showActionBar = true,
   disableHover = false,
   className,
+  sharedBy,
+  sharedByAvatar,
+  showSharedBy = false,
 }: PackCardProps) {
   return (
-    <div className={cn("pack-card group relative", className)}>
+    <div className={cn("pack-card group relative flex flex-col", className)}>
       <div className="absolute -top-3 -left-3 z-10">
         <div className="bg-[#B9FF66] border-3 border-black rounded-xl px-2.5 py-1 shadow-[3px_3px_0px_0px_#000000] min-w-[28px] flex items-center justify-center">
           <span className="text-xs font-black text-black">{iconCount}</span>
@@ -49,12 +55,32 @@ export function PackCard({
         )}
         onClick={onClick}
       >
-        <div className="aspect-square p-4 flex items-center justify-center bg-gradient-to-br from-white via-zinc-50 to-zinc-100">
+        <div className="aspect-square p-4 flex items-center justify-center bg-gradient-to-br from-white via-zinc-50 to-zinc-100 relative">
           {preview ? (
             <LoadableImage src={preview} alt={prompt} className="max-w-[80%] max-h-[80%] object-contain" />
           ) : (
             <div className="w-16 h-16 bg-zinc-200 rounded-2xl border-2 border-zinc-300 flex items-center justify-center">
               <HiSparkles className="h-8 w-8 text-zinc-400" />
+            </div>
+          )}
+          {showSharedBy && sharedBy && (
+            <div className="absolute bottom-1 left-2 flex items-center gap-1">
+              {sharedByAvatar ? (
+                <img
+                  src={sharedByAvatar}
+                  alt={sharedBy}
+                  className="w-5 h-5 rounded-full object-cover border-2 border-black shadow-sm"
+                />
+              ) : (
+                <div className="w-5 h-5 rounded-full bg-[#B9FF66] border-2 border-black flex items-center justify-center">
+                  <span className="text-[8px] font-black text-black">
+                    {sharedBy.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+              )}
+              <span className="text-[9px] font-bold text-black bg-white/90 px-1.5 py-0.5 rounded border border-black">
+                {sharedBy}
+              </span>
             </div>
           )}
         </div>

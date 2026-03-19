@@ -245,6 +245,19 @@
   animation: float 2s ease-in-out infinite;
 }
 
+/* Heart bounce animation for like button */
+@keyframes heartBounce {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.3); }
+  50% { transform: scale(1.3) translateY(-8px); }
+  75% { transform: scale(1.1) translateY(-4px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+.animate-heart-bounce {
+  animation: heartBounce 0.6s ease-out forwards;
+}
+
 /* Custom Selection */
 ::selection {
   background-color: #B9FF66;
