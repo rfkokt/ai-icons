@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { HiSparkles } from "react-icons/hi2"
@@ -22,6 +22,7 @@ import gsap from "gsap"
 import type { GeneratedIcon, GeneratedPack } from "@/types/icon"
 
 export default function GeneratePage() {
+  const [mounted, setMounted] = useState(false)
   const [prompt, setPrompt] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedPacks, setGeneratedPacks] = useState<GeneratedPack[]>([])
@@ -38,6 +39,10 @@ export default function GeneratePage() {
   const { download } = useDownload()
   const { downloadPack } = usePackDownload()
   const { shareToCommunity } = useShareIcon()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const { suggestions } = usePromptSuggestions(prompt, { minLength: 2, maxSuggestions: 3 })
 
@@ -171,6 +176,14 @@ export default function GeneratePage() {
       pack.icons.map(icon => ({ png_key: icon.png.key, prompt: icon.prompt })),
       pack.prompt,
       downloadFormat
+    )
+  }
+
+  if (!mounted) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-zinc-100">
+        <div className="w-10 h-10 border-4 border-[#B9FF66] border-t-transparent rounded-full animate-spin" />
+      </div>
     )
   }
 

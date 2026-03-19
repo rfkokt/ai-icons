@@ -53,6 +53,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user: clerkUser } = useUser()
   const user = useAuthStore((state) => state.user)
   const logout = useAuthStore((state) => state.logout)
+  const [mounted, setMounted] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [historyPacks, setHistoryPacks] = useState<HistoryPack[]>([])
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
@@ -61,6 +62,10 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const sidebarRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
   const isGeneratePage = pathname === "/generate"
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     if (isGeneratePage) {
@@ -183,8 +188,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                       >
                         <div className="flex items-start gap-3">
                           <div className="w-10 h-10 bg-white rounded-lg border border-zinc-200 flex items-center justify-center shrink-0 overflow-hidden">
-                            {pack.preview ? (
-                              <LoadableImage src={pack.preview} alt="" className="w-full h-full object-contain" />
+                            {pack.preview && mounted ? (
+                              <img src={pack.preview} alt="" className="w-full h-full object-contain" />
                             ) : (
                               <HiPhoto className="h-5 w-5 text-zinc-400" />
                             )}
@@ -369,8 +374,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               >
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 bg-white rounded-lg border border-zinc-200 flex items-center justify-center shrink-0 overflow-hidden">
-                    {pack.preview ? (
-                      <LoadableImage src={pack.preview} alt="" className="w-full h-full object-contain" />
+                    {pack.preview && mounted ? (
+                      <img src={pack.preview} alt="" className="w-full h-full object-contain" />
                     ) : (
                       <HiPhoto className="h-5 w-5 text-zinc-400" />
                     )}

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 
 interface LoadableImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
@@ -16,6 +16,11 @@ export function LoadableImage({
   ...props
 }: LoadableImageProps) {
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     setIsLoaded(true)
@@ -24,7 +29,7 @@ export function LoadableImage({
 
   return (
     <>
-      {!isLoaded && (
+      {!isLoaded && isMounted && (
         <div
           className={cn(
             "absolute inset-0 flex items-center justify-center",
