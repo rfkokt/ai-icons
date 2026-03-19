@@ -26,6 +26,7 @@
     "next": "^16.2.0",
     "next-themes": "^0.4.6",
     "pako": "^2.1.0",
+    "png-to-svg": "^1.0.5",
     "potrace": "^2.1.8",
     "react": "19.2.3",
     "react-dom": "19.2.3",
@@ -52,7 +53,6 @@
     "typescript": "^5"
   },
   "overrides": {
-    "phin": "^3.7.1",
-    "file-type": "^21.3.1"
+    "phin": "^3.7.1"
   }
 }

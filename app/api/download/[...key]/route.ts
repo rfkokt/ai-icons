@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getObject } from "@/lib/r2"
 import sharp from "sharp"
-// @ts-ignore - potrace uses CommonJS
-import potrace from "potrace"
+// @ts-ignore - CommonJS wrapper
+import potraceWrapper from "@/lib/potrace-wrapper"
 
 export async function GET(
   request: NextRequest,
@@ -68,32 +68,22 @@ async function convertPngToSvg(pngBuffer: Buffer): Promise<string | null> {
       .png()
       .toBuffer()
 
-    // Use Potrace class directly for more reliable behavior
+    // Use potrace wrapper to isolate from Next.js bundling
     return new Promise<string>((resolve) => {
-      // @ts-ignore - Potrace class exists in runtime
-      const tracer = new potrace.Potrace({
-        threshold: 128, // explicit threshold
-        turdSize: 2, // Hapus speckles kecil
-        optCurve: true, // Smooth curves
+      // @ts-ignore - wrapper function
+      potraceWrapper.trace(processedBuffer, {
+        threshold: 128,
+        turdSize: 2,
+        optCurve: true,
         optTolerance: 0.2,
         color: '#000000',
         background: 'transparent',
-      })
-
-      // @ts-ignore - loadImage accepts Buffer
-      tracer.loadImage(processedBuffer, (err: Error | null) => {
+      }, (err: Error | null, svg: string) => {
         if (err) {
-          console.error("Potrace loadImage error:", err)
+          console.error("Potrace trace error:", err)
           resolve(null as unknown as string)
-          return
-        }
-
-        try {
-          const svg = tracer.getSVG()
+        } else {
           resolve(svg)
-        } catch (e) {
-          console.error("Potrace getSVG error:", e)
-          resolve(null as unknown as string)
         }
       })
     })

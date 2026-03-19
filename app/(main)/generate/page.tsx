@@ -84,7 +84,7 @@ export default function GeneratePage() {
       if (data.success && data.icons) {
         const newPack: GeneratedPack = {
           id: Date.now().toString(),
-          prompt: data.prompt,
+          prompt: data.displayName || data.prompt,
           icons: data.icons,
         }
         setGeneratedPacks((prev) => [newPack, ...prev])

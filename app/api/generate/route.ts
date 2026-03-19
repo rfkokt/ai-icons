@@ -48,6 +48,25 @@ Requirements:
 - No text, no labels, no borders`
 }
 
+function simplifyPrompt(prompt: string): string {
+  if (!prompt) return "Untitled"
+  
+  // Remove common filler words at the start
+  let clean = prompt
+    .trim()
+    .replace(/^(a|an|the|create|generate|icon|of|for|illustration|simple|minimalist|professional)\s+/i, '')
+    .split(',')[0] // Take only the part before first comma if present
+  
+  // Take first 4 words
+  const words = clean.split(/\s+/).slice(0, 4)
+  
+  // Capitalize each word
+  return words
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ') || "Untitled"
+}
+
+
 async function generateIconImage(prompt: string, style: string): Promise<Buffer | null> {
   const fullPrompt = buildIconPrompt(prompt, style)
   console.log("Calling Gemini API with prompt:", prompt.slice(0, 50))
@@ -199,9 +218,11 @@ export async function POST(request: NextRequest) {
       const pngUrl = await uploadFile(pngKey, processedPng, "image/png")
 
       // Save to database (SVG will be generated on-demand)
+      const simplifiedName = simplifyPrompt(prompt)
+      
       const iconData = {
         user_id: userId,
-        name: iconPromptText,
+        name: `${simplifiedName}-${index + 1}`,
         prompt: iconPromptText,
         style,
         png_url: pngUrl || null,
@@ -239,10 +260,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const simplifiedPackName = simplifyPrompt(prompt)
+
     return NextResponse.json({
       success: true,
       icons,
       prompt,
+      displayName: simplifiedPackName,
       style,
       iconCount: icons.length,
     })

@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
     const { data: icons, error } = await supabaseAdmin
       .from("generated_icons")
-      .select("id, prompt, png_key, svg_key, created_at")
+      .select("id, name, prompt, png_key, svg_key, created_at")
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
 
@@ -32,10 +32,11 @@ export async function GET(request: NextRequest) {
     
     for (const icon of icons) {
       const basePrompt = icon.prompt.replace(/-\d+$/, '')
+      const baseName = icon.name ? icon.name.replace(/-\d+$/, '') : basePrompt
       
       if (!packs[basePrompt]) {
         packs[basePrompt] = {
-          prompt: basePrompt,
+          prompt: baseName,
           icons: [],
           created_at: icon.created_at,
         }

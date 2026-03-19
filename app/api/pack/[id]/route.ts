@@ -17,7 +17,7 @@ export async function GET(
     // Get the icon to find the base prompt
     const { data: targetIcon, error: targetError } = await supabaseAdmin
       .from("generated_icons")
-      .select("prompt")
+      .select("name, prompt")
       .eq("id", id)
       .single()
 
@@ -40,9 +40,11 @@ export async function GET(
       return NextResponse.json({ success: false, icons: [] })
     }
 
+    const baseName = targetIcon.name ? targetIcon.name.replace(/-\d+$/, '') : basePrompt
+
     return NextResponse.json({
       success: true,
-      prompt: basePrompt,
+      prompt: baseName,
       icons: icons || [],
     })
   } catch (error) {
