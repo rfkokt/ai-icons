@@ -15,49 +15,42 @@ export async function POST(
     const { id: packId } = await params
     const userId = clerkUser.id
 
-    // Get all icons in the pack
-    const { data: icons, error: fetchError } = await supabaseAdmin
+    const { data: firstIcon, error: iconError } = await supabaseAdmin
       .from("generated_icons")
-      .select("id, user_id, is_public")
+      .select("id, prompt")
+      .eq("id", packId)
       .eq("user_id", userId)
-      .order("created_at", { ascending: false })
+      .single()
 
-    if (fetchError) {
-      console.error("Fetch icons error:", fetchError)
+    if (iconError || !firstIcon) {
+      return NextResponse.json({ error: "Pack not found" }, { status: 404 })
+    }
+
+    const basePrompt = firstIcon.prompt.replace(/-\d+$/, '')
+
+    const { data: allUserIcons, error: allIconsError } = await supabaseAdmin
+      .from("generated_icons")
+      .select("id")
+      .eq("user_id", userId)
+      .ilike("prompt", `${basePrompt}%`)
+
+    if (allIconsError) {
+      console.error("Fetch icons error:", allIconsError)
       return NextResponse.json({ error: "Failed to fetch icons" }, { status: 500 })
     }
 
-    // If packId is provided, only share icons with that pack's prompt
-    // Get the pack prompt first
-    let targetPrompt = null
-    if (packId !== "all") {
-      const { data: pack } = await supabaseAdmin
-        .from("history_packs")
-        .select("prompt")
-        .eq("id", packId)
-        .single()
-
-      if (pack) {
-        targetPrompt = pack.prompt
-      }
+    if (!allUserIcons || allUserIcons.length === 0) {
+      return NextResponse.json({ error: "No icons in this pack" }, { status: 404 })
     }
 
-    const iconsToShare = targetPrompt
-      ? icons.filter(icon => icon.prompt === targetPrompt)
-      : icons
-
-    if (iconsToShare.length === 0) {
-      return NextResponse.json({ error: "No icons to share" }, { status: 404 })
-    }
-
-    // Share all icons (set is_public to true and shared_at)
     const { error: updateError } = await supabaseAdmin
       .from("generated_icons")
       .update({
         is_public: true,
         shared_at: new Date().toISOString()
       })
-      .in("id", iconsToShare.map(icon => icon.id))
+      .eq("user_id", userId)
+      .ilike("prompt", `${basePrompt}%`)
 
     if (updateError) {
       console.error("Share pack error:", updateError)
@@ -66,8 +59,8 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      count: iconsToShare.length,
-      message: `Shared ${iconsToShare.length} icon${iconsToShare.length > 1 ? 's' : ''} to community!`
+      count: allUserIcons.length,
+      message: `Shared ${allUserIcons.length} icons as a pack to community!`
     })
   } catch (error) {
     console.error("Share pack error:", error)

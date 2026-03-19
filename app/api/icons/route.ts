@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
         prompt,
         png_key,
         created_at,
+        shared_at,
         users!inner (
           clerk_id,
           name,
@@ -22,19 +23,11 @@ export async function GET(request: NextRequest) {
       `)
       .eq("is_public", true)
 
-    // Filter by prompt if provided
     if (prompt) {
       query = query.ilike("prompt", `%${prompt}%`)
     }
 
-    // Sort based on parameter
-    if (sort === "likes") {
-      // Note: likes column doesn't exist yet, we'll need to add it
-      query = query.order("created_at", { ascending: false })
-    } else {
-      // latest
-      query = query.order("created_at", { ascending: false })
-    }
+    query = query.order("shared_at", { ascending: false, nullsFirst: false })
 
     const { data, error } = await query
 

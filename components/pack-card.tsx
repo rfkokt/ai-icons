@@ -64,7 +64,7 @@ export function PackCard({
             </div>
           )}
           {showSharedBy && sharedBy && (
-            <div className="absolute bottom-1 left-2 flex items-center gap-1">
+            <div className="absolute -bottom-2 left-2 flex items-center gap-1">
               {sharedByAvatar ? (
                 <img
                   src={sharedByAvatar}
@@ -95,6 +95,7 @@ export function PackCard({
             onDelete={onDelete}
             showShare={!!onShare}
             showDelete={!!onDelete}
+            iconCount={iconCount}
           />
         </div>
       )}

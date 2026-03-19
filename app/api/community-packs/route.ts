@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
         prompt,
         png_key,
         created_at,
+        shared_at,
         user_id,
         users!inner (
           clerk_id,
@@ -25,11 +26,10 @@ export async function GET(request: NextRequest) {
       `)
       .eq("is_public", true)
 
-    // Sort based on parameter
     if (sort === "mostLoved") {
-      query = query.order("created_at", { ascending: false })
+      query = query.order("shared_at", { ascending: false, nullsFirst: false })
     } else {
-      query = query.order("created_at", { ascending: false })
+      query = query.order("shared_at", { ascending: false, nullsFirst: false })
     }
 
     const { data, error } = await query

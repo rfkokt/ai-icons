@@ -16,5 +16,23 @@ export function useShareIcon() {
       toast.error("Something went wrong")
     }
   }
-  return { shareToCommunity }
+
+  const sharePackToCommunity = async (packId: string) => {
+    try {
+      const response = await fetch(`/api/pack/${packId}/share`, { method: "POST" })
+      const data = await response.json()
+      if (data.success) {
+        toast.success(data.message)
+        return true
+      } else {
+        toast.error(data.error || "Failed to share")
+        return false
+      }
+    } catch {
+      toast.error("Something went wrong")
+      return false
+    }
+  }
+
+  return { shareToCommunity, sharePackToCommunity }
 }

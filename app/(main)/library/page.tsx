@@ -31,7 +31,7 @@ function LibraryContent() {
   const router = useRouter()
 
   const { download } = useDownload()
-  const { shareToCommunity } = useShareIcon()
+  const { shareToCommunity, sharePackToCommunity } = useShareIcon()
   const { deletePack, deleteIconFromPack } = useDeletePack()
   
   const { packs, setPacks, isLoading: isLoadingPacks, totalIcons } = usePacks()
@@ -45,6 +45,8 @@ function LibraryContent() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [packToDelete, setPackToDelete] = useState<{ id: string; prompt: string } | null>(null)
   const [deletePackDialogOpen, setDeletePackDialogOpen] = useState(false)
+  const [shareDialogOpen, setShareDialogOpen] = useState(false)
+  const [packToShare, setPackToShare] = useState<{ id: string; iconCount: number } | null>(null)
 
   const lightbox = useLightbox(icons.length)
 
@@ -68,6 +70,18 @@ function LibraryContent() {
     if (success) {
       removeIcon(iconId)
     }
+  }
+
+  const handleSharePack = (packId: string, iconCount: number) => {
+    setPackToShare({ id: packId, iconCount })
+    setShareDialogOpen(true)
+  }
+
+  const confirmSharePack = async () => {
+    if (!packToShare) return
+    await sharePackToCommunity(packToShare.id)
+    setShareDialogOpen(false)
+    setPackToShare(null)
   }
 
   if (packId) {
@@ -241,7 +255,7 @@ function LibraryContent() {
                   prompt={pack.prompt}
                   iconCount={pack.iconCount}
                   onClick={() => router.push(`/library?pack=${pack.id}`)}
-                  onShare={() => shareToCommunity(pack.id)}
+                  onShare={() => handleSharePack(pack.id, pack.iconCount)}
                   onDownloadPng={() => {}}
                   onDownloadSvg={() => {}}
                   onDelete={() => {
@@ -270,6 +284,16 @@ function LibraryContent() {
             setPacks(prev => prev.filter(p => p.id !== packToDelete.id))
           }
         }}
+      />
+
+      <ConfirmDialog
+        open={shareDialogOpen}
+        onOpenChange={setShareDialogOpen}
+        title="Share to Community?"
+        description={`This ${packToShare && packToShare.iconCount > 1 ? "pack" : "icon"} will be visible to everyone in the community.`}
+        confirmText="Share"
+        cancelText="Cancel"
+        onConfirm={confirmSharePack}
       />
     </div>
   )

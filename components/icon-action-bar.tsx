@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"
 interface IconActionBarProps {
   iconKey?: string
   prompt?: string
+  iconCount?: number
   onShare?: () => void
   onDownloadPng?: () => void
   onDownloadSvg?: () => void
@@ -22,6 +23,7 @@ interface IconActionBarProps {
 export function IconActionBar({
   iconKey,
   prompt,
+  iconCount,
   onShare,
   onDownloadPng,
   onDownloadSvg,
@@ -54,7 +56,7 @@ export function IconActionBar({
       <div className={cn("flex items-center gap-2", className)}>
         {showShare && onShare && (
           <button
-            onClick={() => setConfirmType("share")}
+            onClick={() => onShare()}
             className="flex-1 h-10 bg-white hover:bg-[#B9FF66] border-3 border-black rounded-full flex items-center justify-center gap-1.5 shadow-[3px_3px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs font-bold uppercase"
           >
             <HiShare className="h-4 w-4" />
@@ -83,14 +85,14 @@ export function IconActionBar({
       </div>
 
       {confirmType && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50">
           <div className="bg-white border-2 border-black rounded-2xl p-6 max-w-sm w-full mx-4 shadow-[8px_8px_0px_0px_#000000]">
             <h3 className="text-lg font-bold mb-2">
-              {confirmType === "share" ? "Share to Community?" : "Delete Icon?"}
+              {confirmType === "share" ? "Share to Community?" : "Delete?"}
             </h3>
             <p className="text-zinc-600 mb-4">
               {confirmType === "share" 
-                ? "This icon will be visible to everyone in the community."
+                ? `This ${iconCount && iconCount > 1 ? "pack" : "icon"} will be visible to everyone in the community.`
                 : "This action cannot be undone."
               }
             </p>
