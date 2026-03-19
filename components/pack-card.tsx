@@ -49,8 +49,8 @@ export function PackCard({
   variant = "default",
 }: PackCardProps) {
   return (
-    <div className={cn("pack-card group relative flex flex-col", className)}>
-      <div className="absolute -top-3 -left-3 z-10">
+    <div className={cn("pack-card group relative flex flex-col mt-2 ml-2 sm:mt-0 sm:ml-0", className)}>
+      <div className="absolute -top-2 -left-2 sm:-top-3 sm:-left-3 z-10">
         <div className="bg-[#B9FF66] border-3 border-black rounded-xl px-2.5 py-1 shadow-[3px_3px_0px_0px_#000000] min-w-[28px] flex items-center justify-center">
           <span className="text-xs font-black text-black">{iconCount}</span>
         </div>
@@ -88,8 +88,8 @@ export function PackCard({
           {preview ? (
             <LoadableImage src={preview} alt={prompt} className="max-w-[80%] max-h-[80%] object-contain" />
           ) : (
-            <div className="w-16 h-16 bg-zinc-200 rounded-2xl border-2 border-zinc-300 flex items-center justify-center">
-              <HiSparkles className="h-8 w-8 text-zinc-400" />
+            <div className="w-16 h-16 bg-white rounded-2xl border-3 border-black shadow-[4px_4px_0_0_#000000] flex items-center justify-center">
+              <span className="text-2xl font-black text-black">?</span>
             </div>
           )}
           {showSharedBy && sharedBy && (

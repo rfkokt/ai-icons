@@ -3,16 +3,6 @@
 import { useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  HiSparkles,
-  HiArrowDownTray,
-  HiPaintBrush,
-  HiBolt,
-  HiShare,
-  HiCreditCard,
-  HiArrowTopRightOnSquare,
-  HiCursorArrowRays,
-} from "react-icons/hi2";
 import { FaBullseye } from "react-icons/fa6";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -23,42 +13,42 @@ if (typeof window !== "undefined") {
 
 const features = [
   {
-    icon: HiSparkles,
+    number: "01",
     title: "AI Generation",
     description: "Generate custom icons from text prompts using advanced AI models",
     color: "bg-zinc-100",
     hoverColor: "hover:bg-[#B9FF66]",
   },
   {
-    icon: HiArrowDownTray,
+    number: "02",
     title: "Multiple Formats",
     description: "Export icons as SVG, PNG, or React components for seamless integration",
     color: "bg-[#B9FF66]",
     hoverColor: "hover:bg-black hover:text-white",
   },
   {
-    icon: HiPaintBrush,
+    number: "03",
     title: "Custom Styles",
     description: "Choose from various styles: minimalist, outlined, filled, gradient, and more",
     color: "bg-black text-white",
     hoverColor: "hover:bg-zinc-800",
   },
   {
-    icon: HiBolt,
+    number: "04",
     title: "Fast Generation",
     description: "Get your icons in under 3 seconds with our optimized AI pipeline",
     color: "bg-zinc-100",
     hoverColor: "hover:bg-[#B9FF66]",
   },
   {
-    icon: HiShare,
+    number: "05",
     title: "Community Library",
     description: "Share your creations and discover icons made by other designers",
     color: "bg-[#B9FF66]",
     hoverColor: "hover:bg-black hover:text-white",
   },
   {
-    icon: HiCreditCard,
+    number: "06",
     title: "Flexible Pricing",
     description: "Start with 2 free credits, then purchase packages that fit your needs",
     color: "bg-black text-white",
@@ -109,8 +99,10 @@ export default function Features() {
           </div>
           {/* Decorative blob behind */}
           <div className="absolute w-48 h-48 bg-[#B9FF66] border-4 border-black rounded-full translate-x-4 translate-y-4" />
-          {/* Little sparks */}
-          <HiSparkles className="absolute -top-4 right-10 w-10 h-10 text-black rotate-12 z-20 animate-pulse" />
+          {/* Decorative string/text behind */}
+          <div className="absolute -top-4 right-5 text-4xl font-black text-black z-20 brutalist-shadow bg-[#B9FF66] border-4 border-black px-2 py-1 rotate-12">
+            WTF?
+          </div>
         </div>
       </div>
 
@@ -122,7 +114,9 @@ export default function Features() {
             className={`${feature.color} p-8 rounded-[30px] border-4 border-black brutalist-shadow flex flex-col justify-between min-h-[320px] group transition-all duration-300 ${feature.hoverColor} cursor-pointer`}
           >
             <div>
-              <feature.icon className="w-14 h-14 mb-6 group-hover:rotate-12 transition-transform" />
+              <div className="text-5xl font-black mb-6 tracking-tighter group-hover:rotate-6 transition-transform group-hover:scale-110 origin-left">
+                {feature.number}
+              </div>
               <h3 className="text-3xl font-black tracking-tighter leading-tight mb-4">
                 {feature.title}
               </h3>
@@ -136,9 +130,9 @@ export default function Features() {
                   ? 'group-hover:border-[#B9FF66]' 
                   : 'group-hover:bg-black group-hover:text-[#B9FF66]'
               }`}>
-                <HiArrowTopRightOnSquare className="w-6 h-6" />
+                <span className="font-black">→</span>
               </div>
-              Learn more
+              Explore
             </div>
           </Card>
         ))}

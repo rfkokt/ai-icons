@@ -29,9 +29,7 @@ export default function ReferralPage() {
   return (
     <div className="flex-1 overflow-auto py-8 px-6 bg-[#f3f4f6] bg-grid-pattern min-h-screen">
       <div className="max-w-2xl mx-auto space-y-8">
-        <div className="flex justify-end">
-          <UserArea credits={userCredits} />
-        </div>
+
 
         <div className="text-center">
           <div className="w-10 h-10 bg-[#B9FF66] rounded-2xl flex items-center justify-center mx-auto mb-4 border-2 border-black brutalist-shadow-sm">

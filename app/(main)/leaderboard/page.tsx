@@ -69,8 +69,10 @@ export default function LeaderboardPage() {
         </Card>
       </main>
 
-      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
-        <UserCard {...myRank} variant="my" />
+      <div className="fixed bottom-0 left-0 w-full p-4 sm:p-0 sm:bottom-6 sm:left-auto sm:right-6 z-50">
+        <div className="max-w-md mx-auto sm:max-w-none">
+          <UserCard {...myRank} variant="my" />
+        </div>
       </div>
     </div>
   )

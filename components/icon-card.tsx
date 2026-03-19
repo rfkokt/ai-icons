@@ -86,8 +86,8 @@ export function IconCard({
         {src ? (
           <LoadableImage src={src} alt={alt} className="max-w-[85%] max-h-[85%] object-contain" />
         ) : (
-          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-zinc-200 rounded-xl border-2 border-zinc-300 flex items-center justify-center">
-            <HiSparkles className="h-6 w-6 sm:h-8 sm:w-8 text-zinc-400" />
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-xl border-3 border-black flex items-center justify-center shadow-[4px_4px_0_0_#000000]">
+            <span className="text-xl sm:text-2xl font-black text-black">?</span>
           </div>
         )}
       </div>
@@ -128,8 +128,8 @@ export function IconCard({
             {src ? (
               <LoadableImage src={src} alt={alt} className="max-w-[80%] max-h-[80%] object-contain" />
             ) : (
-              <div className="w-16 h-16 bg-zinc-200 rounded-2xl border-2 border-zinc-300 flex items-center justify-center">
-                <HiSparkles className="h-8 w-8 text-zinc-400" />
+              <div className="w-16 h-16 bg-white rounded-2xl border-3 border-black shadow-[4px_4px_0_0_#000000] flex items-center justify-center">
+                <span className="text-2xl font-black text-black">?</span>
               </div>
             )}
           </div>

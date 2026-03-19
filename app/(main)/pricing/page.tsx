@@ -39,9 +39,8 @@ const tiers: PricingTier[] = [
     credits: 50,
     description: "Perfect for trying out AI Icons",
     icon: (
-      <div className="relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-zinc-400/30 to-zinc-500/30 blur-xl rounded-full" />
-        <HiBolt className="w-6 h-6 relative z-10 text-zinc-600" />
+      <div className="relative text-2xl font-black">
+        S
       </div>
     ),
     features: [
@@ -62,9 +61,8 @@ const tiers: PricingTier[] = [
     highlight: true,
     badge: "Most Popular",
     icon: (
-      <div className="relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#B9FF66]/50 to-[#88cc33]/50 blur-xl rounded-full" />
-        <FaCrown className="w-6 h-6 relative z-10 text-black" />
+      <div className="relative text-2xl font-black">
+        C
       </div>
     ),
     features: [
@@ -83,9 +81,8 @@ const tiers: PricingTier[] = [
     credits: 500,
     description: "For power users and teams",
     icon: (
-      <div className="relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-zinc-400/30 to-zinc-500/30 blur-xl rounded-full" />
-        <HiBuildingOffice2 className="w-6 h-6 relative z-10 text-zinc-600" />
+      <div className="relative text-2xl font-black">
+        P
       </div>
     ),
     features: [
@@ -104,9 +101,8 @@ const tiers: PricingTier[] = [
     credits: 2000,
     description: "For teams and agencies",
     icon: (
-      <div className="relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-zinc-400/30 to-zinc-500/30 blur-xl rounded-full" />
-        <HiSparkles className="w-6 h-6 relative z-10 text-zinc-600" />
+      <div className="relative text-2xl font-black">
+        E
       </div>
     ),
     features: [
@@ -154,7 +150,7 @@ function PricingSection({ className }: { className?: string }) {
   return (
     <section
       className={cn(
-        "relative bg-[#f3f4f6] bg-grid-pattern",
+        "relative",
         "py-12 px-4",
         "overflow-hidden flex-1",
         className,
@@ -315,8 +311,8 @@ function PricingSection({ className }: { className?: string }) {
 
 export default function PricingPage() {
   return (
-    <div className="flex-1 overflow-auto">
-      <PricingSection />
+    <div className="flex-1 overflow-auto bg-[#f3f4f6] bg-grid-pattern min-h-[calc(100vh-64px)] flex flex-col">
+      <PricingSection className="flex-1" />
     </div>
   )
 }

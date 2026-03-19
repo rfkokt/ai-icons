@@ -49,7 +49,7 @@ export default function Hero() {
         <div ref={heroContentRef} className="max-w-xl">
           <div className="inline-block bg-white border-2 border-black px-4 py-2 rounded-full font-bold mb-6 transform -rotate-2 brutalist-shadow-sm">
             <span className="flex items-center gap-2">
-              <HiSparkles className="w-5 h-5 text-[#B9FF66]" />
+              <div className="w-4 h-4 rounded-sm bg-[#B9FF66] border-2 border-black rotate-45 transform" />
               AI-Powered Icon Generation
             </span>
           </div>
@@ -72,7 +72,7 @@ export default function Hero() {
               className="bg-black text-[#B9FF66] text-xl px-10 py-5 rounded-2xl brutalist-shadow border-2 border-black flex justify-center items-center gap-3 group h-auto hover:shadow-[4px_4px_0px_0px_#000000] hover:translate-x-1 hover:translate-y-1"
             >
               Start Creating
-              <HiArrowTopRightOnSquare className="text-2xl group-hover:rotate-45 transition-transform" />
+              <span className="text-2xl font-black group-hover:rotate-12 transition-transform">→</span>
             </Button>
             
             <Button
@@ -109,41 +109,26 @@ export default function Hero() {
               <div className="flex-1 flex items-center justify-center relative">
                 <div className="grid grid-cols-3 gap-4 w-full max-w-[280px]">
                   {/* Sample Icons */}
-                  <div className="w-20 h-20 bg-zinc-100 border-4 border-black rounded-2xl flex items-center justify-center">
-                    <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M12 6v6l4 2" />
-                    </svg>
+                  <div className="w-20 h-20 bg-white border-4 border-black rounded-2xl flex items-center justify-center font-black text-4xl">
+                    Aa
                   </div>
-                  <div className="w-20 h-20 bg-[#B9FF66] border-4 border-black rounded-2xl flex items-center justify-center relative">
-                    <HiSparkles className="w-10 h-10 hero-icon-float" />
+                  <div className="w-20 h-20 bg-[#B9FF66] border-4 border-black rounded-2xl flex items-center justify-center relative font-black text-5xl">
+                    <span className="hero-icon-float">*</span>
                   </div>
-                  <div className="w-20 h-20 bg-zinc-100 border-4 border-black rounded-2xl flex items-center justify-center">
-                    <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                      <path d="M2 17l10 5 10-5" />
-                      <path d="M2 12l10 5 10-5" />
-                    </svg>
+                  <div className="w-20 h-20 bg-white border-4 border-black rounded-2xl flex items-center justify-center font-black text-4xl">
+                    {'</>'}
                   </div>
-                  <div className="w-20 h-20 bg-zinc-800 border-4 border-black rounded-2xl flex items-center justify-center">
-                    <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                    </svg>
+                  <div className="w-20 h-20 bg-black border-4 border-black rounded-2xl flex items-center justify-center font-black text-4xl text-[#B9FF66]">
+                    #
                   </div>
-                  <div className="w-20 h-20 bg-zinc-100 border-4 border-black rounded-2xl flex items-center justify-center">
-                    <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="3" y="3" width="18" height="18" rx="2" />
-                      <path d="M3 9h18" />
-                    </svg>
+                  <div className="w-20 h-20 bg-white border-4 border-black rounded-2xl flex items-center justify-center font-black text-4xl">
+                    X
                   </div>
-                  <div className="w-20 h-20 bg-zinc-100 border-4 border-black rounded-2xl flex items-center justify-center relative">
+                  <div className="w-20 h-20 bg-white border-4 border-black rounded-2xl flex items-center justify-center relative font-black text-4xl">
                     <div className="absolute -top-8 -right-8 bg-white border-4 border-black px-3 py-1 rounded-full font-black text-lg brutalist-shadow-sm rotate-12">
                       +428%
                     </div>
-                    <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 20h9" />
-                      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                    </svg>
+                    {':)'}
                   </div>
                 </div>
               </div>
