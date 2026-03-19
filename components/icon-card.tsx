@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card"
 import { HiSparkles, HiHeart, HiCheck } from "react-icons/hi2"
 import { cn } from "@/lib/utils"
 import { IconActionBar } from "./icon-action-bar"
+import { LoadableImage } from "./loadable-image"
 
 type IconCardVariant = "community" | "library" | "generated"
 
@@ -73,7 +74,7 @@ export function IconCard({
         isTransparent && "bg-transparent"
       )}>
         {src ? (
-          <img src={src} alt={alt} className="max-w-[85%] max-h-[85%] object-contain" />
+          <LoadableImage src={src} alt={alt} className="max-w-[85%] max-h-[85%] object-contain" />
         ) : (
           <div className="w-12 h-12 sm:w-16 sm:h-16 bg-zinc-200 rounded-xl border-2 border-zinc-300 flex items-center justify-center">
             <HiSparkles className="h-6 w-6 sm:h-8 sm:w-8 text-zinc-400" />
@@ -94,7 +95,7 @@ export function IconCard({
       >
         <div className="w-full h-full flex items-center justify-center bg-zinc-50 rounded-lg sm:rounded-xl group-hover:bg-[#B9FF66] transition-colors duration-200">
           {src ? (
-            <img src={src} alt={alt} className="max-w-[80%] max-h-[80%] object-contain" />
+            <LoadableImage src={src} alt={alt} className="max-w-[80%] max-h-[80%] object-contain" />
           ) : (
             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-zinc-200 group-hover:bg-zinc-300 rounded-lg sm:rounded-xl flex items-center justify-center transition-colors">
               <HiSparkles className="h-6 w-6 sm:h-8 sm:w-8 text-zinc-400" />
@@ -126,7 +127,7 @@ export function IconCard({
         >
           <div className="checkerboard absolute inset-0 z-0" />
           {src && (
-            <img 
+            <LoadableImage 
               src={src} 
               alt={alt} 
               className="relative z-10 w-full aspect-square object-contain p-3 sm:p-4" 

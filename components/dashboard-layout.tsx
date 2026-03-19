@@ -27,6 +27,7 @@ import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { UserArea } from "@/components/user-area"
 import { ConfirmDialog } from "@/components/confirm-dialog"
+import { LoadableImage } from "@/components/loadable-image"
 import gsap from "gsap"
 
 interface HistoryPack {
@@ -183,7 +184,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                         <div className="flex items-start gap-3">
                           <div className="w-10 h-10 bg-white rounded-lg border border-zinc-200 flex items-center justify-center shrink-0 overflow-hidden">
                             {pack.preview ? (
-                              <img src={pack.preview} alt="" className="w-full h-full object-contain" />
+                              <LoadableImage src={pack.preview} alt="" className="w-full h-full object-contain" />
                             ) : (
                               <HiPhoto className="h-5 w-5 text-zinc-400" />
                             )}
@@ -369,7 +370,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 bg-white rounded-lg border border-zinc-200 flex items-center justify-center shrink-0 overflow-hidden">
                     {pack.preview ? (
-                      <img src={pack.preview} alt="" className="w-full h-full object-contain" />
+                      <LoadableImage src={pack.preview} alt="" className="w-full h-full object-contain" />
                     ) : (
                       <HiPhoto className="h-5 w-5 text-zinc-400" />
                     )}

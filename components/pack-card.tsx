@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card"
 import { HiSparkles, HiShare } from "react-icons/hi2"
 import { cn } from "@/lib/utils"
 import { IconActionBar } from "./icon-action-bar"
+import { LoadableImage } from "./loadable-image"
 
 interface PackCardProps {
   id: string
@@ -44,7 +45,7 @@ export function PackCard({
       >
         <div className="aspect-square p-4 flex items-center justify-center bg-gradient-to-br from-white via-zinc-50 to-zinc-100">
           {preview ? (
-            <img src={preview} alt={prompt} className="max-w-[80%] max-h-[80%] object-contain" />
+            <LoadableImage src={preview} alt={prompt} className="max-w-[80%] max-h-[80%] object-contain" />
           ) : (
             <div className="w-16 h-16 bg-zinc-200 rounded-2xl border-2 border-zinc-300 flex items-center justify-center">
               <HiSparkles className="h-8 w-8 text-zinc-400" />
