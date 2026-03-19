@@ -55,30 +55,27 @@ export const GeneratingOverlay = forwardRef<HTMLDivElement, GeneratingOverlayPro
             <span className="font-bold font-mono text-xs sm:text-sm uppercase tracking-widest text-zinc-600 bg-white px-3 py-1 border-2 border-black rounded-full">Processing</span>
           </div>
 
-          <div className="p-8 sm:p-12 flex flex-col items-center">
-            {/* Flat Neo-Brutalist Scanner */}
-            <div className="w-32 h-32 mb-10 mt-2 relative border-4 border-black bg-white shadow-[8px_8px_0_0_#B9FF66] overflow-hidden rounded-xl flex items-center justify-center">
-              {/* Dotted Grid Background */}
-              <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, black 1px, transparent 0)", backgroundSize: "12px 12px" }}></div>
-              
-              {/* Center Pixel Grid */}
-              <div className="relative z-10 w-20 h-20 bg-black rounded-lg flex items-center justify-center p-3.5">
-                <div className="grid grid-cols-3 gap-1.5 w-full h-full">
-                  {[...Array(9)].map((_, i) => (
-                    <div 
-                      key={i} 
-                      className="bg-white rounded-[2px] animate-pulse-pixel"
-                      style={{ animationDelay: `${((i * 7) % 5) * 0.15}s` }}
-                    ></div>
-                  ))}
-                </div>
+          <div className="p-8 sm:p-12 flex flex-col items-center w-full max-w-md">
+            
+            <div className="w-full mb-8 relative">
+              <h2 className="text-4xl sm:text-5xl font-black uppercase tracking-tighter text-center mb-6 text-black">
+                Generating<span className="animate-pulse">...</span>
+              </h2>
+
+              {/* Giant Brutalist Progress Bar */}
+              <div className="w-full h-16 border-4 border-black bg-white shadow-[8px_8px_0_0_#B9FF66] rounded-xl overflow-hidden relative">
+                
+                {/* Green Fill */}
+                <div className="absolute top-0 left-0 h-full bg-[#B9FF66] border-r-[3px] border-black animate-progress-fill z-10"></div>
+                
+                {/* Moving Diagonal Stripes Overlay */}
+                <div className="absolute inset-0 opacity-[0.15] bg-stripes animate-stripes-move z-20"></div>
               </div>
-
-              {/* Scanning Laser Line */}
-              <div className="absolute left-0 right-0 h-4 bg-[#B9FF66] border-y-[3px] border-black animate-scan-laser z-30"></div>
+              
+              <div className="mt-5 font-bold text-center uppercase tracking-widest text-sm text-zinc-600 animate-pulse">
+                Cooking pixels
+              </div>
             </div>
-
-            <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tighter text-center mb-1 text-black">Generating</h2>
             <p className="font-bold text-zinc-500 mb-8 text-center tracking-wide uppercase">{iconCount} High-Quality Assets</p>
 
             {/* Blocky Progress Bar */}
@@ -111,20 +108,31 @@ export const GeneratingOverlay = forwardRef<HTMLDivElement, GeneratingOverlayPro
             animation: marquee-reverse 10s linear infinite;
             width: max-content;
           }
-          @keyframes scan-laser {
-            0% { top: -20%; }
-            50% { top: 100%; }
-            100% { top: -20%; }
+          @keyframes progress-fill {
+            0% { width: 0%; }
+            40% { width: 60%; }
+            70% { width: 85%; }
+            100% { width: 100%; }
           }
-          .animate-scan-laser {
-            animation: scan-laser 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+          .animate-progress-fill {
+            animation: progress-fill 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
           }
-          @keyframes pulse-pixel {
-            0%, 100% { background-color: #ffffff; transform: scale(1); opacity: 1; }
-            50% { background-color: #B9FF66; transform: scale(0.6); opacity: 0.3; }
+          .bg-stripes {
+            background-image: repeating-linear-gradient(
+              -45deg,
+              #000,
+              #000 12px,
+              transparent 12px,
+              transparent 24px
+            );
+            background-size: 34px 34px;
           }
-          .animate-pulse-pixel {
-            animation: pulse-pixel 1.2s ease-in-out infinite;
+          @keyframes stripes-move {
+            0% { background-position: 0 0; }
+            100% { background-position: 34px 0; }
+          }
+          .animate-stripes-move {
+            animation: stripes-move 1s linear infinite;
           }
           @keyframes pulse-block {
             0%, 100% { background-color: #f4f4f5; opacity: 0.5; }
