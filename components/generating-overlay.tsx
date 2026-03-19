@@ -61,9 +61,9 @@ export const GeneratingOverlay = forwardRef<HTMLDivElement, GeneratingOverlayPro
               {/* Dotted Grid Background */}
               <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, black 1px, transparent 0)", backgroundSize: "12px 12px" }}></div>
               
-              {/* Center Icon */}
-              <div className="relative z-10 w-20 h-20 bg-black rounded-lg flex items-center justify-center animate-pulse-fast">
-                <HiSparkles className="w-10 h-10 text-white" />
+              {/* Center Shape */}
+              <div className="relative z-10 w-20 h-20 bg-black rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-[#B9FF66] border-4 border-white animate-[spin_3s_linear_infinite]"></div>
               </div>
 
               {/* Scanning Laser Line */}
