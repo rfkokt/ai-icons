@@ -56,13 +56,34 @@ export const GeneratingOverlay = forwardRef<HTMLDivElement, GeneratingOverlayPro
           </div>
 
           <div className="p-8 sm:p-12 flex flex-col items-center">
-            
-            {/* Morphing Graphics */}
-            <div className="w-28 h-28 mb-8 relative flex justify-center items-center">
-              <div className="w-full h-full bg-[#B9FF66] border-4 border-black absolute animate-spin-slow rounded-xl"></div>
-              <div className="w-20 h-20 bg-black absolute animate-pulse rounded-lg flex items-center justify-center">
-                <HiSparkles className="w-10 h-10 text-white animate-bounce-fast" />
+            {/* 3D Neo-Brutalist Cube */}
+            <div className="w-32 h-32 mb-6 mt-2 relative flex flex-col justify-center items-center" style={{ perspective: "1000px" }}>
+              <div className="animate-bounce-cube w-20 h-20 relative z-10" style={{ transformStyle: "preserve-3d" }}>
+                <div className="w-full h-full relative animate-spin-cube" style={{ transformStyle: "preserve-3d" }}>
+                  {/* Front */}
+                  <div className="absolute inset-0 border-4 border-black bg-[#B9FF66] flex items-center justify-center" style={{ transform: "rotateY(0deg) translateZ(40px)" }}>
+                    <HiSparkles className="w-10 h-10 text-black" />
+                  </div>
+                  {/* Back */}
+                  <div className="absolute inset-0 border-4 border-black bg-[#B9FF66] flex items-center justify-center" style={{ transform: "rotateY(180deg) translateZ(40px)" }}>
+                    <HiSparkles className="w-10 h-10 text-black" />
+                  </div>
+                  {/* Right */}
+                  <div className="absolute inset-0 border-4 border-black bg-white flex items-center justify-center" style={{ transform: "rotateY(90deg) translateZ(40px)" }}>
+                    <HiSparkles className="w-10 h-10 text-black" />
+                  </div>
+                  {/* Left */}
+                  <div className="absolute inset-0 border-4 border-black bg-white flex items-center justify-center" style={{ transform: "rotateY(-90deg) translateZ(40px)" }}>
+                    <HiSparkles className="w-10 h-10 text-black" />
+                  </div>
+                  {/* Top */}
+                  <div className="absolute inset-0 border-4 border-black bg-[#B9FF66]" style={{ transform: "rotateX(90deg) translateZ(40px)" }}></div>
+                  {/* Bottom */}
+                  <div className="absolute inset-0 border-4 border-black bg-zinc-800" style={{ transform: "rotateX(-90deg) translateZ(40px)" }}></div>
+                </div>
               </div>
+              {/* Ground shadow */}
+              <div className="w-24 h-6 bg-black/20 rounded-[50%] absolute -bottom-2 animate-shadow-cube blur-md"></div>
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tighter text-center mb-1 text-black">Generating</h2>
@@ -98,19 +119,26 @@ export const GeneratingOverlay = forwardRef<HTMLDivElement, GeneratingOverlayPro
             animation: marquee-reverse 10s linear infinite;
             width: max-content;
           }
-          @keyframes spin-slow {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+          @keyframes spin-cube {
+            0% { transform: rotateX(-25deg) rotateY(0deg); }
+            100% { transform: rotateX(-25deg) rotateY(360deg); }
           }
-          .animate-spin-slow {
-            animation: spin-slow 8s linear infinite;
+          .animate-spin-cube {
+            animation: spin-cube 3s linear infinite;
           }
-          @keyframes bounce-fast {
+          @keyframes bounce-cube {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15%); }
+            50% { transform: translateY(-30px); }
           }
-          .animate-bounce-fast {
-            animation: bounce-fast 0.6s ease-in-out infinite;
+          .animate-bounce-cube {
+            animation: bounce-cube 1.5s ease-in-out infinite;
+          }
+          @keyframes shadow-cube {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(0.6); opacity: 0.2; }
+          }
+          .animate-shadow-cube {
+            animation: shadow-cube 1.5s ease-in-out infinite;
           }
           @keyframes pulse-block {
             0%, 100% { background-color: #f4f4f5; opacity: 0.5; }
