@@ -60,9 +60,10 @@ export function DownloadDropdown({
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button
+          <div
+            onClick={(e) => e.stopPropagation()}
             className={cn(
-              "bg-white hover:bg-[#B9FF66] border-2 border-black rounded-lg px-3 flex items-center justify-center gap-1.5 transition-all font-bold shadow-[2px_2px_0px_0px_#000] hover:shadow-[1px_1px_0px_0px_#000] hover:-translate-x-0.5 hover:-translate-y-0.5",
+              "bg-white hover:bg-[#B9FF66] border-2 border-black rounded-lg px-3 flex items-center justify-center gap-1.5 transition-all font-bold shadow-[2px_2px_0px_0px_#000] hover:shadow-[1px_1px_0px_0px_#000] hover:-translate-x-0.5 hover:-translate-y-0.5 cursor-pointer",
               size === "sm" && "h-8 px-2 text-xs",
               size === "md" && "h-9 px-3 text-sm",
               size === "lg" && "h-10 px-4 text-base",
@@ -71,7 +72,7 @@ export function DownloadDropdown({
           >
             <HiArrowDownTray className={iconSizes[size]} />
             {size !== "sm" && <span>Download</span>}
-          </button>
+          </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="bg-white border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000] min-w-[120px]">
           <DropdownMenuItem onClick={handleDownloadPng} className="flex items-center gap-2 cursor-pointer font-bold hover:bg-[#B9FF66] py-2.5">
@@ -92,15 +93,16 @@ export function DownloadDropdown({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button
+        <div
+          onClick={(e) => e.stopPropagation()}
           className={cn(
-            "bg-white hover:bg-zinc-50 border-2 border-black rounded-lg flex items-center justify-center transition-all shadow-[2px_2px_0px_0px_#000] hover:shadow-[1px_1px_0px_0px_#000] hover:-translate-x-0.5 hover:-translate-y-0.5",
+            "bg-[#B9FF66] hover:bg-lime-400 border-2 border-black rounded-lg flex items-center justify-center transition-all shadow-[2px_2px_0px_0px_#000] hover:shadow-[1px_1px_0px_0px_#000] hover:-translate-x-0.5 hover:-translate-y-0.5 cursor-pointer",
             sizeClasses[size],
             className
           )}
         >
-          <HiArrowDownTray className={iconSizes[size]} />
-        </button>
+          <HiArrowDownTray className="h-3.5 w-3.5 text-black" />
+        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="bg-white border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000] min-w-[100px]">
         <DropdownMenuItem onClick={handleDownloadPng} className="flex items-center gap-2 cursor-pointer font-bold hover:bg-[#B9FF66] py-2.5">

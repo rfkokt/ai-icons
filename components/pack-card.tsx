@@ -65,13 +65,13 @@ export function PackCard({
             variant="icon"
           />
           {onDelete && (
-            <button
+            <div
               onClick={(e) => { e.stopPropagation(); onDelete() }}
-              className="bg-white border-2 border-black rounded-lg px-2 py-1 hover:bg-red-500 hover:border-red-500 transition-colors shadow-[2px_2px_0px_0px_#000] text-xs pointer-events-auto"
+              className="bg-white border-2 border-black rounded-lg h-8 w-8 flex items-center justify-center hover:bg-red-500 hover:border-red-500 transition-all shadow-[2px_2px_0px_0px_#000] hover:shadow-[1px_1px_0px_0px_#000] hover:-translate-x-0.5 hover:-translate-y-0.5 cursor-pointer pointer-events-auto"
               title="Unshare"
             >
               <HiTrash className="h-3.5 w-3.5 text-red-500 hover:text-white transition-colors" />
-            </button>
+            </div>
           )}
         </div>
       )}
@@ -148,12 +148,12 @@ export function PackCard({
               variant="icon"
             />
             {onDelete && (
-              <button
+              <div
                 onClick={(e) => { e.stopPropagation(); onDelete() }}
-                className="bg-white border-2 border-black rounded-lg px-2 py-1 hover:bg-red-500 hover:border-red-500 transition-colors shadow-[2px_2px_0px_0px_#000] text-xs"
+                className="bg-white border-2 border-black rounded-lg h-8 w-8 flex items-center justify-center hover:bg-red-500 hover:border-red-500 transition-all shadow-[2px_2px_0px_0px_#000] hover:shadow-[1px_1px_0px_0px_#000] hover:-translate-x-0.5 hover:-translate-y-0.5 cursor-pointer"
               >
                 <HiTrash className="h-3.5 w-3.5 text-red-500 hover:text-white transition-colors" />
-              </button>
+              </div>
             )}
           </div>
         </div>
