@@ -10,7 +10,7 @@ import { IconCard } from "@/components/icon-card"
 import { GeneratingOverlay } from "@/components/generating-overlay"
 import { PackAccordion } from "@/components/pack-accordion"
 import { StyleSelector } from "@/components/style-selector"
-import { CountSelector } from "@/components/count-selector"
+import { TypeSelector } from "@/components/type-selector"
 import { PageLoading } from "@/components/page-loading"
 import { useDownload } from "@/hooks/use-download"
 import { usePackDownload } from "@/hooks/use-pack-download"
@@ -27,7 +27,7 @@ export default function GeneratePage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedPacks, setGeneratedPacks] = useState<GeneratedPack[]>([])
   const [selectedStyle, setSelectedStyle] = useState("minimalist")
-  const [format, setFormat] = useState({ count: 8 })
+  const [generateType, setGenerateType] = useState<"icon" | "image" | "character">("icon")
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
   const [iconToShare, setIconToShare] = useState<string | null>(null)
 
@@ -43,6 +43,15 @@ export default function GeneratePage() {
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  useEffect(() => {
+    const defaultStyles = {
+      icon: "minimalist",
+      image: "flat",
+      character: "flat",
+    }
+    setSelectedStyle(defaultStyles[generateType])
+  }, [generateType])
 
   const { suggestions } = usePromptSuggestions(prompt, { minLength: 2, maxSuggestions: 3 })
 
@@ -74,8 +83,7 @@ export default function GeneratePage() {
           prompt,
           style: selectedStyle,
           format: {
-            count: format.count,
-            iconType: "UI",
+            iconType: generateType,
             background: "transparent",
             designStyle: selectedStyle,
             colorPalette: "monochrome",
@@ -190,7 +198,7 @@ export default function GeneratePage() {
   return (
     <div className="flex-1 flex h-full overflow-hidden bg-gradient-to-br from-zinc-50 via-white to-zinc-100">
       {isGenerating && (
-        <GeneratingOverlay iconCount={format.count} />
+        <GeneratingOverlay />
       )}
 
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -266,15 +274,16 @@ export default function GeneratePage() {
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-3 mb-3">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <CountSelector
-                    count={format.count}
-                    onCountChange={(count) => setFormat({ count })}
+                  <TypeSelector
+                    selectedType={generateType}
+                    onTypeChange={setGenerateType}
                     disabled={isGenerating}
                   />
                   <StyleSelector
                     selectedStyle={selectedStyle}
                     onStyleChange={setSelectedStyle}
                     disabled={isGenerating}
+                    type={generateType}
                   />
                 </div>
 

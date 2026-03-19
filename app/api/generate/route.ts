@@ -12,40 +12,109 @@ interface GenerateRequest {
   prompt?: string
   style?: string
   format?: {
-    count: number
     iconType: string
-    background: string
+    background?: string
     designStyle: string
-    colorPalette: string
-    visualDetails: string
+    colorPalette?: string
+    visualDetails?: string
   }
 }
 
-const STYLE_PROMPTS: Record<string, string> = {
-  minimalist: "Clean, minimalist design with simple geometric shapes, black strokes, transparent background",
-  outline: "Outline/stroke style icon, clean line art, black lines, no border/box around the icon",
-  filled: "Filled solid icon, black fill, transparent background",
-  duotone: "Duotone two-tone icon, two contrasting colors, transparent background",
-  "3d": "3D dimensional icon, depth and perspective, transparent background",
-  flat: "Flat design icon, simple 2D shapes, solid colors, transparent background",
-  "hand-drawn": "Hand-drawn sketch style, organic imperfect lines, transparent background",
-  neon: "Neon glowing icon, bright colors with glow effect, transparent background",
+const ICON_STYLE_PROMPTS: Record<string, string> = {
+  minimalist: "minimalist icon, clean geometric shapes, simple lines, transparent background, professional quality",
+  outline: "outline icon, stroke style, clean line art, black strokes on transparent background, no fill",
+  filled: "solid filled icon, black fill only, transparent background, bold and clean",
+  duotone: "duotone icon, two-tone design with primary and secondary colors, transparent background",
+  "3d": "3D dimensional icon, depth and perspective, subtle shadows, transparent background, volumetric look",
+  flat: "flat design icon, simple 2D shapes, solid colors, transparent background, clean composition",
+  "hand-drawn": "hand-drawn icon, sketchy organic lines, imperfect strokes, transparent background, casual feel",
+  neon: "neon icon, glowing bright colors, dark background with glow effect, cyberpunk style",
+}
+
+const IMAGE_STYLE_PROMPTS: Record<string, string> = {
+  flat: "flat design illustration, bold solid colors, clean shapes, no outlines, modern style",
+  minimalist: "minimalist illustration, limited color palette, simple composition, clean and elegant",
+  outline: "line art illustration, clean continuous strokes, no fill, elegant and refined",
+  "3d": "3D rendered illustration, volumetric shapes, realistic lighting and shadows, dimensional depth",
+  illustrative: "detailed illustrative style, artistic hand-drawn quality, rich colors, expressive",
+  watercolor: "watercolor illustration, soft painterly strokes, gentle color bleeding, artistic paper texture",
+  geometric: "geometric illustration, sharp angular shapes, pattern-based design, modern abstract",
+  retro: "retro vintage illustration style, warm nostalgic colors, classic design elements",
+}
+
+const CHARACTER_STYLE_PROMPTS: Record<string, string> = {
+  flat: "flat design character illustration, bold 2D vector style, solid colors, transparent background, modern vector art",
+  "3d": "3D rendered character, volumetric shapes, realistic lighting, transparent background, professional quality render",
+  chibi: "chibi anime character, cute exaggerated proportions, big head small body, kawaii style, transparent background",
+  anime: "anime character illustration, Japanese animation style, detailed eyes, dynamic pose, vibrant colors, transparent background",
+  cartoon: "cartoon character, fun exaggerated features, bold outlines, bright playful colors, transparent background",
+  realistic: "realistic character illustration, photorealistic quality, detailed human features, transparent background",
+  pixel: "pixel art character, retro 8-bit video game style, limited colors, nostalgic sprite, transparent background",
+  sketch: "sketch style character, hand-drawn pencil strokes, rough organic lines, transparent background, artistic look",
 }
 
 function buildIconPrompt(userPrompt: string, style: string): string {
-  const stylePrompt = STYLE_PROMPTS[style] || STYLE_PROMPTS.minimalist
+  const stylePrompt = ICON_STYLE_PROMPTS[style] || ICON_STYLE_PROMPTS.flat
   
-  return `Create a professional UI icon for "${userPrompt}". 
+  return `Design a professional UI icon for: ${userPrompt}
 
-Style: ${stylePrompt}
+Style specifications:
+- ${stylePrompt}
 
-Requirements:
-- Professional icon design
-- Transparent background
-- NO square border, NO box, NO frame around the icon
-- Icon should be floating, just the shape/symbol itself
-- High quality
-- No text, no labels, no borders`
+Technical requirements:
+- Square aspect ratio
+- Transparent background (no background color)
+- No text, labels, or numbers
+- No borders, frames, or containers
+- Floating design, centered composition
+- High contrast for visibility at small sizes
+- Clean, crisp edges`
+}
+
+function buildImagePrompt(userPrompt: string, style: string): string {
+  const stylePrompt = IMAGE_STYLE_PROMPTS[style] || IMAGE_STYLE_PROMPTS.flat
+  
+  return `Create a beautiful illustration depicting: ${userPrompt}
+
+Style specifications:
+- ${stylePrompt}
+
+Design requirements:
+- Square or 4:3 aspect ratio
+- Professional illustration quality
+- No text or written words
+- Engaging scene composition
+- Vibrant colors and clear visual hierarchy
+- Suitable for web and print use`
+}
+
+function buildCharacterPrompt(userPrompt: string, style: string): string {
+  const stylePrompt = CHARACTER_STYLE_PROMPTS[style] || CHARACTER_STYLE_PROMPTS.flat
+  
+  return `Design a character illustration based on: ${userPrompt}
+
+Style specifications:
+- ${stylePrompt}
+
+Technical requirements:
+- Transparent background (PNG with no background color)
+- No text, speech bubbles, or written words
+- Centered character composition
+- Full body or upper body visible
+- Isolated figure, no props or scene elements
+- High quality, clean edges
+- Suitable for web overlay use`
+}
+
+function buildPrompt(userPrompt: string, style: string, generateType: string): string {
+  switch (generateType) {
+    case "image":
+      return buildImagePrompt(userPrompt, style)
+    case "character":
+      return buildCharacterPrompt(userPrompt, style)
+    default:
+      return buildIconPrompt(userPrompt, style)
+  }
 }
 
 function simplifyPrompt(prompt: string): string {
@@ -67,9 +136,9 @@ function simplifyPrompt(prompt: string): string {
 }
 
 
-async function generateIconImage(prompt: string, style: string): Promise<Buffer | null> {
-  const fullPrompt = buildIconPrompt(prompt, style)
-  console.log("Calling Gemini API with prompt:", prompt.slice(0, 50))
+async function generateIconImage(prompt: string, style: string, generateType: string = "icon"): Promise<Buffer | null> {
+  const fullPrompt = buildPrompt(prompt, style, generateType)
+  console.log("Calling Gemini API with prompt:", prompt.slice(0, 50), "type:", generateType)
 
   try {
     const response = await fetch(
@@ -108,48 +177,55 @@ async function generateIconImage(prompt: string, style: string): Promise<Buffer 
   }
 }
 
-async function processPngForPreview(pngBuffer: Buffer): Promise<{ buffer: Buffer; preview: string }> {
+async function processPngForPreview(pngBuffer: Buffer, transparent: boolean = true): Promise<{ buffer: Buffer; preview: string }> {
   try {
-    // Step 1: Resize with transparent background
-    let processed = await sharp(pngBuffer)
-      .resize(512, 512, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
-      .png()
-      .toBuffer()
+    if (transparent) {
+      // Step 1: Resize with transparent background
+      let processed = await sharp(pngBuffer)
+        .resize(512, 512, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+        .png()
+        .toBuffer()
 
-    // Step 2: Get raw pixel data with alpha channel
-    const { data, info } = await sharp(processed)
-      .ensureAlpha()
-      .raw()
-      .toBuffer({ resolveWithObject: true })
+      // Step 2: Get raw pixel data with alpha channel
+      const { data, info } = await sharp(processed)
+        .ensureAlpha()
+        .raw()
+        .toBuffer({ resolveWithObject: true })
 
-    // Step 3: Make light gray/white pixels transparent (RGB >= 230 = light gray)
-    for (let i = 0; i < data.length; i += 4) {
-      const r = data[i]
-      const g = data[i + 1]
-      const b = data[i + 2]
-      
-      // Remove light gray to white (icon backgrounds typically in this range)
-      if (r >= 230 && g >= 230 && b >= 230) {
-        data[i + 3] = 0
+      // Step 3: Make light gray/white pixels transparent
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i]
+        const g = data[i + 1]
+        const b = data[i + 2]
+        
+        if (r >= 230 && g >= 230 && b >= 230) {
+          data[i + 3] = 0
+        }
       }
+
+      // Step 4: Convert back to PNG
+      const result = await sharp(data, {
+        raw: {
+          width: info.width,
+          height: info.height,
+          channels: 4,
+        }
+      }).png().toBuffer()
+
+      const preview = `data:image/png;base64,${result.toString("base64")}`
+      return { buffer: result, preview }
+    } else {
+      // For illustrations/characters - just resize, keep original colors
+      const result = await sharp(pngBuffer)
+        .resize(512, 512, { fit: 'contain', background: { r: 255, g: 255, b: 255, alpha: 1 } })
+        .png()
+        .toBuffer()
+
+      const preview = `data:image/png;base64,${result.toString("base64")}`
+      return { buffer: result, preview }
     }
-
-    // Step 4: Convert back to PNG
-    const result = await sharp(data, {
-      raw: {
-        width: info.width,
-        height: info.height,
-        channels: 4,
-      }
-    }).png().toBuffer()
-
-    // Step 5: Generate base64 preview
-    const preview = `data:image/png;base64,${result.toString("base64")}`
-
-    return { buffer: result, preview }
   } catch (error) {
     console.error("Error processing PNG:", error)
-    // Fallback
     const fallback = await sharp(pngBuffer)
       .resize(512, 512, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
       .ensureAlpha()
@@ -172,12 +248,14 @@ export async function POST(request: NextRequest) {
     const userId = clerkUser.id
     const body: GenerateRequest = await request.json()
     const { prompt, style = "minimalist", format } = body
+    const generateType = format?.iconType?.toLowerCase() || "icon"
+    const isIconOrCharacter = generateType === "icon" || generateType === "character"
 
     if (!prompt) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 })
     }
 
-    const iconCount = format?.count || 8
+    const iconCount = 8
     const icons: Array<{
       png: { url: string; key: string }
       preview: string
@@ -188,13 +266,13 @@ export async function POST(request: NextRequest) {
     // Generate all icons in parallel
     const iconPrompts = Array(iconCount).fill(prompt)
     
-    console.log("Generating", iconCount, "icons...")
+    console.log("Generating", iconCount, "items...", "type:", generateType)
     
     const results = await Promise.all(
       iconPrompts.map(async (iconPrompt, index) => {
-        console.log("Generating icon", index + 1)
-        const pngBuffer = await generateIconImage(iconPrompt, style)
-        console.log("Icon", index + 1, "generated:", pngBuffer ? "yes" : "no")
+        console.log("Generating", generateType, index + 1)
+        const pngBuffer = await generateIconImage(iconPrompt, style, generateType)
+        console.log(generateType, index + 1, "generated:", pngBuffer ? "yes" : "no")
         return { pngBuffer, index }
       })
     )
@@ -202,16 +280,16 @@ export async function POST(request: NextRequest) {
     // Process each result
     for (const { pngBuffer, index } of results) {
       if (!pngBuffer) {
-        console.log("Skipping icon", index + 1, "- no PNG buffer")
+        console.log("Skipping item", index + 1, "- no PNG buffer")
         continue
       }
 
       const timestamp = Date.now()
       const iconPromptText = `${prompt}-${index + 1}`
-      console.log("Processing icon", index + 1)
+      console.log("Processing item", index + 1)
 
-      // Process PNG (make transparent) and get preview
-      const { buffer: processedPng, preview } = await processPngForPreview(pngBuffer)
+      // Process PNG - icons and characters get transparent bg, illustrations keep colors
+      const { buffer: processedPng, preview } = await processPngForPreview(pngBuffer, isIconOrCharacter)
 
       // Upload PNG
       const pngKey = `users/${userId}/icons/${timestamp}-${index}-${prompt.replace(/\s+/g, "-").slice(0, 20)}.png`
