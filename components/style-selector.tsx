@@ -3,6 +3,7 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { HiChevronDown, HiCheck } from "react-icons/hi2"
 import { cn } from "@/lib/utils"
+import type { GenerateType } from "./type-selector"
 
 interface StyleOption {
   id: string
@@ -15,64 +16,66 @@ interface StyleSelectorProps {
   selectedStyle: string
   onStyleChange: (styleId: string) => void
   disabled?: boolean
-  type?: "icon" | "image" | "character"
+  type?: GenerateType
 }
 
-const ICON_STYLES: StyleOption[] = [
-  { id: "minimalist", name: "Minimalist", description: "Clean, simple geometric shapes", color: "bg-zinc-100" },
-  { id: "outline", name: "Outline", description: "Clean line art, black strokes", color: "bg-white border-2 border-black" },
-  { id: "filled", name: "Filled", description: "Solid black fill", color: "bg-black" },
-  { id: "duotone", name: "Duotone", description: "Two-tone with shading", color: "bg-gradient-to-br from-zinc-200 to-zinc-500" },
-  { id: "3d", name: "3D", description: "Dimensional with depth", color: "bg-zinc-300 shadow-[4px_4px_0px_0px_#000000]" },
-  { id: "flat", name: "Flat", description: "Simple 2D shapes", color: "bg-zinc-200" },
-  { id: "hand-drawn", name: "Hand Drawn", description: "Sketchy organic lines", color: "bg-yellow-100" },
-  { id: "neon", name: "Neon", description: "Glowing bright colors", color: "bg-[#B9FF66] shadow-[0_0_15px_#B9FF66]" },
+const ECOMMERCE_STYLES: StyleOption[] = [
+  { id: "minimalist_studio", name: "Minimalist Studio", description: "Clean, geometric, neutral pastel", color: "bg-stone-200" },
+  { id: "nature_organic", name: "Nature/Organic", description: "Moss, natural light, earthy", color: "bg-emerald-200" },
+  { id: "dark_luxury", name: "Dark Luxury", description: "Black marble, gold accents, moody", color: "bg-zinc-900 border border-yellow-500" },
 ]
 
-const IMAGE_STYLES: StyleOption[] = [
-  { id: "flat", name: "Flat", description: "Solid colors, clean shapes", color: "bg-gradient-to-br from-pink-400 to-purple-500" },
-  { id: "minimalist", name: "Minimalist", description: "Limited colors, simple", color: "bg-zinc-100" },
-  { id: "outline", name: "Line Art", description: "Clean strokes, no fill", color: "bg-white border-2 border-black" },
-  { id: "3d", name: "3D Render", description: "Volumetric, realistic", color: "bg-gradient-to-br from-zinc-300 to-zinc-500" },
-  { id: "illustrative", name: "Illustrative", description: "Artistic, detailed", color: "bg-gradient-to-br from-blue-400 to-teal-400" },
-  { id: "watercolor", name: "Watercolor", description: "Soft, painterly", color: "bg-gradient-to-br from-pink-200 to-blue-200" },
-  { id: "geometric", name: "Geometric", description: "Sharp angles, patterns", color: "bg-gradient-to-br from-orange-400 to-red-500" },
-  { id: "retro", name: "Retro", description: "Vintage inspired", color: "bg-gradient-to-br from-amber-400 to-orange-500" },
+const CONTENT_STYLES: StyleOption[] = [
+  { id: "3d_animation", name: "3D Animation", description: "Pixar/Disney inspired, cinematic", color: "bg-blue-400" },
+  { id: "anime_manga", name: "Anime/Manga", description: "Cel-shading, vibrant lines", color: "bg-pink-400" },
+  { id: "isometric_game", name: "Isometric Game", description: "Low-poly, cute proportions", color: "bg-violet-300" },
 ]
 
-const CHARACTER_STYLES: StyleOption[] = [
-  { id: "flat", name: "Flat", description: "2D vector, bold colors", color: "bg-gradient-to-br from-blue-400 to-indigo-500" },
-  { id: "3d", name: "3D Render", description: "Volumetric, realistic", color: "bg-gradient-to-br from-zinc-300 to-zinc-500" },
-  { id: "chibi", name: "Chibi", description: "Cute, big head", color: "bg-gradient-to-br from-pink-300 to-pink-500" },
-  { id: "anime", name: "Anime", description: "Japanese style", color: "bg-gradient-to-br from-purple-400 to-pink-500" },
-  { id: "cartoon", name: "Cartoon", description: "Fun, exaggerated", color: "bg-gradient-to-br from-yellow-400 to-orange-500" },
-  { id: "realistic", name: "Realistic", description: "Photo-like", color: "bg-gradient-to-br from-zinc-200 to-zinc-400" },
-  { id: "pixel", name: "Pixel Art", description: "Retro 8-bit", color: "bg-gradient-to-br from-emerald-400 to-teal-500" },
-  { id: "sketch", name: "Sketch", description: "Hand-drawn", color: "bg-yellow-100" },
+const REAL_ESTATE_STYLES: StyleOption[] = [
+  { id: "japandi", name: "Japandi", description: "Japanese minimalism, calm", color: "bg-orange-100" },
+  { id: "industrial_loft", name: "Industrial Loft", description: "Red brick, metal beams", color: "bg-red-800" },
+  { id: "modern_bohemian", name: "Modern Bohemian", description: "Rattan, plants, string lights", color: "bg-amber-100" },
 ]
 
-const TYPE_STYLES = {
-  icon: ICON_STYLES,
-  image: IMAGE_STYLES,
-  character: CHARACTER_STYLES,
+const PROFESSIONAL_STYLES: StyleOption[] = [
+  { id: "corporate_global", name: "Corporate Global", description: "Business attire, office bokeh", color: "bg-slate-300" },
+  { id: "tech_creative", name: "Tech/Creative", description: "Casual, modern co-working", color: "bg-teal-200" },
+  { id: "editorial_dark", name: "Editorial/Dark", description: "Rembrandt lighting, moody", color: "bg-zinc-800" },
+]
+
+const WEB_ASSETS_STYLES: StyleOption[] = [
+  { id: "3d_clay", name: "3D Clay Icon", description: "Claymorphism, rounded shapes", color: "bg-rose-200 shadow-[inset_2px_2px_4px_rgba(255,255,255,0.5),inset_-2px_-2px_4px_rgba(0,0,0,0.1)]" },
+  { id: "flat_vector", name: "Flat Vector", description: "Corporate Memphis, clean", color: "bg-yellow-300" },
+  { id: "mesh_gradient", name: "Mesh Gradient", description: "Fluid, abstract, ultra-smooth", color: "bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400" },
+  { id: "glassmorphism", name: "Glassmorphism", description: "Frosted glass, neon accents", color: "bg-zinc-200/50 border border-white" },
+]
+
+const TYPE_STYLES: Record<GenerateType, StyleOption[]> = {
+  ecommerce: ECOMMERCE_STYLES,
+  content: CONTENT_STYLES,
+  real_estate: REAL_ESTATE_STYLES,
+  professional: PROFESSIONAL_STYLES,
+  web_assets: WEB_ASSETS_STYLES,
 }
 
 export function StyleSelector({
   selectedStyle,
   onStyleChange,
   disabled = false,
-  type = "icon"
+  type = "ecommerce"
 }: StyleSelectorProps) {
-  const styles = TYPE_STYLES[type]
+  const styles = TYPE_STYLES[type] || TYPE_STYLES.ecommerce
   const currentStyle = styles.find(s => s.id === selectedStyle)
   const fallbackStyle = styles[0]
 
   const displayStyle = currentStyle || fallbackStyle
 
-  const typeLabel = {
-    icon: "ICON STYLE",
-    image: "ILLUSTRATION STYLE",
-    character: "CHARACTER STYLE",
+  const typeLabel: Record<GenerateType, string> = {
+    ecommerce: "PHOTOGRAPHY STYLE",
+    content: "CHARACTER STYLE",
+    real_estate: "INTERIOR STYLE",
+    professional: "PORTRAIT STYLE",
+    web_assets: "ASSET STYLE",
   }
 
   return (
@@ -88,7 +91,7 @@ export function StyleSelector({
       <DropdownMenuContent align="start" className="w-72 bg-white border-3 border-black rounded-xl shadow-[4px_4px_0px_0px_#000000]">
         <div className="p-3">
           <p className="text-xs font-black text-zinc-500 mb-2 px-1 uppercase tracking-wider">{typeLabel[type]}</p>
-          <div className="space-y-1 max-h-64 overflow-y-auto">
+          <div className="space-y-1 max-h-64 overflow-y-auto scrollbar-hide">
             {styles.map((style) => (
               <DropdownMenuItem
                 key={style.id}

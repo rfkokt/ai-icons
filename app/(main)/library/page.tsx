@@ -181,30 +181,43 @@ function LibraryContent() {
         />
 
         <Dialog open={lightbox.isOpen} onOpenChange={lightbox.close}>
-          <DialogContent className="max-w-4xl w-full bg-white border-3 border-black rounded-2xl shadow-[8px_8px_0px_0px_#000000] p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-100 rounded-full border-2 border-black">
-                <span className="text-sm font-bold text-zinc-700">{lightbox.currentIndex + 1} / {icons.length}</span>
+          <DialogContent className="max-w-5xl p-0 gap-0 w-[95vw] bg-white border-3 border-black rounded-2xl shadow-[8px_8px_0px_0px_#000000] overflow-hidden">
+            <div className="flex items-center justify-between p-4 sm:p-5 pr-12 sm:pr-16 border-b-3 border-black bg-zinc-50 relative z-10">
+              <div className="flex items-center gap-3">
+                <div className="inline-flex items-center justify-center min-w-[4rem] px-3 py-1.5 bg-[#B9FF66] rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000000] text-sm font-black text-black">
+                  {lightbox.currentIndex + 1} / {icons.length}
+                </div>
+                {packPrompt && (
+                  <h3 className="font-bold text-base sm:text-lg hidden sm:block truncate max-w-[200px] md:max-w-[300px] text-zinc-800">
+                    {packPrompt}
+                  </h3>
+                )}
               </div>
-              {icons[lightbox.currentIndex] && (
-                <IconActions
-                  iconKey={icons[lightbox.currentIndex].png_key!}
-                  prompt={icons[lightbox.currentIndex].prompt}
-                  onShare={() => shareToCommunity(icons[lightbox.currentIndex].id)}
-                  onDelete={() => handleDeleteIcon(icons[lightbox.currentIndex].id)}
-                />
-              )}
+              
+              <div className="flex items-center">
+                {icons[lightbox.currentIndex] && (
+                  <IconActions
+                    iconKey={icons[lightbox.currentIndex].png_key!}
+                    prompt={icons[lightbox.currentIndex].prompt}
+                    onShare={() => shareToCommunity(icons[lightbox.currentIndex].id)}
+                    onDelete={() => handleDeleteIcon(icons[lightbox.currentIndex].id)}
+                  />
+                )}
+              </div>
             </div>
-            <FeatureCarousel
-              images={icons.map((icon) => ({
-                src: icon.png_key ? `/api/download/${encodeURIComponent(icon.png_key)}` : '',
-                alt: icon.prompt,
-              })).filter(img => img.src)}
-              currentIndex={lightbox.currentIndex}
-              onNext={lightbox.goToNext}
-              onPrev={lightbox.goToPrev}
-              onIndexChange={lightbox.setCurrentIndex}
-            />
+
+            <div className="p-4 sm:p-8 bg-zinc-100/50 flex flex-col items-center justify-center min-h-[350px] md:min-h-[450px]">
+              <FeatureCarousel
+                images={icons.map((icon) => ({
+                  src: icon.png_key ? `/api/download/${encodeURIComponent(icon.png_key)}` : '',
+                  alt: icon.prompt,
+                })).filter(img => img.src)}
+                currentIndex={lightbox.currentIndex}
+                onNext={lightbox.goToNext}
+                onPrev={lightbox.goToPrev}
+                onIndexChange={lightbox.setCurrentIndex}
+              />
+            </div>
           </DialogContent>
         </Dialog>
       </div>

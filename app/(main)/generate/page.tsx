@@ -10,7 +10,11 @@ import { IconCard } from "@/components/icon-card"
 import { GeneratingOverlay } from "@/components/generating-overlay"
 import { PackAccordion } from "@/components/pack-accordion"
 import { StyleSelector } from "@/components/style-selector"
-import { TypeSelector } from "@/components/type-selector"
+import { TypeSelector, type GenerateType } from "@/components/type-selector"
+import { CountSelector } from "@/components/count-selector"
+import { FeatureCarousel } from "@/components/ui/feature-carousel"
+import { IconActions } from "@/components/icon-actions"
+import { useLightbox } from "@/hooks/use-lightbox"
 import { PageLoading } from "@/components/page-loading"
 import { useDownload } from "@/hooks/use-download"
 import { usePackDownload } from "@/hooks/use-pack-download"
@@ -26,13 +30,22 @@ export default function GeneratePage() {
   const [prompt, setPrompt] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedPacks, setGeneratedPacks] = useState<GeneratedPack[]>([])
-  const [selectedStyle, setSelectedStyle] = useState("minimalist")
-  const [generateType, setGenerateType] = useState<"icon" | "image" | "character">("icon")
+  const [selectedStyle, setSelectedStyle] = useState("minimalist_studio")
+  const [generateType, setGenerateType] = useState<GenerateType>("ecommerce")
+  const [iconCount, setIconCount] = useState(4)
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
   const [iconToShare, setIconToShare] = useState<string | null>(null)
 
   const [deletePackDialogOpen, setDeletePackDialogOpen] = useState(false)
   const [packToDelete, setPackToDelete] = useState<string | null>(null)
+  const [lightboxPack, setLightboxPack] = useState<GeneratedPack | null>(null)
+  
+  const lightbox = useLightbox(lightboxPack?.icons.length || 0)
+
+  const openLightbox = (pack: GeneratedPack, index: number) => {
+    setLightboxPack(pack)
+    lightbox.open(index)
+  }
 
   const generatingRef = useRef<HTMLDivElement>(null)
   const successRef = useRef<HTMLDivElement>(null)
@@ -45,10 +58,12 @@ export default function GeneratePage() {
   }, [])
 
   useEffect(() => {
-    const defaultStyles = {
-      icon: "minimalist",
-      image: "flat",
-      character: "flat",
+    const defaultStyles: Record<GenerateType, string> = {
+      ecommerce: "minimalist_studio",
+      content: "3d_animation",
+      real_estate: "japandi",
+      professional: "corporate_global",
+      web_assets: "3d_clay",
     }
     setSelectedStyle(defaultStyles[generateType])
   }, [generateType])
@@ -56,9 +71,9 @@ export default function GeneratePage() {
   const { suggestions } = usePromptSuggestions(prompt, { minLength: 2, maxSuggestions: 3 })
 
   const defaultSuggestions = [
-    "cute kawaii character with big sparkly eyes",
-    "angry warrior with sword and shield",
-    "relaxing at the beach with sunglasses",
+    "Premium coffee cup with latte art",
+    "Modern minimal workspace with macbook",
+    "Cute robotic dog fetching a bone",
   ]
 
   const staggerRef = useStaggerAnimation([generatedPacks.length], {
@@ -82,6 +97,7 @@ export default function GeneratePage() {
         body: JSON.stringify({
           prompt,
           style: selectedStyle,
+          count: iconCount,
           format: {
             iconType: generateType,
             background: "transparent",
@@ -198,7 +214,7 @@ export default function GeneratePage() {
   return (
     <div className="flex-1 flex h-full overflow-hidden bg-gradient-to-br from-zinc-50 via-white to-zinc-100">
       {isGenerating && (
-        <GeneratingOverlay />
+        <GeneratingOverlay iconCount={iconCount} />
       )}
 
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -232,6 +248,7 @@ export default function GeneratePage() {
                           variant="generated"
                           transparentBg
                           showActionBar
+                          onClick={() => openLightbox(pack, index)}
                           onShare={() => icon.id && shareToCommunity(icon.id)}
                         />
                       ))}
@@ -284,6 +301,11 @@ export default function GeneratePage() {
                     onStyleChange={setSelectedStyle}
                     disabled={isGenerating}
                     type={generateType}
+                  />
+                  <CountSelector
+                    count={iconCount}
+                    onCountChange={setIconCount}
+                    disabled={isGenerating}
                   />
                 </div>
 
@@ -360,6 +382,54 @@ export default function GeneratePage() {
               Share Now
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={lightbox.isOpen} onOpenChange={lightbox.close}>
+        <DialogContent className="max-w-5xl p-0 gap-0 w-[95vw] bg-white border-3 border-black rounded-2xl shadow-[8px_8px_0px_0px_#000000] overflow-hidden">
+          {lightboxPack && (
+            <>
+              <div className="flex items-center justify-between p-4 sm:p-5 pr-12 sm:pr-16 border-b-3 border-black bg-zinc-50 relative z-10">
+                <div className="flex items-center gap-3">
+                  <div className="inline-flex items-center justify-center min-w-[4rem] px-3 py-1.5 bg-[#B9FF66] rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000000] text-sm font-black text-black">
+                    {lightbox.currentIndex + 1} / {lightboxPack.icons.length}
+                  </div>
+                  <h3 className="font-bold text-base sm:text-lg hidden sm:block truncate max-w-[200px] md:max-w-[300px] text-zinc-800">
+                    {lightboxPack.prompt}
+                  </h3>
+                </div>
+                
+                <div className="flex items-center">
+                  {lightboxPack.icons[lightbox.currentIndex] && (
+                    <IconActions
+                      iconKey={lightboxPack.icons[lightbox.currentIndex].png.key}
+                      prompt={lightboxPack.icons[lightbox.currentIndex].prompt}
+                      onShare={() => {
+                        const id = lightboxPack.icons[lightbox.currentIndex].id
+                        if (id) shareToCommunity(id)
+                      }}
+                      onDelete={() => {
+                        toast.error("Please delete the entire pack below")
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+
+              <div className="p-4 sm:p-8 bg-zinc-100/50 flex flex-col items-center justify-center min-h-[350px] md:min-h-[450px]">
+                <FeatureCarousel
+                  images={lightboxPack.icons.map((icon) => ({
+                    src: `/api/download/${encodeURIComponent(icon.png.key)}`,
+                    alt: icon.prompt,
+                  }))}
+                  currentIndex={lightbox.currentIndex}
+                  onNext={lightbox.goToNext}
+                  onPrev={lightbox.goToPrev}
+                  onIndexChange={lightbox.setCurrentIndex}
+                />
+              </div>
+            </>
+          )}
         </DialogContent>
       </Dialog>
 

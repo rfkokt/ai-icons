@@ -11,6 +11,7 @@ const GEMINI_MODEL_IMAGE = "gemini-2.5-flash-image"
 interface GenerateRequest {
   prompt?: string
   style?: string
+  count?: number
   format?: {
     iconType: string
     background?: string
@@ -20,125 +21,57 @@ interface GenerateRequest {
   }
 }
 
-const ICON_STYLE_PROMPTS: Record<string, string> = {
-  minimalist: "minimalist icon, clean geometric shapes, simple lines, transparent background, professional quality",
-  outline: "outline icon, stroke style, clean line art, black strokes on transparent background, no fill",
-  filled: "solid filled icon, black fill only, transparent background, bold and clean",
-  duotone: "duotone icon, two-tone design with primary and secondary colors, transparent background",
-  "3d": "3D dimensional icon, depth and perspective, subtle shadows, transparent background, volumetric look",
-  flat: "flat design icon, simple 2D shapes, solid colors, transparent background, clean composition",
-  "hand-drawn": "hand-drawn icon, sketchy organic lines, imperfect strokes, transparent background, casual feel",
-  neon: "neon icon, glowing bright colors, dark background with glow effect, cyberpunk style",
-}
-
-const IMAGE_STYLE_PROMPTS: Record<string, string> = {
-  flat: "flat design illustration, bold solid colors, clean shapes, no outlines, modern style",
-  minimalist: "minimalist illustration, limited color palette, simple composition, clean and elegant",
-  outline: "line art illustration, clean continuous strokes, no fill, elegant and refined",
-  "3d": "3D rendered illustration, volumetric shapes, realistic lighting and shadows, dimensional depth",
-  illustrative: "detailed illustrative style, artistic hand-drawn quality, rich colors, expressive",
-  watercolor: "watercolor illustration, soft painterly strokes, gentle color bleeding, artistic paper texture",
-  geometric: "geometric illustration, sharp angular shapes, pattern-based design, modern abstract",
-  retro: "retro vintage illustration style, warm nostalgic colors, classic design elements",
-}
-
-const CHARACTER_STYLE_PROMPTS: Record<string, string> = {
-  flat: "flat design character illustration, bold 2D vector style, solid colors, transparent background, modern vector art",
-  "3d": "3D rendered character, volumetric shapes, realistic lighting, transparent background, professional quality render",
-  chibi: "chibi anime character, cute exaggerated proportions, big head small body, kawaii style, transparent background",
-  anime: "anime character illustration, Japanese animation style, detailed eyes, dynamic pose, vibrant colors, transparent background",
-  cartoon: "cartoon character, fun exaggerated features, bold outlines, bright playful colors, transparent background",
-  realistic: "realistic character illustration, photorealistic quality, detailed human features, transparent background",
-  pixel: "pixel art character, retro 8-bit video game style, limited colors, nostalgic sprite, transparent background",
-  sketch: "sketch style character, hand-drawn pencil strokes, rough organic lines, transparent background, artistic look",
-}
-
-function buildIconPrompt(userPrompt: string, style: string): string {
-  const stylePrompt = ICON_STYLE_PROMPTS[style] || ICON_STYLE_PROMPTS.flat
+const PROMPT_TEMPLATES: Record<string, string> = {
+  // E-commerce
+  "minimalist_studio": "Professional high-end studio product photography, {prompt} placed on a smooth matte geometric pedestal, neutral pastel background, soft-box side lighting, crisp shadows, sharp focus on texture, 8k resolution, minimalist aesthetic.",
+  "nature_organic": "Lifestyle product photography of {prompt}, nestled among organic elements like moss, wet stones, and soft ferns. Natural morning sunlight filtering through leaves (komorebi effect), realistic water droplets, macro detail, earthy tones.",
+  "dark_luxury": "Commercial photography of {prompt}, placed on black polished marble with subtle gold accents in the background. Moody low-key lighting, rim lighting to highlight edges, elegant reflections, cinematic atmosphere, premium feel.",
   
-  return `Design a professional UI icon for: ${userPrompt}
-
-Style specifications:
-- ${stylePrompt}
-
-Technical requirements:
-- Square aspect ratio
-- Transparent background (no background color)
-- No text, labels, or numbers
-- No borders, frames, or containers
-- Floating design, centered composition
-- High contrast for visibility at small sizes
-- Clean, crisp edges`
-}
-
-function buildImagePrompt(userPrompt: string, style: string): string {
-  const stylePrompt = IMAGE_STYLE_PROMPTS[style] || IMAGE_STYLE_PROMPTS.flat
+  // Content Creation & Characters
+  "3d_animation": "High-quality 3D character render of {prompt}, Pixar and Disney inspired style, large expressive eyes, detailed hair groom, subsurface scattering on skin, warm cinematic lighting, octane render, 4k.",
+  "anime_manga": "Anime style illustration, high-detail cel-shading, {prompt}. Vibrant color palette, sharp line art, aesthetic lighting effects, Makoto Shinkai inspired background, emotional atmosphere.",
+  "isometric_game": "Isometric 3D game asset of {prompt}, low-poly but high-detail texture, cute proportions, vibrant colors, isolated on plain background, soft global illumination, game-ready UI aesthetic.",
   
-  return `Create a beautiful illustration depicting: ${userPrompt}
-
-Style specifications:
-- ${stylePrompt}
-
-Design requirements:
-- Square or 4:3 aspect ratio
-- Professional illustration quality
-- No text or written words
-- Engaging scene composition
-- Vibrant colors and clear visual hierarchy
-- Suitable for web and print use`
-}
-
-function buildCharacterPrompt(userPrompt: string, style: string): string {
-  const stylePrompt = CHARACTER_STYLE_PROMPTS[style] || CHARACTER_STYLE_PROMPTS.flat
+  // Real Estate
+  "japandi": "Interior photography of a {prompt} in Japandi style. Combination of Japanese minimalism and Scandinavian functionality. Light oak wood, shoji-inspired elements, neutral linen textures, indoor bonsai. Bright natural light, airy and calm.",
+  "industrial_loft": "Professional architectural shot of an industrial loft {prompt}. Exposed red brick walls, matte black metal beams, polished concrete floor, large factory windows. Sunset lighting, gritty yet sophisticated, high contrast textures.",
+  "modern_bohemian": "Cozy bohemian interior of a {prompt}, filled with textured macrame, rattan furniture, and many indoor plants. Warm string lights and candlelight, eclectic patterns, soft earth tones, high detail on textile fibers.",
   
-  return `Design a character illustration based on: ${userPrompt}
-
-Style specifications:
-- ${stylePrompt}
-
-Technical requirements:
-- Transparent background (PNG with no background color)
-- No text, speech bubbles, or written words
-- Centered character composition
-- Full body or upper body visible
-- Isolated figure, no props or scene elements
-- High quality, clean edges
-- Suitable for web overlay use`
+  // Professional
+  "corporate_global": "Professional corporate headshot of {prompt}, wearing tailored business attire, confident and friendly expression. Blurred modern office background (bokeh), three-point studio lighting, sharp focus on eyes, realistic skin pores, 4k.",
+  "tech_creative": "Casual professional portrait of {prompt} in a bright, modern co-working space. Wearing a stylish turtleneck, natural window lighting, soft shadows, approachable vibe, clean and minimalist aesthetic, high resolution.",
+  "editorial_dark": "Editorial portrait of {prompt}, dramatic Rembrandt lighting, deep shadows, wearing dark textured clothing. Moody gray concrete background, cinematic and powerful, sharp focus, photography for high-end magazine.",
+  
+  // Web Assets
+  "3d_clay": "3D icon of {prompt} in claymorphism style, rounded and playful shapes, matte finish, soft ambient occlusion shadows, vibrant pastel colors, isolated on white background, high-quality 3D render.",
+  "flat_vector": "Minimalist flat vector illustration for web design, {prompt}, clean lines, no gradients, limited professional color palette, modern corporate Memphis style, isolated on white background.",
+  "mesh_gradient": "Abstract fluid mesh gradient background, {prompt}, flowing and organic shapes, ultra-smooth transitions, high resolution, futuristic and elegant, professional web hero-section aesthetic.",
+  "glassmorphism": "3D glassmorphism element of {prompt}, frosted glass texture, semi-transparent with blur effect, glowing neon accents, sharp edges, high-tech premium feel, isolated on white background."
 }
 
-function buildPrompt(userPrompt: string, style: string, generateType: string): string {
-  switch (generateType) {
-    case "image":
-      return buildImagePrompt(userPrompt, style)
-    case "character":
-      return buildCharacterPrompt(userPrompt, style)
-    default:
-      return buildIconPrompt(userPrompt, style)
-  }
+function buildTargetPrompt(userPrompt: string, style: string): string {
+  const template = PROMPT_TEMPLATES[style] || PROMPT_TEMPLATES["minimalist_studio"]
+  return template.replace(/\{prompt\}/g, userPrompt)
 }
 
 function simplifyPrompt(prompt: string): string {
   if (!prompt) return "Untitled"
   
-  // Remove common filler words at the start
   let clean = prompt
     .trim()
     .replace(/^(a|an|the|create|generate|icon|of|for|illustration|simple|minimalist|professional)\s+/i, '')
-    .split(',')[0] // Take only the part before first comma if present
+    .split(',')[0]
   
-  // Take first 4 words
   const words = clean.split(/\s+/).slice(0, 4)
   
-  // Capitalize each word
   return words
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ') || "Untitled"
 }
 
-
-async function generateIconImage(prompt: string, style: string, generateType: string = "icon"): Promise<Buffer | null> {
-  const fullPrompt = buildPrompt(prompt, style, generateType)
-  console.log("Calling Gemini API with prompt:", prompt.slice(0, 50), "type:", generateType)
+async function generateTargetImage(prompt: string, style: string): Promise<Buffer | null> {
+  const fullPrompt = buildTargetPrompt(prompt, style)
+  console.log("Calling Gemini API with prompt:", fullPrompt.slice(0, 50))
 
   try {
     const response = await fetch(
@@ -247,15 +180,17 @@ export async function POST(request: NextRequest) {
 
     const userId = clerkUser.id
     const body: GenerateRequest = await request.json()
-    const { prompt, style = "minimalist", format } = body
-    const generateType = format?.iconType?.toLowerCase() || "icon"
-    const isIconOrCharacter = generateType === "icon" || generateType === "character"
+    const { prompt, style = "minimalist_studio", count = 4, format } = body
+    const generateType = format?.iconType?.toLowerCase() || "ecommerce"
 
     if (!prompt) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 })
     }
 
-    const iconCount = 8
+    // Only assets that are explicitly isolated on white/plain backgrounds need transparency passing
+    const needsTransparency = ["3d_clay", "flat_vector", "glassmorphism", "isometric_game"].includes(style)
+
+    const iconCount = Math.min(Math.max(count, 1), 16)
     const icons: Array<{
       png: { url: string; key: string }
       preview: string
@@ -263,21 +198,19 @@ export async function POST(request: NextRequest) {
       id?: string
     }> = []
 
-    // Generate all icons in parallel
     const iconPrompts = Array(iconCount).fill(prompt)
     
-    console.log("Generating", iconCount, "items...", "type:", generateType)
+    console.log("Generating", iconCount, "items...", "type:", generateType, "style:", style)
     
     const results = await Promise.all(
       iconPrompts.map(async (iconPrompt, index) => {
         console.log("Generating", generateType, index + 1)
-        const pngBuffer = await generateIconImage(iconPrompt, style, generateType)
+        const pngBuffer = await generateTargetImage(iconPrompt, style)
         console.log(generateType, index + 1, "generated:", pngBuffer ? "yes" : "no")
         return { pngBuffer, index }
       })
     )
 
-    // Process each result
     for (const { pngBuffer, index } of results) {
       if (!pngBuffer) {
         console.log("Skipping item", index + 1, "- no PNG buffer")
@@ -288,14 +221,11 @@ export async function POST(request: NextRequest) {
       const iconPromptText = `${prompt}-${index + 1}`
       console.log("Processing item", index + 1)
 
-      // Process PNG - icons and characters get transparent bg, illustrations keep colors
-      const { buffer: processedPng, preview } = await processPngForPreview(pngBuffer, isIconOrCharacter)
+      const { buffer: processedPng, preview } = await processPngForPreview(pngBuffer, needsTransparency)
 
-      // Upload PNG
       const pngKey = `users/${userId}/icons/${timestamp}-${index}-${prompt.replace(/\s+/g, "-").slice(0, 20)}.png`
       const pngUrl = await uploadFile(pngKey, processedPng, "image/png")
 
-      // Save to database (SVG will be generated on-demand)
       const simplifiedName = simplifyPrompt(prompt)
       
       const iconData = {
@@ -308,8 +238,6 @@ export async function POST(request: NextRequest) {
         svg_url: null,
         svg_key: null,
       }
-
-      console.log("Saving icon to database:", JSON.stringify(iconData))
 
       const { data: insertedIcon, error: dbError } = await supabaseAdmin
         .from("generated_icons")
@@ -333,7 +261,7 @@ export async function POST(request: NextRequest) {
 
     if (icons.length === 0) {
       return NextResponse.json(
-        { error: "Failed to generate icons. Please try again." },
+        { error: "Failed to generate images. Please try again." },
         { status: 500 }
       )
     }
