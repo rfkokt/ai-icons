@@ -183,7 +183,7 @@ function CommunityContent() {
 
   if (packPrompt && selectedPackIcons.length > 0) {
     return (
-      <div className="flex-1 min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 overflow-y-auto">
+      <div className="flex-1 min-h-screen bg-[#f3f4f6] bg-grid-pattern overflow-y-auto">
         <div className="bg-[#B9FF66] border-b-4 border-black px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -257,10 +257,25 @@ function CommunityContent() {
 
         <Dialog open={lightbox.isOpen} onOpenChange={lightbox.close}>
           <DialogContent className="max-w-4xl w-full bg-white border-3 border-black rounded-2xl shadow-[8px_8px_0px_0px_#000000] p-6">
-            <div className="flex items-center justify-center mb-4">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-100 rounded-full border-2 border-black">
-                <span className="text-sm font-bold text-zinc-700">{lightbox.currentIndex + 1} / {selectedPackIcons.length}</span>
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b-3 border-black bg-zinc-50 relative z-10 min-h-[72px]">
+              {/* Left Badge */}
+              <div className="flex-shrink-0 z-10">
+                <div className="inline-flex items-center justify-center min-w-[4rem] px-3 py-1.5 bg-zinc-100 rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000000] text-sm font-bold text-zinc-700">
+                  {lightbox.currentIndex + 1} / {selectedPackIcons.length}
+                </div>
               </div>
+
+              {/* Center Title */}
+              {packPrompt && (
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[40%] text-center z-0 hidden sm:block">
+                  <h3 className="font-bold text-base sm:text-lg truncate text-zinc-800 px-4">
+                    {packPrompt}
+                  </h3>
+                </div>
+              )}
+              
+              {/* Right Placeholder to align perfectly since Community has no IconActions in header */}
+              <div className="flex-shrink-0 w-10 pr-10 sm:pr-12"></div>
             </div>
             <FeatureCarousel
               images={selectedPackIcons.map((icon) => ({
@@ -279,7 +294,7 @@ function CommunityContent() {
   }
 
   return (
-    <div className="flex-1 min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 overflow-y-auto">
+    <div className="flex-1 min-h-screen bg-[#f3f4f6] bg-grid-pattern overflow-y-auto">
       <header className="h-auto sm:h-14 bg-white border-b border-zinc-200 px-4 sm:px-6 py-3 sm:py-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 shrink-0 sticky top-0 z-10">
         <div>
           <h1 className="text-lg font-bold text-zinc-900">Community</h1>

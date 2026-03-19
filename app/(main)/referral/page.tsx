@@ -27,7 +27,7 @@ export default function ReferralPage() {
   const userCredits = 48
 
   return (
-    <div className="flex-1 overflow-auto py-8 px-6">
+    <div className="flex-1 overflow-auto py-8 px-6 bg-[#f3f4f6] bg-grid-pattern min-h-screen">
       <div className="max-w-2xl mx-auto space-y-8">
         <div className="flex justify-end">
           <UserArea credits={userCredits} />
@@ -52,10 +52,10 @@ export default function ReferralPage() {
           ))}
         </div>
 
-        <Card className="p-6 rounded-2xl border-2 border-black brutalist-shadow">
-          <h2 className="font-semibold text-zinc-900 mb-3">Your Referral Link</h2>
+        <Card className="p-6 rounded-2xl border-[3px] border-black shadow-[8px_8px_0_0_#000000] bg-white">
+          <h2 className="font-black text-xl text-zinc-900 mb-3 tracking-tight">Your Referral Link</h2>
           <div className="flex gap-2">
-            <div className="flex-1 px-4 py-3 bg-zinc-50 rounded-xl border border-zinc-200 text-sm text-zinc-600 truncate">
+            <div className="flex-1 px-4 py-3 bg-zinc-100 rounded-xl border-2 border-black text-base font-bold text-zinc-800 truncate">
               {referralLink}
             </div>
             <CopyLinkButton 
@@ -74,7 +74,7 @@ export default function ReferralPage() {
         </Card>
 
         <div>
-          <h2 className="font-semibold text-zinc-900 mb-4 text-center">How It Works</h2>
+          <h2 className="font-black text-2xl text-zinc-900 mb-6 text-center tracking-tighter uppercase">How It Works</h2>
           <HowItWorks steps={steps} />
         </div>
 

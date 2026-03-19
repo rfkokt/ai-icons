@@ -93,22 +93,22 @@ export function PackCard({
             </div>
           )}
           {showSharedBy && sharedBy && (
-            <div className="absolute -bottom-2 left-2 right-2 flex items-center justify-between">
-              <div className="flex items-center gap-1">
+            <div className="absolute -bottom-2 left-2 right-2 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-1 min-w-0 flex-1">
                 {sharedByAvatar ? (
                   <img
                     src={sharedByAvatar}
                     alt={sharedBy}
-                    className="w-5 h-5 rounded-full object-cover border-2 border-black shadow-sm"
+                    className="w-5 h-5 rounded-full object-cover border-2 border-black shadow-sm flex-shrink-0"
                   />
                 ) : (
-                  <div className="w-5 h-5 rounded-full bg-[#B9FF66] border-2 border-black flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full bg-[#B9FF66] border-2 border-black flex items-center justify-center flex-shrink-0">
                     <span className="text-[8px] font-black text-black">
                       {sharedBy.charAt(0).toUpperCase()}
                     </span>
                   </div>
                 )}
-                <span className="text-[9px] font-bold text-black bg-white/90 px-1.5 py-0.5 rounded border border-black">
+                <span className="text-[9px] font-bold text-black bg-white/90 px-1.5 py-0.5 rounded border border-black truncate">
                   {sharedBy}
                 </span>
               </div>
@@ -116,7 +116,7 @@ export function PackCard({
                 <button
                   onClick={(e) => { e.stopPropagation(); onLike?.() }}
                   className={cn(
-                    "flex items-center gap-1 bg-white border-2 border-black rounded-full px-2 py-0.5 shadow-[2px_2px_0px_0px_#000] text-xs font-bold",
+                    "flex-shrink-0 flex items-center gap-1 bg-white border-2 border-black rounded-full px-2 py-0.5 shadow-[2px_2px_0px_0px_#000] text-xs font-bold",
                     isLiked && "shadow-[2px_2px_0px_0px_#B9FF66]"
                   )}
                 >

@@ -154,9 +154,9 @@ function PricingSection({ className }: { className?: string }) {
   return (
     <section
       className={cn(
-        "relative bg-zinc-50",
+        "relative bg-[#f3f4f6] bg-grid-pattern",
         "py-12 px-4",
-        "overflow-hidden",
+        "overflow-hidden flex-1",
         className,
       )}
     >
@@ -198,10 +198,10 @@ function PricingSection({ className }: { className?: string }) {
               key={tier.name}
               className={cn(
                 "relative rounded-3xl transition-all duration-300",
-                "flex flex-col",
+                "flex flex-col p-1",
                 tier.highlight
-                  ? "bg-gradient-to-b from-[#B9FF66]/20 to-white border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
-                  : "bg-white border-2 border-zinc-200 shadow-md"
+                  ? "bg-[#B9FF66] border-[3px] border-black shadow-[8px_8px_0px_0px_#000000] -translate-y-1 sm:-translate-y-2"
+                  : "bg-white border-[3px] border-black shadow-[4px_4px_0px_0px_#000000] hover:shadow-[6px_6px_0px_0px_#000000] hover:-translate-y-1"
               )}
             >
               {/* Badge */}
@@ -219,10 +219,10 @@ function PricingSection({ className }: { className?: string }) {
                 <div className="flex items-center justify-between mb-4">
                   <div
                     className={cn(
-                      "p-3 rounded-xl",
+                      "p-3 rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000000]",
                       tier.highlight
-                        ? "bg-[#B9FF66]/30 text-black"
-                        : "bg-zinc-100 text-zinc-600"
+                        ? "bg-white text-black"
+                        : "bg-zinc-100 text-zinc-900"
                     )}
                   >
                     {tier.icon}

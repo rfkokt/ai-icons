@@ -13,20 +13,20 @@ export function UserCard({ rank, name, referrals, credits, variant = "regular" }
   const getVariantStyles = () => {
     switch (variant) {
       case "top":
-        return "w-32 p-5 rounded-2xl border-2 border-black bg-gradient-to-b from-[#B9FF66] to-[#a8ed55] text-center brutalist-shadow"
+        return "w-32 p-5 rounded-2xl border-[3px] border-black bg-[#B9FF66] text-center shadow-[6px_6px_0px_0px_#000000]"
       case "my":
-        return "p-4 rounded-2xl border-2 border-black brutalist-shadow bg-[#B9FF66]"
+        return "p-4 rounded-2xl border-[3px] border-black shadow-[4px_4px_0px_0px_#000000] bg-[#B9FF66]"
       default:
-        return "p-4 rounded-2xl border-2 border-zinc-200 bg-white"
+        return "p-4 rounded-2xl border-[3px] border-black shadow-[4px_4px_0px_0px_#000000] bg-white transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#000000]"
     }
   }
 
   const getRankDisplay = () => {
     if (variant === "top") {
       return (
-        <div className="w-14 h-14 mx-auto mb-2 bg-white rounded-full flex items-center justify-center border-2 border-black">
-          <FaCrown className="h-7 w-7 text-black" />
-        </div>
+      <div className="w-14 h-14 mx-auto mb-2 bg-white rounded-full flex items-center justify-center border-[3px] border-black shadow-[2px_2px_0_0_#000]">
+        <FaCrown className="h-7 w-7 text-black" />
+      </div>
       )
     }
     return (

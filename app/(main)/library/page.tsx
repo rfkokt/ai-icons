@@ -88,7 +88,7 @@ function LibraryContent() {
 
   if (packId) {
     return (
-      <div className="flex-1 min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 overflow-y-auto">
+      <div className="flex-1 min-h-screen bg-[#f3f4f6] bg-grid-pattern overflow-y-auto">
         <div className="bg-[#B9FF66] border-b-4 border-black px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -182,19 +182,25 @@ function LibraryContent() {
 
         <Dialog open={lightbox.isOpen} onOpenChange={lightbox.close}>
           <DialogContent className="max-w-5xl p-0 gap-0 w-[95vw] bg-white border-3 border-black rounded-2xl shadow-[8px_8px_0px_0px_#000000] overflow-hidden">
-            <div className="flex items-center justify-between p-4 sm:p-5 pr-12 sm:pr-16 border-b-3 border-black bg-zinc-50 relative z-10">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b-3 border-black bg-zinc-50 relative z-10 min-h-[72px]">
+              {/* Left Badge */}
+              <div className="flex-shrink-0 z-10">
                 <div className="inline-flex items-center justify-center min-w-[4rem] px-3 py-1.5 bg-[#B9FF66] rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000000] text-sm font-black text-black">
                   {lightbox.currentIndex + 1} / {icons.length}
                 </div>
-                {packPrompt && (
-                  <h3 className="font-bold text-base sm:text-lg hidden sm:block truncate max-w-[200px] md:max-w-[300px] text-zinc-800">
+              </div>
+
+              {/* Center Title */}
+              {packPrompt && (
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[40%] text-center z-0 hidden sm:block">
+                  <h3 className="font-bold text-base sm:text-lg truncate text-zinc-800 px-4">
                     {packPrompt}
                   </h3>
-                )}
-              </div>
+                </div>
+              )}
               
-              <div className="flex items-center">
+              {/* Right Actions */}
+              <div className="flex-shrink-0 flex items-center z-10 pr-10 sm:pr-12">
                 {icons[lightbox.currentIndex] && (
                   <IconActions
                     iconKey={icons[lightbox.currentIndex].png_key!}
@@ -225,7 +231,7 @@ function LibraryContent() {
   }
 
   return (
-    <div className="flex-1 min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 overflow-y-auto" ref={staggerRef}>
+    <div className="flex-1 min-h-screen bg-[#f3f4f6] bg-grid-pattern overflow-y-auto" ref={staggerRef}>
       <PageHeader
         icon={<HiSparkles className="h-8 w-8" />}
         title="Your Library"

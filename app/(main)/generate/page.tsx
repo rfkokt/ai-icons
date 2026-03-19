@@ -205,14 +205,14 @@ export default function GeneratePage() {
 
   if (!mounted) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-zinc-100">
+      <div className="flex-1 flex items-center justify-center bg-[#f3f4f6] bg-grid-pattern">
         <div className="w-10 h-10 border-4 border-[#B9FF66] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="flex-1 flex h-full overflow-hidden bg-gradient-to-br from-zinc-50 via-white to-zinc-100">
+    <div className="flex-1 flex h-full overflow-hidden bg-[#f3f4f6] bg-grid-pattern">
       {isGenerating && (
         <GeneratingOverlay iconCount={iconCount} />
       )}
@@ -389,17 +389,23 @@ export default function GeneratePage() {
         <DialogContent className="max-w-5xl p-0 gap-0 w-[95vw] bg-white border-3 border-black rounded-2xl shadow-[8px_8px_0px_0px_#000000] overflow-hidden">
           {lightboxPack && (
             <>
-              <div className="flex items-center justify-between p-4 sm:p-5 pr-12 sm:pr-16 border-b-3 border-black bg-zinc-50 relative z-10">
-                <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between p-4 sm:p-5 border-b-3 border-black bg-zinc-50 relative z-10 min-h-[72px]">
+                {/* Left Badge */}
+                <div className="flex-shrink-0 z-10">
                   <div className="inline-flex items-center justify-center min-w-[4rem] px-3 py-1.5 bg-[#B9FF66] rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000000] text-sm font-black text-black">
                     {lightbox.currentIndex + 1} / {lightboxPack.icons.length}
                   </div>
-                  <h3 className="font-bold text-base sm:text-lg hidden sm:block truncate max-w-[200px] md:max-w-[300px] text-zinc-800">
+                </div>
+                
+                {/* Center Title */}
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[40%] text-center z-0 hidden sm:block">
+                  <h3 className="font-bold text-base sm:text-lg truncate text-zinc-800 px-4">
                     {lightboxPack.prompt}
                   </h3>
                 </div>
                 
-                <div className="flex items-center">
+                {/* Right Actions */}
+                <div className="flex-shrink-0 flex items-center z-10 pr-10 sm:pr-12">
                   {lightboxPack.icons[lightbox.currentIndex] && (
                     <IconActions
                       iconKey={lightboxPack.icons[lightbox.currentIndex].png.key}
