@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
-import { HiClock, HiSparkles, HiArrowLeft } from "react-icons/hi2"
+import { HiClock, HiSparkles, HiArrowLeft, HiArrowDownTray, HiTrash } from "react-icons/hi2"
 import { IconCard } from "@/components/icon-card"
 import { PackCard } from "@/components/pack-card"
 import { FilterTabs } from "@/components/filter-tabs"
@@ -10,6 +10,7 @@ import { IconGrid } from "@/components/icon-grid"
 import { PageLoading } from "@/components/page-loading"
 import { EmptyState } from "@/components/empty-state"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { FeatureCarousel } from "@/components/ui/feature-carousel"
 import { HeartSmooth } from "@/components/icons/heart-smooth"
 import { useLightbox } from "@/hooks/use-lightbox"
@@ -235,8 +236,18 @@ function CommunityContent() {
                     prompt={icon.prompt}
                     format={icon.format as any}
                     variant="community"
+                    showMeta={false}
                     onClick={() => lightbox.open(index)}
-                    showActionBar={false}
+                    onDownloadPng={icon.src ? () => { 
+                      const key = icon.src!.replace('/api/download/', ''); 
+                      download(key, `${icon.prompt}-${index + 1}`, "png") 
+                    } : undefined}
+                    onDownloadSvg={icon.src ? () => { 
+                      const key = icon.src!.replace('/api/download/', ''); 
+                      download(key, `${icon.prompt}-${index + 1}`, "svg") 
+                    } : undefined}
+                    onDelete={icon.isOwner ? () => { setPackToDelete({ id: packPrompt!, prompt: packPrompt! }); setDeleteDialogOpen(true) } : undefined}
+                    isOwner={icon.isOwner}
                   />
                 ))}
               </IconGrid>

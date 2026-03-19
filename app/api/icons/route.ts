@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
+import { currentUser } from "@clerk/nextjs/server"
 import { supabase } from "@/lib/supabase"
 
 export async function GET(request: NextRequest) {
   try {
+    const clerkUser = await currentUser()
     const { searchParams } = new URL(request.url)
     const sort = searchParams.get("sort") || "latest"
     const prompt = searchParams.get("prompt")
@@ -36,16 +38,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Failed to fetch icons" }, { status: 500 })
     }
 
-    // Transform data to match expected format
     const icons = data.map((icon: any) => ({
       id: icon.id,
       prompt: icon.prompt,
       src: icon.png_key ? `/api/download/${encodeURIComponent(icon.png_key)}` : undefined,
       format: icon.png_key ? "png" : undefined,
-      likes: 0, // TODO: Add likes column to database
+      likes: 0,
       date: formatDate(icon.created_at),
       sharedBy: icon.users?.name || null,
       sharedByAvatar: icon.users?.avatar_url || null,
+      isOwner: clerkUser ? clerkUser.id === icon.users?.clerk_id : false,
     }))
 
     return NextResponse.json(icons)

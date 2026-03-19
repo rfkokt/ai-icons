@@ -1,9 +1,9 @@
 import { Card } from "@/components/ui/card"
-import { HiSparkles, HiShare, HiArrowDownTray, HiTrash } from "react-icons/hi2"
+import { HiSparkles, HiShare, HiTrash } from "react-icons/hi2"
 import { cn } from "@/lib/utils"
 import { LoadableImage } from "./loadable-image"
 import { HeartSmooth } from "./icons/heart-smooth"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { DownloadDropdown } from "./download-dropdown"
 
 interface PackCardProps {
   id: string
@@ -58,31 +58,12 @@ export function PackCard({
 
       {variant === "community" && (
         <div className="absolute top-2 right-2 z-20 flex items-center gap-1 pointer-events-none group-hover:opacity-100 opacity-100 transition-opacity">
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <span
-                className="bg-[#B9FF66] border-2 border-black rounded-lg px-2 py-1 flex items-center gap-1 hover:bg-lime-400 transition-colors shadow-[2px_2px_0px_0px_#000] text-xs font-bold cursor-pointer pointer-events-auto"
-              >
-                <HiArrowDownTray className="h-3.5 w-3.5 text-black" />
-              </span>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-white border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000]">
-              <DropdownMenuItem onClick={onDownloadPng} className="flex items-center gap-2 cursor-pointer font-bold hover:bg-[#B9FF66]">
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                </svg>
-                PNG
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={onDownloadSvg} className="flex items-center gap-2 cursor-pointer font-bold hover:bg-[#B9FF66]">
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <polygon points="12 2 2 7 12 12 22 7 12 2" />
-                  <polyline points="2 17 12 22 22 17" />
-                  <polyline points="2 12 12 17 22 12" />
-                </svg>
-                SVG
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <DownloadDropdown
+            onDownloadPng={onDownloadPng}
+            onDownloadSvg={onDownloadSvg}
+            size="sm"
+            variant="icon"
+          />
           {onDelete && (
             <button
               onClick={(e) => { e.stopPropagation(); onDelete() }}
@@ -160,12 +141,12 @@ export function PackCard({
                 Share
               </button>
             )}
-            <button
-              onClick={(e) => { e.stopPropagation(); onDownloadPng?.() }}
-              className="bg-[#B9FF66] border-2 border-black rounded-lg px-2 py-1 hover:shadow-[2px_2px_0px_0px_#000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_#000] text-xs font-bold"
-            >
-              <HiArrowDownTray className="h-3.5 w-3.5 text-black" />
-            </button>
+            <DownloadDropdown
+              onDownloadPng={onDownloadPng}
+              onDownloadSvg={onDownloadSvg}
+              size="sm"
+              variant="icon"
+            />
             {onDelete && (
               <button
                 onClick={(e) => { e.stopPropagation(); onDelete() }}

@@ -49,6 +49,7 @@ export interface CommunityIcon {
   format?: string
   sharedBy?: string | null
   sharedByAvatar?: string | null
+  isOwner?: boolean
 }
 
 export interface CommunityPack {
