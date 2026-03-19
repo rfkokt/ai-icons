@@ -258,10 +258,7 @@ export default function GeneratePage() {
               ) : (
                 !isGenerating && (
                   <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-                    <div ref={successRef} className="inline-flex items-center justify-center w-32 h-32 bg-[#B9FF66] rounded-3xl border-4 border-black mb-10 shadow-[8px_8px_0px_0px_#000000]">
-                      <HiSparkles className="h-16 w-16 text-black" />
-                    </div>
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tighter text-zinc-900 mb-6">
+                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tighter text-zinc-900 mb-6 mt-12">
                       Create Your Icon
                     </h1>
                     <p className="text-zinc-500 text-lg sm:text-xl max-w-lg mx-auto">

@@ -87,7 +87,7 @@ export function DownloadDropdown({
           )}
         >
           <HiArrowDownTray className={size === "sm" ? "h-3.5 w-3.5" : size === "md" ? "h-4 w-4" : "h-5 w-5"} />
-          {size !== "sm" && <span>Download</span>}
+          {size !== "sm" && <span className="hidden sm:inline">Download</span>}
         </button>
         {isOpen && (
           <div className="absolute top-full mt-1 right-0 z-50 bg-white border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000] min-w-[120px] overflow-hidden">

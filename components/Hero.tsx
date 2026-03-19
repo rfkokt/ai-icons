@@ -55,16 +55,16 @@ export default function Hero() {
           </div>
           
           <h1 className="text-6xl lg:text-[5.5rem] font-bold tracking-tighter leading-[0.9] mb-8 uppercase">
-            Generate <br />
+             The <br />
             <span className="text-[#B9FF66]" style={{ WebkitTextStroke: '2px black' }}>
-              Custom Icons
+              Brutalist
             </span>
             <br />
-            Instantly
+            Icon Forge
           </h1>
           
           <p className="text-2xl text-zinc-800 mb-10 leading-snug font-medium">
-            Create perfect icons from text prompts. No design skills needed. Get exactly what you envision for your React projects.
+            Stop using boring, generic SVG libraries. Generate bold, high-contrast assets directly from your text prompts. Say goodbye to soft UI.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 font-bold">

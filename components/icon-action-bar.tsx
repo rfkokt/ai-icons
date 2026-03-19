@@ -60,7 +60,7 @@ export function IconActionBar({
             className="flex-1 h-10 bg-white hover:bg-[#B9FF66] border-3 border-black rounded-full flex items-center justify-center gap-1.5 shadow-[3px_3px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs font-bold uppercase"
           >
             <HiShare className="h-4 w-4" />
-            <span>Share</span>
+            <span className="hidden sm:inline">Share</span>
           </button>
         )}
 

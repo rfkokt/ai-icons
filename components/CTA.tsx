@@ -15,10 +15,10 @@ export default function CTA() {
             <span className="font-bold text-zinc-600">Start for free</span>
           </div>
           <h3 className="text-4xl lg:text-5xl font-black tracking-tighter mb-6">
-            Ready to create your perfect icon?
+            Ready to Forge Brutalist Icons?
           </h3>
           <p className="text-xl text-zinc-700 font-medium">
-            Get 2 free credits when you sign up. No credit card required. Start generating custom icons in seconds.
+            Get 2 free credits when you sign up. No credit card required. Start generating high-contrast custom icons in seconds.
           </p>
         </div>
         

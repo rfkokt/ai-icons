@@ -152,7 +152,6 @@ function PricingSection({ className }: { className?: string }) {
       className={cn(
         "relative",
         "py-12 px-4",
-        "overflow-hidden flex-1",
         className,
       )}
     >
