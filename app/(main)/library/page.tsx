@@ -143,7 +143,7 @@ function LibraryContent() {
             ) : icons.length === 0 ? (
               <EmptyState
                 variant="brutalist"
-                icon={<HiSparkles className="h-10 w-10 text-zinc-400" />}
+                icon={<div className="w-12 h-12 bg-white flex items-center justify-center border-4 border-black font-black text-2xl shadow-[4px_4px_0_0_#000] rotate-3 text-black">?</div>}
                 title="No icons yet"
                 description="Generate some icons to fill this pack!"
               />
@@ -257,13 +257,13 @@ function LibraryContent() {
           ) : packs.length === 0 ? (
             <EmptyState
               variant="brutalist"
-              icon={<HiSparkles className="h-12 w-12 text-black" />}
+              icon={<div className="w-16 h-16 bg-white flex items-center justify-center border-4 border-black font-black text-4xl shadow-[6px_6px_0_0_#000] -rotate-3 text-black">?</div>}
               title="Your library is empty"
               description="Start generating icons to see them appear here"
               action={{
                 label: "Generate Icons",
                 onClick: () => router.push("/generate"),
-                icon: <HiSparkles className="h-5 w-5" />
+                icon: <span className="font-bold text-lg leading-none">+</span>
               }}
             />
           ) : (

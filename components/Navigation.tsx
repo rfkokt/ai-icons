@@ -98,9 +98,9 @@ export default function Navigation() {
               </SignUpButton>
             </Show>
             <Show when="signed-in">
-              <Link href="/generate" onClick={() => setIsOpen(false)}>
+              <div onClick={() => setIsOpen(false)}>
                 <UserArea credits={userCredits} />
-              </Link>
+              </div>
             </Show>
           </div>
         </div>

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { UserButton, useUser } from "@clerk/nextjs"
 import {
-  HiSparkles,
+  HiPaintBrush,
   HiPhoto,
   HiHome,
   HiGift,
@@ -39,7 +39,7 @@ interface HistoryPack {
 }
 
 const menuItems = [
-  { icon: HiSparkles, label: "Generate", href: "/generate" },
+  { icon: HiPaintBrush, label: "Generate", href: "/generate" },
   { icon: HiPhoto, label: "Community", href: "/community" },
   { icon: HiHome, label: "Library", href: "/library" },
   { icon: HiGift, label: "Referral", href: "/referral" },

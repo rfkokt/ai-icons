@@ -47,15 +47,15 @@ export default function LeaderboardPage() {
       </header>
 
       <main className="flex-1 overflow-auto p-4 sm:p-6 pb-24">
-        <div className="mb-10 w-full">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-sm sm:max-w-none mx-auto">
-            <div className="w-full sm:w-auto order-2 sm:order-1 self-stretch flex items-stretch">
+        <div className="mb-10 w-full pt-4">
+          <div className="flex flex-col sm:flex-row items-center sm:items-end justify-center gap-4 sm:gap-6 w-full max-w-sm sm:max-w-none mx-auto">
+            <div className="w-full sm:w-auto order-2 sm:order-1 flex-1 max-w-[280px]">
               <UserCard {...topUsers[1]} variant="regular" />
             </div>
-            <div className="w-full sm:w-auto order-1 sm:order-2 self-stretch flex items-stretch">
+            <div className="w-full sm:w-[320px] order-1 sm:order-2 flex-1 max-w-[320px]">
               <UserCard {...topUsers[0]} variant="top" />
             </div>
-            <div className="w-full sm:w-auto order-3 sm:order-3 self-stretch flex items-stretch">
+            <div className="w-full sm:w-auto order-3 sm:order-3 flex-1 max-w-[280px]">
               <UserCard {...topUsers[2]} variant="regular" />
             </div>
           </div>

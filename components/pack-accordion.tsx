@@ -95,7 +95,6 @@ export function PackAccordion({
               {prompt}
             </h2>
             <p className="text-xs sm:text-sm font-medium text-zinc-800 mt-0.5 flex items-center gap-1.5">
-              <HiSparkles className="h-3 w-3" />
               {iconCount} icons
             </p>
           </div>
@@ -151,13 +150,13 @@ export function PackAccordion({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 w-8 bg-white hover:bg-[#B9FF66] border-2 border-black rounded-lg p-0 shadow-[2px_2px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
+                  className="h-10 w-10 bg-white hover:bg-[#B9FF66] border-2 border-black rounded-lg p-0 shadow-[2px_2px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
                   onClick={(e) => {
                     e.stopPropagation()
                     onDownloadPng()
                   }}
                 >
-                  <HiArrowDownTray className="h-3.5 w-3.5" />
+                  <HiArrowDownTray className="h-4 w-4" />
                 </Button>
               </div>
             </>
@@ -180,7 +179,7 @@ export function PackAccordion({
 
           <button
             className={cn(
-              "h-8 w-8 flex items-center justify-center border-2 border-black rounded-lg bg-white shadow-[2px_2px_0px_0px_#000000] transition-all duration-200",
+              "h-10 w-10 sm:h-8 sm:w-8 flex items-center justify-center border-2 border-black rounded-lg bg-white shadow-[2px_2px_0px_0px_#000000] transition-all duration-200",
               isExpanded && "rotate-180"
             )}
             onClick={(e) => {
