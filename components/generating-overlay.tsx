@@ -11,41 +11,115 @@ interface GeneratingOverlayProps {
 export const GeneratingOverlay = forwardRef<HTMLDivElement, GeneratingOverlayProps>(
   function GeneratingOverlay({ iconCount = 8, className = "" }, ref) {
     return (
-      <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm ${className}`}>
-        <div ref={ref} className="relative">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-40 h-40 border-4 border-[#B9FF66] border-t-transparent rounded-full animate-spin" />
-            <div className="absolute w-32 h-32 border-4 border-[#B9FF66]/60 border-b-transparent rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }} />
-            <div className="absolute w-24 h-24 border-4 border-[#B9FF66]/40 border-l-transparent rounded-full animate-spin" style={{ animationDuration: '2s' }} />
+      <div className={`fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md overflow-hidden ${className}`}>
+        
+        {/* Top Marquee */}
+        <div className="absolute top-8 left-0 w-full h-14 bg-[#B9FF66] border-y-4 border-black flex items-center overflow-hidden rotate-[-2deg] scale-110">
+          <div className="animate-marquee whitespace-nowrap flex gap-12 items-center font-black text-black text-2xl uppercase tracking-widest">
+            <span>Creating Magic</span> <HiSparkles className="w-6 h-6"/>
+            <span>Generating {iconCount} Icons</span> <HiSparkles className="w-6 h-6"/>
+            <span>AI At Work</span> <HiSparkles className="w-6 h-6"/>
+            <span>Creating Magic</span> <HiSparkles className="w-6 h-6"/>
+            <span>Generating {iconCount} Icons</span> <HiSparkles className="w-6 h-6"/>
+            <span>AI At Work</span> <HiSparkles className="w-6 h-6"/>
+            <span>Creating Magic</span> <HiSparkles className="w-6 h-6"/>
+            <span>Generating {iconCount} Icons</span> <HiSparkles className="w-6 h-6"/>
+            <span>AI At Work</span> <HiSparkles className="w-6 h-6"/>
+          </div>
+        </div>
+
+        {/* Bottom Marquee */}
+        <div className="absolute bottom-10 left-0 w-full h-14 bg-white border-y-4 border-black flex items-center overflow-hidden rotate-[3deg] scale-110">
+          <div className="animate-marquee-reverse whitespace-nowrap flex gap-12 items-center font-black text-black text-2xl uppercase tracking-widest">
+            <span>Stand By</span> <HiSparkles className="w-6 h-6"/>
+            <span>Cooking Pixels</span> <HiSparkles className="w-6 h-6"/>
+            <span>Machine Learning</span> <HiSparkles className="w-6 h-6"/>
+            <span>Stand By</span> <HiSparkles className="w-6 h-6"/>
+            <span>Cooking Pixels</span> <HiSparkles className="w-6 h-6"/>
+            <span>Machine Learning</span> <HiSparkles className="w-6 h-6"/>
+            <span>Stand By</span> <HiSparkles className="w-6 h-6"/>
+            <span>Cooking Pixels</span> <HiSparkles className="w-6 h-6"/>
+            <span>Machine Learning</span> <HiSparkles className="w-6 h-6"/>
+          </div>
+        </div>
+
+        {/* Main Box Area */}
+        <div ref={ref} className="relative z-10 w-[90%] max-w-md bg-white border-4 border-black rounded-xl shadow-[16px_16px_0px_0px_#B9FF66]">
+          {/* OS Window Header */}
+          <div className="w-full border-b-4 border-black bg-zinc-100 p-3 sm:p-4 flex justify-between items-center rounded-t-lg">
+            <div className="flex gap-2.5">
+              <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full border-[3px] border-black bg-red-400"></div>
+              <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full border-[3px] border-black bg-yellow-400"></div>
+              <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full border-[3px] border-black bg-[#B9FF66]"></div>
+            </div>
+            <span className="font-bold font-mono text-xs sm:text-sm uppercase tracking-widest text-zinc-600 bg-white px-3 py-1 border-2 border-black rounded-full">Processing</span>
           </div>
 
-          <div className="relative bg-[#B9FF66] rounded-3xl border-4 border-black shadow-[8px_8px_0px_0px_#000000] p-8 sm:p-10">
-            <div className="flex flex-col items-center gap-6">
-              <div className="relative">
-                <div className="w-20 h-20 bg-white rounded-2xl border-3 border-black shadow-[4px_4px_0px_0px_#000000] flex items-center justify-center">
-                  <HiSparkles className="h-10 w-10 text-black animate-pulse" />
-                </div>
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-black rounded-full animate-bounce" />
-                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-zinc-800 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                <div className="absolute -top-2 left-1/2 w-3 h-3 bg-zinc-700 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
+          <div className="p-8 sm:p-12 flex flex-col items-center">
+            
+            {/* Morphing Graphics */}
+            <div className="w-28 h-28 mb-8 relative flex justify-center items-center">
+              <div className="w-full h-full bg-[#B9FF66] border-4 border-black absolute animate-spin-slow rounded-xl"></div>
+              <div className="w-20 h-20 bg-black absolute animate-pulse rounded-lg flex items-center justify-center">
+                <HiSparkles className="w-10 h-10 text-white animate-bounce-fast" />
               </div>
+            </div>
 
-              <div className="text-center">
-                <h3 className="text-2xl sm:text-3xl font-black text-black mb-2">Creating Magic...</h3>
-                <p className="text-base font-bold text-zinc-800 flex items-center justify-center gap-1">
-                  Generating {iconCount} unique icons
-                  <span className="loading-dot">.</span>
-                  <span className="loading-dot">.</span>
-                  <span className="loading-dot">.</span>
-                </p>
-              </div>
+            <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tighter text-center mb-1 text-black">Generating</h2>
+            <p className="font-bold text-zinc-500 mb-8 text-center tracking-wide uppercase">{iconCount} High-Quality Assets</p>
 
-              <div className="w-48 h-3 bg-white/50 rounded-full border-2 border-black overflow-hidden">
-                <div className="h-full bg-black rounded-full animate-[loading_1.5s_ease-in-out_infinite]" style={{ width: '60%' }} />
-              </div>
+            {/* Blocky Progress Bar */}
+            <div className="w-full flex gap-1.5 h-8 border-[3px] border-black p-1 shadow-[4px_4px_0px_0px_#000000] bg-zinc-100">
+              {[...Array(8)].map((_, i) => (
+                <div 
+                  key={i} 
+                  className="flex-1 border-2 border-black animate-pulse-block rounded-sm"
+                  style={{ animationDelay: `${i * 0.15}s` }}
+                ></div>
+              ))}
             </div>
           </div>
         </div>
+
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+          .animate-marquee {
+            animation: marquee 10s linear infinite;
+            width: max-content;
+          }
+          @keyframes marquee-reverse {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+          }
+          .animate-marquee-reverse {
+            animation: marquee-reverse 10s linear infinite;
+            width: max-content;
+          }
+          @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          .animate-spin-slow {
+            animation: spin-slow 8s linear infinite;
+          }
+          @keyframes bounce-fast {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15%); }
+          }
+          .animate-bounce-fast {
+            animation: bounce-fast 0.6s ease-in-out infinite;
+          }
+          @keyframes pulse-block {
+            0%, 100% { background-color: #f4f4f5; opacity: 0.5; }
+            50% { background-color: #B9FF66; opacity: 1; }
+          }
+          .animate-pulse-block {
+            animation: pulse-block 1.2s ease-in-out infinite;
+          }
+        `}} />
       </div>
     )
   }
