@@ -80,7 +80,7 @@ export function IconCard({
         </div>
       )}
       <div className={cn(
-        "aspect-square p-3 sm:p-4 flex items-center justify-center",
+        "aspect-square p-1 sm:p-2 flex items-center justify-center",
         isTransparent && "bg-transparent"
       )}>
         {src ? (
@@ -166,7 +166,7 @@ export function IconCard({
             <LoadableImage 
               src={src} 
               alt={alt} 
-              className="relative z-10 w-full aspect-square object-contain p-3 sm:p-4" 
+              className="relative z-10 w-full aspect-square object-contain p-1 sm:p-2" 
             />
           )}
         </div>

@@ -23,7 +23,7 @@ import type { GeneratedIcon, GeneratedPack } from "@/types/icon"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { MessageCircle, Wand2, Cpu, Monitor, Palette, ImageIcon, Loader2 } from "lucide-react"
+import { MessageCircle, Wand2, Cpu, Monitor, Palette, ImageIcon, Loader2, Settings2 } from "lucide-react"
 
 export default function GeneratePage() {
   const [mounted, setMounted] = useState(false)
@@ -33,6 +33,7 @@ export default function GeneratePage() {
   const [selectedStyle, setSelectedStyle] = useState("minimalist_studio")
   const [generateType, setGenerateType] = useState<GenerateType>("ecommerce")
   const [iconCount, setIconCount] = useState(4)
+  const [showOptions, setShowOptions] = useState(false)
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
   const [iconToShare, setIconToShare] = useState<string | null>(null)
 
@@ -257,7 +258,7 @@ export default function GeneratePage() {
                       <div className="flex items-center justify-between">
                         <h4 className="text-base font-black text-black">Recent Generations</h4>
                       </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                         {/* Remaining icons from latest pack */}
                         {generatedPacks[0].icons.slice(1).map((icon, index) => (
                           <IconCard
@@ -289,7 +290,7 @@ export default function GeneratePage() {
                               onShare={() => icon.id && shareToCommunity(icon.id)}
                             />
                           ))
-                        ).slice(0, 12)}
+                        ).slice(0, 5)}
                       </div>
                     </div>
                   )}
@@ -353,80 +354,93 @@ export default function GeneratePage() {
                 className="w-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] border-2 border-black rounded-xl bg-zinc-50 px-4 py-3 text-base placeholder:text-zinc-500 min-h-[80px] font-medium focus-visible:ring-[#B9FF66] transition-all"
               />
 
-              {/* Settings Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
-                {/* Component Type (Mapped from Model) */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-bold flex items-center gap-2">
-                    <Cpu className="w-4 h-4 text-black" /> Category
-                  </label>
-                  <Select value={generateType} onValueChange={(value: GenerateType) => setGenerateType(value)} disabled={isGenerating}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="ecommerce">Ecommerce</SelectItem>
-                      <SelectItem value="content">Content</SelectItem>
-                      <SelectItem value="real_estate">Real Estate</SelectItem>
-                      <SelectItem value="professional">Professional</SelectItem>
-                      <SelectItem value="web_assets">Web Assets</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Style Select */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-bold flex items-center gap-2">
-                    <Palette className="w-4 h-4 text-black" /> Style
-                  </label>
-                  <Select value={selectedStyle} onValueChange={(value: string) => setSelectedStyle(value)} disabled={isGenerating}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="minimalist_studio">Minimalist Studio</SelectItem>
-                      <SelectItem value="3d_clay">3D Clay</SelectItem>
-                      <SelectItem value="corporate_global">Corporate</SelectItem>
-                      <SelectItem value="japandi">Japandi</SelectItem>
-                      <SelectItem value="3d_animation">3D Animation</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Count Select (Mapped from Quality) */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-bold flex items-center gap-2">
-                    <Monitor className="w-4 h-4 text-black" /> Count
-                  </label>
-                  <Select value={iconCount.toString()} onValueChange={(value: string) => setIconCount(parseInt(value))} disabled={isGenerating}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">1 Icon</SelectItem>
-                      <SelectItem value="2">2 Icons</SelectItem>
-                      <SelectItem value="4">4 Icons</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Background Select Context */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-bold flex items-center gap-2">
-                    <ImageIcon className="w-4 h-4 text-black" /> Context
-                  </label>
-                  <Select defaultValue="transparent" disabled={isGenerating}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="transparent">Transparent</SelectItem>
-                      <SelectItem value="solid">Solid Background</SelectItem>
-                      <SelectItem value="studio">Studio Environment</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div className="flex items-center -mt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowOptions(!showOptions)}
+                  className="flex items-center gap-2 text-sm font-black text-black hover:bg-[#B9FF66] transition-colors bg-white px-3 py-2 rounded-xl border-3 border-black shadow-[3px_3px_0_0_#000] hover:shadow-[1px_1px_0_0_#000] hover:translate-x-px hover:translate-y-px"
+                >
+                  <Settings2 className="w-4 h-4" />
+                  {showOptions ? "Hide Advanced Options" : "Show Advanced Options"}
+                </button>
               </div>
+
+              {/* Settings Grid */}
+              {showOptions && (
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 p-4 border-3 border-black rounded-xl bg-zinc-50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]">
+                  {/* Component Type (Mapped from Model) */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-sm font-bold flex items-center gap-2">
+                      <Cpu className="w-4 h-4 text-black" /> Category
+                    </label>
+                    <Select value={generateType} onValueChange={(value: GenerateType) => setGenerateType(value)} disabled={isGenerating}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ecommerce">Ecommerce</SelectItem>
+                        <SelectItem value="content">Content</SelectItem>
+                        <SelectItem value="real_estate">Real Estate</SelectItem>
+                        <SelectItem value="professional">Professional</SelectItem>
+                        <SelectItem value="web_assets">Web Assets</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Style Select */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-sm font-bold flex items-center gap-2">
+                      <Palette className="w-4 h-4 text-black" /> Style
+                    </label>
+                    <Select value={selectedStyle} onValueChange={(value: string) => setSelectedStyle(value)} disabled={isGenerating}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="minimalist_studio">Minimalist Studio</SelectItem>
+                        <SelectItem value="3d_clay">3D Clay</SelectItem>
+                        <SelectItem value="corporate_global">Corporate</SelectItem>
+                        <SelectItem value="japandi">Japandi</SelectItem>
+                        <SelectItem value="3d_animation">3D Animation</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Count Select (Mapped from Quality) */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-sm font-bold flex items-center gap-2">
+                      <Monitor className="w-4 h-4 text-black" /> Count
+                    </label>
+                    <Select value={iconCount.toString()} onValueChange={(value: string) => setIconCount(parseInt(value))} disabled={isGenerating}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">1 Icon</SelectItem>
+                        <SelectItem value="2">2 Icons</SelectItem>
+                        <SelectItem value="4">4 Icons</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Background Select Context */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-sm font-bold flex items-center gap-2">
+                      <ImageIcon className="w-4 h-4 text-black" /> Context
+                    </label>
+                    <Select defaultValue="transparent" disabled={isGenerating}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="transparent">Transparent</SelectItem>
+                        <SelectItem value="solid">Solid Background</SelectItem>
+                        <SelectItem value="studio">Studio Environment</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
 
               <div className="pt-2">
                 <Button

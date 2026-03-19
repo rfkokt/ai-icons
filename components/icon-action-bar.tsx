@@ -53,20 +53,23 @@ export function IconActionBar({
 
   return (
     <>
-      <div className={cn("flex items-center gap-2", className)}>
+      <div className={cn("inline-flex h-8 sm:h-9 items-stretch bg-white border-2 border-black rounded-full shadow-[2px_2px_0_0_#000] hover:shadow-[1px_1px_0_0_#000] hover:translate-x-px hover:translate-y-px transition-all overflow-hidden", className)}>
         {showShare && onShare && (
-          <button
-            onClick={() => onShare()}
-            className="flex-1 h-10 bg-white hover:bg-[#B9FF66] border-3 border-black rounded-full flex items-center justify-center gap-1.5 shadow-[3px_3px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs font-bold uppercase"
-          >
-            <HiShare className="h-4 w-4" />
-            <span className="hidden sm:inline">Share</span>
-          </button>
+          <>
+            <button
+              onClick={() => onShare()}
+              className="flex-1 px-3 hover:bg-[#B9FF66] flex items-center justify-center gap-1.5 transition-colors text-[10px] sm:text-xs font-black uppercase text-black"
+            >
+              <HiShare className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Share</span>
+            </button>
+            <div className="w-0.5 bg-black shrink-0" />
+          </>
         )}
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="h-10 w-10 bg-white hover:bg-zinc-50 border-3 border-black rounded-xl flex items-center justify-center shadow-[3px_3px_0px_0px_#000000] hover:shadow-[1px_1px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-zinc-700">
-            <HiEllipsisVertical className="h-5 w-5" />
+          <DropdownMenuTrigger className="px-2 hover:bg-zinc-100 flex items-center justify-center transition-colors text-black outline-none min-w-[2rem] sm:min-w-[2.25rem]">
+            <HiEllipsisVertical className="h-4 w-4 sm:h-5 sm:w-5" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48 bg-white border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000000]">
             <DropdownMenuItem onClick={handleDownloadPng} className="flex items-center gap-2 cursor-pointer font-bold">
