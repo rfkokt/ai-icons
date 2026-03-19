@@ -83,19 +83,30 @@ function LibraryContent() {
                 >
                   <HiArrowLeft className="h-5 w-5 text-black" />
                 </button>
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3">
-                    <div className="bg-black text-white px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">
+                    <div className="bg-black text-white px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider shrink-0">
                       Pack
                     </div>
-                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tighter text-black">
-                      {packPrompt || "Untitled Pack"}
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tighter text-black truncate">
+                      {packPrompt
+                        ? packPrompt.length > 40
+                          ? packPrompt.slice(0, 40) + "…"
+                          : packPrompt
+                        : "Untitled Pack"}
                     </h1>
                   </div>
-                  <p className="text-sm sm:text-base font-medium text-zinc-800 mt-1 flex items-center gap-2">
-                    <HiSparkles className="h-4 w-4" />
-                    {icons.length} icons generated
-                  </p>
+                  <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                    <p className="text-sm sm:text-base font-medium text-zinc-800 flex items-center gap-2">
+                      <HiSparkles className="h-4 w-4" />
+                      {icons.length} icons generated
+                    </p>
+                    {packPrompt && packPrompt.length > 40 && (
+                      <p className="text-xs sm:text-sm text-zinc-600 truncate max-w-md" title={packPrompt}>
+                        &quot;{packPrompt}&quot;
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
               <Button
