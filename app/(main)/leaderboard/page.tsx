@@ -48,7 +48,7 @@ export default function LeaderboardPage() {
 
       <main className="flex-1 overflow-auto p-4 sm:p-6 pb-24">
         <div className="mb-10 w-full pt-4 px-4 sm:px-0">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-end justify-center gap-4 sm:gap-6 w-full max-w-sm sm:max-w-none mx-auto">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 sm:gap-6 w-full max-w-sm sm:max-w-5xl mx-auto">
             <div className="w-full sm:w-auto order-2 sm:order-1 flex-1 sm:max-w-[280px]">
               <UserCard {...topUsers[1]} variant="regular" />
             </div>

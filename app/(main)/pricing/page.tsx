@@ -15,12 +15,10 @@ export default function PricingPage() {
                         Pricing Plans
                     </Badge>
 					<h1 className="text-5xl font-black tracking-tighter lg:text-[80px] leading-none uppercase mb-6 max-w-[800px] w-full text-zinc-900 mx-auto">
-						Data-Driven <span className="text-[#B9FF66]" style={{ WebkitTextStroke: '2px black' }}>Growth</span>
+						Simple <span className="text-[#B9FF66]" style={{ WebkitTextStroke: '2px black' }}>Pricing</span>
 					</h1>
 					<p className="text-zinc-700 font-semibold mt-6 text-lg md:text-xl">
-						Are you tired of using outdated tools and insights that hold your
-						team back? We built our pricing around modern brutalist teams, so you can
-						focus on pushing boundaries.
+						No hidden fees. No subscriptions. Pay once, use forever. Generate brutalist icons without boundaries.
 					</p>
 				</div>
 				<BentoPricing />

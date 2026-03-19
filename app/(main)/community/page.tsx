@@ -12,6 +12,7 @@ import { EmptyState } from "@/components/empty-state"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { FeatureCarousel } from "@/components/ui/feature-carousel"
+import { PageHeader } from "@/components/page-header"
 import { HeartSmooth } from "@/components/icons/heart-smooth"
 import { useLightbox } from "@/hooks/use-lightbox"
 import { useStaggerAnimation } from "@/hooks/use-stagger-animation"
@@ -294,29 +295,31 @@ function CommunityContent() {
   }
 
   return (
-    <div className="flex-1 min-h-screen bg-[#f3f4f6] bg-grid-pattern overflow-y-auto">
-      <header className="h-auto sm:h-14 bg-white border-b border-zinc-200 px-4 sm:px-6 py-3 sm:py-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 shrink-0 sticky top-0 z-10">
-        <div>
-          <h1 className="text-lg font-bold text-zinc-900">Community</h1>
-          <p className="text-xs text-zinc-500 hidden sm:block">Explore icons created by the community</p>
-        </div>
-        <FilterTabs
-          tabs={[
-            { key: "latest", label: "Latest", icon: <HiClock className="h-4 w-4" /> },
-            {
-              key: "mostLoved",
-              label: "Most Loved",
-              icon: <HeartSmooth style={{ width: "20px", height: "20px" }} />
-            }
-          ]}
-          activeTab={filter}
-          onTabChange={(key) => setFilter(key as FilterType)}
-          className="w-full sm:w-auto"
-        />
-      </header>
+    <div className="flex-1 min-h-screen bg-[#f3f4f6] bg-grid-pattern overflow-y-auto" ref={staggerRef}>
+      <PageHeader
+        icon={<HiBolt className="h-8 w-8" />}
+        title="Community"
+        variant="white"
+        description="Explore icons created by the community"
+        actions={
+          <FilterTabs
+            tabs={[
+              { key: "latest", label: "Latest", icon: <HiClock className="h-4 w-4" /> },
+              {
+                key: "mostLoved",
+                label: "Most Loved",
+                icon: <HeartSmooth style={{ width: "20px", height: "20px" }} />
+              }
+            ]}
+            activeTab={filter}
+            onTabChange={(key) => setFilter(key as FilterType)}
+            className="w-full sm:w-auto"
+          />
+        }
+      />
 
       <main className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-40 sm:pb-12">
-        <div className="max-w-7xl mx-auto" ref={staggerRef}>
+        <div className="max-w-7xl mx-auto">
           {isLoading ? (
             <PageLoading message="Loading community packs..." />
           ) : packs.length === 0 ? (

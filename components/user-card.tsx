@@ -13,11 +13,11 @@ export function UserCard({ rank, name, referrals, credits, variant = "regular" }
   const getVariantStyles = () => {
     switch (variant) {
       case "top":
-        return "w-32 p-5 rounded-2xl border-[3px] border-black bg-[#B9FF66] text-center shadow-[6px_6px_0px_0px_#000000]"
+        return "w-full p-6 sm:p-8 rounded-[24px] border-[4px] border-black bg-[#B9FF66] text-center shadow-[6px_6px_0px_0px_#000000]"
       case "my":
         return "p-4 rounded-2xl border-[3px] border-black shadow-[4px_4px_0px_0px_#000000] bg-[#B9FF66]"
       default:
-        return "p-4 rounded-2xl border-[3px] border-black shadow-[4px_4px_0px_0px_#000000] bg-white transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#000000]"
+        return "w-full p-5 rounded-[20px] border-[3px] border-black shadow-[4px_4px_0px_0px_#000000] bg-white transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000000]"
     }
   }
 
