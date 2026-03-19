@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { HiSparkles, HiClock, HiHeart, HiArrowUpTray, HiTrash } from "react-icons/hi2"
+import { HiBolt, HiClock, HiHeart, HiArrowUpTray, HiTrash } from "react-icons/hi2"
 import { useState } from "react"
 
 // ============================================================================
@@ -183,7 +183,7 @@ export function GeneratePageActions() {
     {
       id: "generate",
       label: "Generate",
-      icon: <HiSparkles className="w-5 h-5" />,
+      icon: <HiBolt className="w-5 h-5" />,
       onClick: handleGenerate,
       variant: "primary",
       loading: isGenerating

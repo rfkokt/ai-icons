@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { HiGift, HiSparkles, HiShare } from "react-icons/hi2"
+import { HiGift, HiShare, HiUsers, HiClock, HiCheckCircle, HiBanknotes } from "react-icons/hi2"
 import { StatCard } from "@/components/stat-card"
 import { UserArea } from "@/components/user-area"
 import { EmptyState } from "@/components/empty-state"
@@ -10,10 +10,10 @@ import { HowItWorks } from "@/components/how-it-works"
 import { CopyLinkButton } from "@/components/copy-link-button"
 
 const stats = [
-  { label: "Total Referrals", value: "0", icon: HiSparkles },
-  { label: "Pending", value: "0", icon: HiSparkles },
-  { label: "Completed", value: "0", icon: HiSparkles },
-  { label: "Credits Earned", value: "0", icon: HiSparkles },
+  { label: "Total Referrals", value: "0", icon: HiUsers },
+  { label: "Pending", value: "0", icon: HiClock },
+  { label: "Completed", value: "0", icon: HiCheckCircle },
+  { label: "Credits Earned", value: "0", icon: HiBanknotes },
 ]
 
 const steps = [

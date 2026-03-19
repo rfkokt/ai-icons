@@ -1,7 +1,7 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { HiSparkles, HiHeart, HiCheck, HiTrash, HiArrowDownTray } from "react-icons/hi2"
+import { HiBolt, HiHeart, HiCheck, HiTrash, HiArrowDownTray } from "react-icons/hi2"
 import { cn } from "@/lib/utils"
 import { IconActionBar } from "./icon-action-bar"
 import { LoadableImage } from "./loadable-image"

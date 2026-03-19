@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { HiCheck, HiArrowRight, HiBolt, HiBuildingOffice2, HiSparkles } from "react-icons/hi2"
+import { HiCheck, HiArrowRight, HiBolt, HiBuildingOffice2 } from "react-icons/hi2"
 import { FaCrown } from "react-icons/fa6"
 import { cn } from "@/lib/utils"
 

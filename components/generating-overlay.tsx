@@ -1,7 +1,7 @@
 "use client"
 
 import { forwardRef } from "react"
-import { HiSparkles } from "react-icons/hi2"
+import { HiBolt } from "react-icons/hi2"
 
 interface GeneratingOverlayProps {
   iconCount?: number
@@ -16,30 +16,30 @@ export const GeneratingOverlay = forwardRef<HTMLDivElement, GeneratingOverlayPro
         {/* Top Marquee */}
         <div className="absolute top-8 left-0 w-full h-14 bg-[#B9FF66] border-y-4 border-black flex items-center overflow-hidden rotate-[-2deg] scale-110">
           <div className="animate-marquee whitespace-nowrap flex gap-12 items-center font-black text-black text-2xl uppercase tracking-widest">
-            <span>Creating Magic</span> <HiSparkles className="w-6 h-6"/>
-            <span>Generating {iconCount} Icons</span> <HiSparkles className="w-6 h-6"/>
-            <span>AI At Work</span> <HiSparkles className="w-6 h-6"/>
-            <span>Creating Magic</span> <HiSparkles className="w-6 h-6"/>
-            <span>Generating {iconCount} Icons</span> <HiSparkles className="w-6 h-6"/>
-            <span>AI At Work</span> <HiSparkles className="w-6 h-6"/>
-            <span>Creating Magic</span> <HiSparkles className="w-6 h-6"/>
-            <span>Generating {iconCount} Icons</span> <HiSparkles className="w-6 h-6"/>
-            <span>AI At Work</span> <HiSparkles className="w-6 h-6"/>
+            <span>Creating Magic</span> <HiBolt className="w-6 h-6"/>
+            <span>Generating {iconCount} Icons</span> <HiBolt className="w-6 h-6"/>
+            <span>AI At Work</span> <HiBolt className="w-6 h-6"/>
+            <span>Creating Magic</span> <HiBolt className="w-6 h-6"/>
+            <span>Generating {iconCount} Icons</span> <HiBolt className="w-6 h-6"/>
+            <span>AI At Work</span> <HiBolt className="w-6 h-6"/>
+            <span>Creating Magic</span> <HiBolt className="w-6 h-6"/>
+            <span>Generating {iconCount} Icons</span> <HiBolt className="w-6 h-6"/>
+            <span>AI At Work</span> <HiBolt className="w-6 h-6"/>
           </div>
         </div>
 
         {/* Bottom Marquee */}
         <div className="absolute bottom-10 left-0 w-full h-14 bg-white border-y-4 border-black flex items-center overflow-hidden rotate-[3deg] scale-110">
           <div className="animate-marquee-reverse whitespace-nowrap flex gap-12 items-center font-black text-black text-2xl uppercase tracking-widest">
-            <span>Stand By</span> <HiSparkles className="w-6 h-6"/>
-            <span>Cooking Pixels</span> <HiSparkles className="w-6 h-6"/>
-            <span>Machine Learning</span> <HiSparkles className="w-6 h-6"/>
-            <span>Stand By</span> <HiSparkles className="w-6 h-6"/>
-            <span>Cooking Pixels</span> <HiSparkles className="w-6 h-6"/>
-            <span>Machine Learning</span> <HiSparkles className="w-6 h-6"/>
-            <span>Stand By</span> <HiSparkles className="w-6 h-6"/>
-            <span>Cooking Pixels</span> <HiSparkles className="w-6 h-6"/>
-            <span>Machine Learning</span> <HiSparkles className="w-6 h-6"/>
+            <span>Stand By</span> <HiBolt className="w-6 h-6"/>
+            <span>Cooking Pixels</span> <HiBolt className="w-6 h-6"/>
+            <span>Machine Learning</span> <HiBolt className="w-6 h-6"/>
+            <span>Stand By</span> <HiBolt className="w-6 h-6"/>
+            <span>Cooking Pixels</span> <HiBolt className="w-6 h-6"/>
+            <span>Machine Learning</span> <HiBolt className="w-6 h-6"/>
+            <span>Stand By</span> <HiBolt className="w-6 h-6"/>
+            <span>Cooking Pixels</span> <HiBolt className="w-6 h-6"/>
+            <span>Machine Learning</span> <HiBolt className="w-6 h-6"/>
           </div>
         </div>
 

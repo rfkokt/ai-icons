@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { HiSparkles } from "react-icons/hi2"
+import { HiBolt } from "react-icons/hi2"
 import { cn } from "@/lib/utils"
 
 interface PageHeaderProps {

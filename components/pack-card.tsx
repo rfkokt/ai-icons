@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card"
-import { HiSparkles, HiShare, HiTrash } from "react-icons/hi2"
+import { HiBolt, HiShare, HiTrash } from "react-icons/hi2"
 import { cn } from "@/lib/utils"
 import { LoadableImage } from "./loadable-image"
 import { HeartSmooth } from "./icons/heart-smooth"

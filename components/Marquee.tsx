@@ -1,9 +1,9 @@
 "use client";
 
-import { HiStar, HiBolt, HiPaintBrush, HiCodeBracket, HiSparkles, HiRectangleStack } from "react-icons/hi2";
+import { HiStar, HiBolt, HiPaintBrush, HiCodeBracket, HiRectangleStack } from "react-icons/hi2";
 
 const marqueeItems = [
-  { text: "AI Generation", icon: HiSparkles },
+  { text: "AI Generation", icon: HiStar },
   { text: "SVG Export", icon: HiCodeBracket },
   { text: "React Components", icon: HiRectangleStack },
   { text: "Custom Styles", icon: HiPaintBrush },

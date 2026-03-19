@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { HiSparkles } from "react-icons/hi2"
+import { HiBolt } from "react-icons/hi2"
 import { ConfirmDialog } from "@/components/confirm-dialog"
 import { QuickPromptButton } from "@/components/quick-prompt-button"
 import { IconCard } from "@/components/icon-card"
@@ -319,7 +319,7 @@ export default function GeneratePage() {
                     </>
                   ) : (
                     <>
-                      <HiSparkles className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" />
+                      <HiBolt className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" />
                       Generate
                     </>
                   )}

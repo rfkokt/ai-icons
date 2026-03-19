@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { HiArrowTopRightOnSquare, HiSparkles } from "react-icons/hi2";
+import { HiArrowTopRightOnSquare, HiBolt } from "react-icons/hi2";
 import gsap from "gsap";
 
 export default function Hero() {

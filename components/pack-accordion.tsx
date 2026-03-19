@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { HiSparkles, HiArrowDownTray, HiTrash, HiChevronDown } from "react-icons/hi2"
+import { HiBolt, HiArrowDownTray, HiTrash, HiChevronDown } from "react-icons/hi2"
 import { cn } from "@/lib/utils"
 import gsap from "gsap"
 

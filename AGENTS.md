@@ -18,6 +18,29 @@ ai-icons/
 
 ## Mandatory Rules
 
+### Neo-Brutalist Design Guidelines (CRITICAL)
+To maintain the application's aggressive, high-contrast aesthetic, **NEVER** use soft UI patterns. Adhere strictly to the following:
+1. **Backgrounds & Colors:**
+   - **NO Gradients/Softness:** Avoid `bg-gradient-to-...`, `blur`, or soft colored backgrounds.
+   - **Allowed Backgrounds:** Pure white `bg-white`, solid black `bg-black`, pure zinc `bg-[#f3f4f6]`, and the primary accent Lime/Yellow `bg-[#B9FF66]`.
+   - Use `bg-grid-pattern` for main page backgrounds to add structured texture.
+2. **Borders & Shadows:**
+   - **NO Soft Shadows:** Do not use Tailwind's default `shadow-sm`, `shadow-md`, `shadow-lg`, etc.
+   - **Thick Borders:** Always use `border-2`, `border-3`, or `border-4` paired with `border-black`.
+   - **Hard Shadows:** Use offset, unblurred black dropshadows, e.g., `shadow-[4px_4px_0_0_#000000]` or `shadow-[8px_8px_0_0_#000000]`.
+   - **Interactive States:** Buttons and cards should translate on hover. 
+     - Press effect: `hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[2px_2px_0_0_#000]`.
+     - Lift effect: `hover:-translate-y-1 hover:translate-x-1 group-hover:shadow-[8px_8px_0_0_#000]`.
+3. **Typography:**
+   - Font family: **Bricolage Grotesque**.
+   - Use extremely heavy weights (`font-black`), negative tracking (`tracking-tighter`), and `uppercase` for overlines/badges. Avoid thin or subtle text.
+4. **Mobile-First & Layouts:**
+   - Stack grids gracefully on mobile (`grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`).
+   - Touch targets must be sufficiently large on mobile (e.g., `h-10 w-10 sm:h-8 sm:w-8`).
+   - **NO Hover-Only Functions on Mobile:** Do not use `opacity-0 group-hover:opacity-100` blindly. On mobile touch screens, ensure actionable items are always visible using `opacity-100 sm:opacity-0 sm:group-hover:opacity-100`.
+5. **Placeholders & Empty States:**
+   - **Anti-Generic:** DO NOT use generic soft icons like `HiSparkles`. Instead, employ aggressive typography or tilted geometric shapes (e.g., `<div className="w-12 h-12 border-4 border-black shadow-[4px_4px...] rotate-3 font-black">?</div>`).
+
 ### UI Components
 Use ShadCN: `Button`, `Card`, `Dialog`, `Sheet`, `Badge`, `Input`, `DropdownMenu`, `Separator`, `Tabs`, `Avatar`, `Popover`, `Tooltip`
 
@@ -25,7 +48,7 @@ Use ShadCN: `Button`, `Card`, `Dialog`, `Sheet`, `Badge`, `Input`, `DropdownMenu
 - `"use client"` only for hooks/GSAP
 - Use `cn()` for merged classes
 - GSAP cleanup: `ScrollTrigger.getAll().forEach(t => t.kill())`
-- Mobile-first: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`
+- Avoid GSAP ScrollTrigger opacity animations on elements mapped to Hash Links (`/#anchor`) to prevent invisible items on deep-linking.
 - Protected routes: `(main)` group
 
 ## Available Hooks

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
-import { HiClock, HiSparkles, HiArrowLeft, HiArrowDownTray, HiTrash } from "react-icons/hi2"
+import { HiClock, HiBolt, HiArrowLeft, HiArrowDownTray, HiTrash } from "react-icons/hi2"
 import { IconCard } from "@/components/icon-card"
 import { PackCard } from "@/components/pack-card"
 import { FilterTabs } from "@/components/filter-tabs"
@@ -205,7 +205,7 @@ function CommunityContent() {
                   </div>
                   <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
                     <p className="text-sm sm:text-base font-medium text-zinc-800 flex items-center gap-2">
-                      <HiSparkles className="h-4 w-4" />
+                      <HiBolt className="h-4 w-4" />
                       {selectedPackIcons.length} community icons
                     </p>
                   </div>
@@ -222,7 +222,7 @@ function CommunityContent() {
             ) : selectedPackIcons.length === 0 ? (
               <EmptyState
                 variant="brutalist"
-                icon={<HiSparkles className="h-10 w-10 text-zinc-400" />}
+                icon={<HiBolt className="h-10 w-10 text-zinc-400" />}
                 title="No icons found"
                 description="This pack doesn't have any shared icons yet."
               />

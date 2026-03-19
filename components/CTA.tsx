@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { HiArrowRight, HiSparkles } from "react-icons/hi2";
+import { HiArrowRight, HiBolt } from "react-icons/hi2";
 
 export default function CTA() {
   return (
@@ -11,7 +11,7 @@ export default function CTA() {
         
         <div className="max-w-2xl relative z-10">
           <div className="flex items-center gap-2 mb-6">
-            <HiSparkles className="w-6 h-6 text-[#B9FF66]" />
+            <HiBolt className="w-6 h-6 text-[#B9FF66]" />
             <span className="font-bold text-zinc-600">Start for free</span>
           </div>
           <h3 className="text-4xl lg:text-5xl font-black tracking-tighter mb-6">

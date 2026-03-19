@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { HiArrowLeft, HiSparkles, HiTrash } from "react-icons/hi2"
+import { HiArrowLeft, HiBolt, HiTrash } from "react-icons/hi2"
 import { FeatureCarousel } from "@/components/ui/feature-carousel"
 import { IconCard } from "@/components/icon-card"
 import { PackCard } from "@/components/pack-card"
@@ -114,7 +114,7 @@ function LibraryContent() {
                   </div>
                   <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
                     <p className="text-sm sm:text-base font-medium text-zinc-800 flex items-center gap-2">
-                      <HiSparkles className="h-4 w-4" />
+                      <HiBolt className="h-4 w-4" />
                       {icons.length} icons generated
                     </p>
                     {packPrompt && packPrompt.length > 40 && (
@@ -233,7 +233,7 @@ function LibraryContent() {
   return (
     <div className="flex-1 min-h-screen bg-[#f3f4f6] bg-grid-pattern overflow-y-auto" ref={staggerRef}>
       <PageHeader
-        icon={<HiSparkles className="h-8 w-8" />}
+        icon={<HiBolt className="h-8 w-8" />}
         title="Your Library"
         variant="lime"
         stats={[
