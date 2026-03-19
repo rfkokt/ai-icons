@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { HiArrowLeft, HiSparkles } from "react-icons/hi2"
+import { HiArrowLeft, HiSparkles, HiTrash } from "react-icons/hi2"
 import { FeatureCarousel } from "@/components/ui/feature-carousel"
 import { IconCard } from "@/components/icon-card"
 import { PackCard } from "@/components/pack-card"
@@ -126,10 +126,10 @@ function LibraryContent() {
                 </div>
               </div>
               <Button
-                className="bg-red-500 hover:bg-red-600 text-white border-3 border-black rounded-xl px-5 py-2.5 font-bold shadow-[4px_4px_0px_0px_#000000] hover:shadow-[2px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
+                className="bg-red-500 hover:bg-red-600 text-white border-3 border-black rounded-xl px-5 py-2.5 font-bold shadow-[4px_4px_0_0_#000000] hover:shadow-[2px_2px_0_0_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all w-full sm:w-auto"
                 onClick={() => setDeletePackDialogOpen(true)}
               >
-                <HiSparkles className="h-4 w-4 mr-2" />
+                <HiTrash className="h-5 w-5 mr-2" />
                 Delete Pack
               </Button>
             </div>

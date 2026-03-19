@@ -31,9 +31,9 @@ export default function LeaderboardPage() {
   const [filter, setFilter] = useState<FilterType>("weekly")
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden">
-      <header className="h-auto bg-white border-b border-zinc-200 px-6 py-4 shrink-0">
-        <h1 className="text-2xl font-bold text-zinc-900 mb-3">Leaderboard</h1>
+    <div className="flex-1 flex flex-col overflow-hidden bg-[#f3f4f6] bg-grid-pattern">
+      <header className="h-auto bg-white border-b-3 border-black px-4 sm:px-6 py-4 shrink-0 shadow-[0_4px_0_0_#000000] z-10">
+        <h1 className="text-2xl font-black text-zinc-900 mb-3 tracking-tight">Leaderboard</h1>
         <FilterTabs
           tabs={[
             { key: "weekly", label: "Weekly" },
@@ -46,26 +46,30 @@ export default function LeaderboardPage() {
         />
       </header>
 
-      <main className="flex-1 overflow-auto p-6">
-        <div className="flex items-end justify-center gap-4 mb-8">
-          <UserCard {...topUsers[1]} variant="regular" />
-          <UserCard {...topUsers[0]} variant="top" />
-          <UserCard {...topUsers[2]} variant="regular" />
+      <main className="flex-1 overflow-auto p-4 sm:p-6 pb-24">
+        <div className="w-full overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="flex items-end justify-center gap-4 sm:gap-6 min-w-max mx-auto w-fit mb-8">
+            <UserCard {...topUsers[1]} variant="regular" />
+            <UserCard {...topUsers[0]} variant="top" />
+            <UserCard {...topUsers[2]} variant="regular" />
+          </div>
         </div>
 
-        <Card className="rounded-2xl border-2 border-zinc-200 bg-white">
-          <div className="p-4 border-b border-zinc-200">
-            <h2 className="font-semibold text-zinc-900">Community Champions</h2>
+        <Card className="rounded-[24px] border-[3px] border-black bg-white shadow-[8px_8px_0_0_#000000] overflow-hidden max-w-4xl mx-auto">
+          <div className="p-5 border-b-3 border-black bg-zinc-50">
+            <h2 className="font-black text-xl text-zinc-900 tracking-tight">Community Champions</h2>
           </div>
-          <div className="divide-y divide-zinc-200">
+          <div className="divide-y-3 divide-black">
             {leaderboardData.map((user) => (
-              <UserCard key={user.rank} {...user} variant="regular" />
+              <div key={user.rank} className="hover:bg-zinc-50 transition-colors">
+                <UserCard {...user} variant="regular" />
+              </div>
             ))}
           </div>
         </Card>
       </main>
 
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
         <UserCard {...myRank} variant="my" />
       </div>
     </div>
