@@ -299,7 +299,7 @@ function CommunityContent() {
       <PageHeader
         icon={<HiBolt className="h-8 w-8" />}
         title="Community"
-        variant="white"
+        variant="lime"
         description="Explore icons created by the community"
         actions={
           <FilterTabs
