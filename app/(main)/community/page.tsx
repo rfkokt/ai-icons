@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, Suspense, useTransition } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { HiClock, HiSparkles, HiArrowLeft } from "react-icons/hi2"
 import { IconCard } from "@/components/icon-card"
@@ -15,6 +15,9 @@ import { HeartSmooth } from "@/components/icons/heart-smooth"
 import { useLightbox } from "@/hooks/use-lightbox"
 import { useStaggerAnimation } from "@/hooks/use-stagger-animation"
 import { useRouter } from "next/navigation"
+import { useDownload } from "@/hooks/use-download"
+import { ConfirmDialog } from "@/components/confirm-dialog"
+import { toast } from "sonner"
 import type { CommunityIcon, CommunityPack } from "@/types/icon"
 
 type FilterType = "latest" | "mostLoved"
@@ -28,9 +31,11 @@ function CommunityContent() {
   const [selectedPackIcons, setSelectedPackIcons] = useState<CommunityIcon[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isLoadingPack, setIsLoadingPack] = useState(false)
-  const [hoveredLikeButton, setHoveredLikeButton] = useState<string | null>(null)
   const [animatingHeart, setAnimatingHeart] = useState<string | null>(null)
-  const [isPending, startTransition] = useTransition()
+  const { download } = useDownload()
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [packToDelete, setPackToDelete] = useState<{ id: string; prompt: string } | null>(null)
 
   const lightbox = useLightbox(selectedPackIcons.length)
 
@@ -62,39 +67,9 @@ function CommunityContent() {
       setPacks(data)
     } catch (error) {
       console.error("Failed to fetch community packs:", error)
-      // Fallback: fetch icons and group them
-      const iconsResponse = await fetch(`/api/icons?sort=${filter}`)
-      if (iconsResponse.ok) {
-        const icons: CommunityIcon[] = await iconsResponse.json()
-        const grouped = groupIconsByPrompt(icons)
-        setPacks(grouped)
-      }
     } finally {
       setIsLoading(false)
     }
-  }
-
-  const groupIconsByPrompt = (icons: CommunityIcon[]): CommunityPack[] => {
-    const grouped = icons.reduce((acc: Record<string, CommunityIcon[]>, icon) => {
-      const prompt = icon.prompt || "Untitled"
-      if (!acc[prompt]) {
-        acc[prompt] = []
-      }
-      acc[prompt].push(icon)
-      return acc
-    }, {})
-
-    return Object.entries(grouped).map(([prompt, icons], index) => {
-      const totalLikes = icons.reduce((sum, icon) => sum + icon.likes, 0)
-      return {
-        id: `pack-${index}`,
-        prompt,
-        preview: icons[0]?.src || null,
-        iconCount: icons.length,
-        totalLikes,
-        isLiked: false
-      }
-    })
   }
 
   const fetchPackIcons = async (prompt: string) => {
@@ -111,18 +86,14 @@ function CommunityContent() {
     }
   }
 
-  const handleLikePack = async (packId: string, e: React.MouseEvent) => {
-    e.stopPropagation()
-
+  const handleLikePack = (packId: string) => {
     const pack = packs.find(p => p.id === packId)
     if (!pack) return
 
-    // Optimistic update - immediately update UI
     const newLikedState = !pack.isLiked
     const previousState = pack.isLiked
     const previousCount = pack.totalLikes
 
-    // Update UI optimistically
     setPacks(prevPacks =>
       prevPacks.map(p =>
         p.id === packId
@@ -131,30 +102,33 @@ function CommunityContent() {
       )
     )
 
-    // Trigger floating animation
     if (newLikedState) {
       setAnimatingHeart(packId)
       setTimeout(() => setAnimatingHeart(null), 600)
     }
 
-    try {
-      const response = await fetch(`/api/pack/${encodeURIComponent(packId)}/like`, {
-        method: "POST"
-      })
-
-      const data = await response.json()
-
-      if (data.success) {
-        // Sync with actual server response
-        setPacks(prevPacks =>
-          prevPacks.map(p =>
-            p.id === packId
-              ? { ...p, totalLikes: data.likeCount ?? p.totalLikes, isLiked: data.liked }
-              : p
+    fetch(`/api/pack/${encodeURIComponent(packId)}/like`, { method: "POST" })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setPacks(prevPacks =>
+            prevPacks.map(p =>
+              p.id === packId
+                ? { ...p, totalLikes: data.likeCount ?? p.totalLikes, isLiked: data.liked }
+                : p
+            )
           )
-        )
-      } else {
-        // Revert on error
+        } else {
+          setPacks(prevPacks =>
+            prevPacks.map(p =>
+              p.id === packId
+                ? { ...p, totalLikes: previousCount, isLiked: previousState }
+                : p
+            )
+          )
+        }
+      })
+      .catch(() => {
         setPacks(prevPacks =>
           prevPacks.map(p =>
             p.id === packId
@@ -162,21 +136,50 @@ function CommunityContent() {
               : p
           )
         )
+      })
+  }
+
+  const handleDeletePack = (packId: string, prompt: string) => {
+    setPackToDelete({ id: packId, prompt })
+    setDeleteDialogOpen(true)
+  }
+
+  const confirmDeletePack = async () => {
+    if (!packToDelete) return
+    try {
+      const response = await fetch(`/api/community-pack/${encodeURIComponent(packToDelete.id)}/delete`, {
+        method: "POST"
+      })
+      const data = await response.json()
+      if (data.success) {
+        toast.success("Pack unshared successfully")
+        setPacks(prev => prev.filter(p => p.id !== packToDelete.id))
+      } else {
+        toast.error(data.error || "Failed to unshare pack")
       }
-    } catch (error) {
-      // Revert on error
-      setPacks(prevPacks =>
-        prevPacks.map(p =>
-          p.id === packId
-            ? { ...p, totalLikes: previousCount, isLiked: previousState }
-            : p
-        )
-      )
-      console.error("Like error:", error)
+    } catch {
+      toast.error("Something went wrong")
+    }
+    setDeleteDialogOpen(false)
+    setPackToDelete(null)
+  }
+
+  const handleDownloadPng = (pack: CommunityPack) => {
+    if (pack.pngKeys && pack.pngKeys.length > 0) {
+      pack.pngKeys.forEach((key, i) => {
+        setTimeout(() => download(key, `${pack.prompt}-${i + 1}`, "png"), i * 200)
+      })
     }
   }
 
-  // Show pack detail view
+  const handleDownloadSvg = (pack: CommunityPack) => {
+    if (pack.pngKeys && pack.pngKeys.length > 0) {
+      pack.pngKeys.forEach((key, i) => {
+        setTimeout(() => download(key, `${pack.prompt}-${i + 1}`, "svg"), i * 200)
+      })
+    }
+  }
+
   if (packPrompt && selectedPackIcons.length > 0) {
     return (
       <div className="flex-1 min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 overflow-y-auto">
@@ -204,11 +207,6 @@ function CommunityContent() {
                       <HiSparkles className="h-4 w-4" />
                       {selectedPackIcons.length} community icons
                     </p>
-                    {packPrompt.length > 40 && (
-                      <p className="text-xs sm:text-sm text-zinc-600 truncate max-w-md" title={packPrompt}>
-                        "{packPrompt}"
-                      </p>
-                    )}
                   </div>
                 </div>
               </div>
@@ -269,7 +267,6 @@ function CommunityContent() {
     )
   }
 
-  // Show main community page with packs
   return (
     <div className="flex-1 min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 overflow-y-auto">
       <header className="h-auto sm:h-14 bg-white border-b border-zinc-200 px-4 sm:px-6 py-3 sm:py-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 shrink-0 sticky top-0 z-10">
@@ -310,38 +307,41 @@ function CommunityContent() {
           ) : (
             <IconGrid>
               {packs.map((pack) => (
-                <div key={pack.id} className="pack-card relative">
-                  <PackCard
-                    id={pack.id}
-                    preview={pack.preview}
-                    prompt={pack.prompt}
-                    iconCount={pack.iconCount}
-                    onClick={() => router.push(`/community?pack=${encodeURIComponent(pack.prompt)}`)}
-                    showActionBar={false}
-                    disableHover={hoveredLikeButton === pack.id}
-                    sharedBy={pack.sharedBy}
-                    sharedByAvatar={pack.sharedByAvatar}
-                    showSharedBy={true}
-                  />
-                  {/* Love Button - Instagram style */}
-                  <button
-                    onClick={(e) => handleLikePack(pack.id, e)}
-                    onMouseEnter={() => setHoveredLikeButton(pack.id)}
-                    onMouseLeave={() => setHoveredLikeButton(null)}
-                    className="absolute top-3 right-3 z-20 bg-white/90 backdrop-blur-sm rounded-full p-1.5 flex items-center gap-1 hover:bg-white hover:scale-105 transition-all shadow-sm"
-                  >
-                    <HeartSmooth
-                      filled={pack.isLiked}
-                      className={`h-5 w-5 transition-all duration-200 ${animatingHeart === pack.id ? 'animate-heart-bounce scale-125' : ''}`}
-                    />
-                    <span className="text-xs font-semibold text-zinc-700 min-w-[12px]">{pack.totalLikes}</span>
-                  </button>
-                </div>
+                <PackCard
+                  key={pack.id}
+                  id={pack.id}
+                  preview={pack.preview}
+                  prompt={pack.prompt}
+                  iconCount={pack.iconCount}
+                  onClick={() => router.push(`/community?pack=${encodeURIComponent(pack.prompt)}`)}
+                  onDownloadPng={() => handleDownloadPng(pack)}
+                  onDownloadSvg={() => handleDownloadSvg(pack)}
+                  onDelete={pack.isOwner ? () => handleDeletePack(pack.id, pack.prompt) : undefined}
+                  showActionBar={true}
+                  sharedBy={pack.sharedBy}
+                  sharedByAvatar={pack.sharedByAvatar}
+                  showSharedBy={true}
+                  totalLikes={pack.totalLikes}
+                  isLiked={pack.isLiked}
+                  onLike={() => handleLikePack(pack.id)}
+                  variant="community"
+                />
               ))}
             </IconGrid>
           )}
         </div>
       </main>
+
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Unshare Pack"
+        description={`Are you sure you want to unshare "${packToDelete?.prompt}"? This will remove it from the community.`}
+        confirmText="Unshare"
+        cancelText="Cancel"
+        variant="destructive"
+        onConfirm={confirmDeletePack}
+      />
     </div>
   )
 }

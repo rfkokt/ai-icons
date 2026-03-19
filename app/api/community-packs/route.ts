@@ -39,23 +39,24 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Failed to fetch icons" }, { status: 500 })
     }
 
-    // Group icons by prompt and create packs, tracking user info
+    // Group icons by base prompt and create packs, tracking user info
     const groupedPacks = data.reduce((acc: Record<string, any[]>, icon) => {
-      const prompt = icon.prompt || "Untitled"
-      if (!acc[prompt]) {
-        acc[prompt] = []
+      const basePrompt = icon.prompt.replace(/-\d+$/, '')
+      if (!acc[basePrompt]) {
+        acc[basePrompt] = []
       }
-      acc[prompt].push(icon)
+      acc[basePrompt].push(icon)
       return acc
     }, {})
 
     // Get the user info for each pack (from the first icon in each group)
-    const packUserInfo = Object.entries(groupedPacks).reduce((acc: Record<string, { name: string | null; avatar_url: string | null }>, [prompt, icons]: [string, any[]]) => {
+    const packUserInfo = Object.entries(groupedPacks).reduce((acc: Record<string, { name: string | null; avatar_url: string | null; clerk_id: string | null }>, [basePrompt, icons]: [string, any[]]) => {
       const firstIcon = icons[0]
       if (firstIcon?.users) {
-        acc[prompt] = {
+        acc[basePrompt] = {
           name: firstIcon.users.name,
-          avatar_url: firstIcon.users.avatar_url
+          avatar_url: firstIcon.users.avatar_url,
+          clerk_id: firstIcon.users.clerk_id
         }
       }
       return acc
@@ -84,18 +85,21 @@ export async function GET(request: NextRequest) {
       userLikes = new Set(userLikesData?.map(like => like.pack_id) || [])
     }
 
-    const packs = Object.entries(groupedPacks).map(([prompt, icons]) => {
-      const totalLikes = likesMap[prompt] || 0
-      const userInfo = packUserInfo[prompt] || { name: null, avatar_url: null }
+    const packs = Object.entries(groupedPacks).map(([basePrompt, icons]) => {
+      const totalLikes = likesMap[basePrompt] || 0
+      const userInfo = packUserInfo[basePrompt] || { name: null, avatar_url: null, clerk_id: null }
+      const isOwner = clerkUser ? clerkUser.id === userInfo.clerk_id : false
       return {
-        id: prompt, // Use prompt as ID for consistent liking
-        prompt,
+        id: basePrompt,
+        prompt: basePrompt,
         preview: icons[0]?.png_key ? `/api/download/${encodeURIComponent(icons[0].png_key)}` : null,
         iconCount: icons.length,
         totalLikes,
-        isLiked: userLikes.has(prompt),
+        isLiked: userLikes.has(basePrompt),
         sharedBy: userInfo.name,
-        sharedByAvatar: userInfo.avatar_url
+        sharedByAvatar: userInfo.avatar_url,
+        isOwner,
+        pngKeys: icons.map(i => i.png_key).filter(Boolean)
       }
     })
 

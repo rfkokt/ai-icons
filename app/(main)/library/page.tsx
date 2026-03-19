@@ -23,6 +23,7 @@ import { useDeletePack } from "@/hooks/use-delete-pack"
 import { useSelectMode } from "@/hooks/use-select-mode"
 import { useShareIcon } from "@/hooks/use-share-icon"
 import { useDownload } from "@/hooks/use-download"
+import { usePackDownload } from "@/hooks/use-pack-download"
 import { toast } from "sonner"
 
 function LibraryContent() {
@@ -32,6 +33,7 @@ function LibraryContent() {
 
   const { download } = useDownload()
   const { shareToCommunity, sharePackToCommunity } = useShareIcon()
+  const { downloadPackById } = usePackDownload()
   const { deletePack, deleteIconFromPack } = useDeletePack()
   
   const { packs, setPacks, isLoading: isLoadingPacks, totalIcons } = usePacks()
@@ -256,8 +258,8 @@ function LibraryContent() {
                   iconCount={pack.iconCount}
                   onClick={() => router.push(`/library?pack=${pack.id}`)}
                   onShare={() => handleSharePack(pack.id, pack.iconCount)}
-                  onDownloadPng={() => {}}
-                  onDownloadSvg={() => {}}
+                  onDownloadPng={() => downloadPackById(pack.id, "png")}
+                  onDownloadSvg={() => downloadPackById(pack.id, "svg")}
                   onDelete={() => {
                     setPackToDelete({ id: pack.id, prompt: pack.prompt })
                     setDeleteDialogOpen(true)

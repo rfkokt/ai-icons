@@ -60,4 +60,6 @@ export interface CommunityPack {
   isLiked?: boolean
   sharedBy?: string | null
   sharedByAvatar?: string | null
+  isOwner?: boolean
+  pngKeys?: string[]
 }
