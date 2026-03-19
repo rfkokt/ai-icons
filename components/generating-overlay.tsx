@@ -56,34 +56,18 @@ export const GeneratingOverlay = forwardRef<HTMLDivElement, GeneratingOverlayPro
           </div>
 
           <div className="p-8 sm:p-12 flex flex-col items-center">
-            {/* 3D Neo-Brutalist Cube */}
-            <div className="w-32 h-32 mb-6 mt-2 relative flex flex-col justify-center items-center" style={{ perspective: "1000px" }}>
-              <div className="animate-bounce-cube w-20 h-20 relative z-10" style={{ transformStyle: "preserve-3d" }}>
-                <div className="w-full h-full relative animate-spin-cube" style={{ transformStyle: "preserve-3d" }}>
-                  {/* Front */}
-                  <div className="absolute inset-0 border-4 border-black bg-[#B9FF66] flex items-center justify-center" style={{ transform: "rotateY(0deg) translateZ(40px)" }}>
-                    <HiSparkles className="w-10 h-10 text-black" />
-                  </div>
-                  {/* Back */}
-                  <div className="absolute inset-0 border-4 border-black bg-[#B9FF66] flex items-center justify-center" style={{ transform: "rotateY(180deg) translateZ(40px)" }}>
-                    <HiSparkles className="w-10 h-10 text-black" />
-                  </div>
-                  {/* Right */}
-                  <div className="absolute inset-0 border-4 border-black bg-white flex items-center justify-center" style={{ transform: "rotateY(90deg) translateZ(40px)" }}>
-                    <HiSparkles className="w-10 h-10 text-black" />
-                  </div>
-                  {/* Left */}
-                  <div className="absolute inset-0 border-4 border-black bg-white flex items-center justify-center" style={{ transform: "rotateY(-90deg) translateZ(40px)" }}>
-                    <HiSparkles className="w-10 h-10 text-black" />
-                  </div>
-                  {/* Top */}
-                  <div className="absolute inset-0 border-4 border-black bg-[#B9FF66]" style={{ transform: "rotateX(90deg) translateZ(40px)" }}></div>
-                  {/* Bottom */}
-                  <div className="absolute inset-0 border-4 border-black bg-zinc-800" style={{ transform: "rotateX(-90deg) translateZ(40px)" }}></div>
-                </div>
+            {/* Flat Neo-Brutalist Scanner */}
+            <div className="w-32 h-32 mb-10 mt-2 relative border-4 border-black bg-white shadow-[8px_8px_0_0_#B9FF66] overflow-hidden rounded-xl flex items-center justify-center">
+              {/* Dotted Grid Background */}
+              <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, black 1px, transparent 0)", backgroundSize: "12px 12px" }}></div>
+              
+              {/* Center Icon */}
+              <div className="relative z-10 w-20 h-20 bg-black rounded-lg flex items-center justify-center animate-pulse-fast">
+                <HiSparkles className="w-10 h-10 text-white" />
               </div>
-              {/* Ground shadow */}
-              <div className="w-24 h-6 bg-black/20 rounded-[50%] absolute -bottom-2 animate-shadow-cube blur-md"></div>
+
+              {/* Scanning Laser Line */}
+              <div className="absolute left-0 right-0 h-4 bg-[#B9FF66] border-y-[3px] border-black animate-scan-laser z-30"></div>
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tighter text-center mb-1 text-black">Generating</h2>
@@ -119,26 +103,20 @@ export const GeneratingOverlay = forwardRef<HTMLDivElement, GeneratingOverlayPro
             animation: marquee-reverse 10s linear infinite;
             width: max-content;
           }
-          @keyframes spin-cube {
-            0% { transform: rotateX(-25deg) rotateY(0deg); }
-            100% { transform: rotateX(-25deg) rotateY(360deg); }
+          @keyframes scan-laser {
+            0% { top: -20%; }
+            50% { top: 100%; }
+            100% { top: -20%; }
           }
-          .animate-spin-cube {
-            animation: spin-cube 3s linear infinite;
+          .animate-scan-laser {
+            animation: scan-laser 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
           }
-          @keyframes bounce-cube {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-30px); }
+          @keyframes pulse-fast {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.95); opacity: 0.8; }
           }
-          .animate-bounce-cube {
-            animation: bounce-cube 1.5s ease-in-out infinite;
-          }
-          @keyframes shadow-cube {
-            0%, 100% { transform: scale(1); opacity: 0.6; }
-            50% { transform: scale(0.6); opacity: 0.2; }
-          }
-          .animate-shadow-cube {
-            animation: shadow-cube 1.5s ease-in-out infinite;
+          .animate-pulse-fast {
+            animation: pulse-fast 1s ease-in-out infinite;
           }
           @keyframes pulse-block {
             0%, 100% { background-color: #f4f4f5; opacity: 0.5; }

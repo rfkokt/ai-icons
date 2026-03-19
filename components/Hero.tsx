@@ -11,31 +11,35 @@ export default function Hero() {
 
   useEffect(() => {
     // Hero animations
-    const tl = gsap.timeline();
-    
-    tl.from(heroContentRef.current?.children || [], {
-      y: 40,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.1,
-      ease: "back.out(1.5)",
-    })
-    .from(heroIllustrationRef.current, {
-      scale: 0.9,
-      rotation: 5,
-      opacity: 0,
-      duration: 1,
-      ease: "power3.out",
-    }, "-=0.6");
+    let ctx = gsap.context(() => {
+      const tl = gsap.timeline();
+      
+      tl.from(heroContentRef.current?.children || [], {
+        y: 40,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: "back.out(1.5)",
+      })
+      .from(heroIllustrationRef.current, {
+        scale: 0.9,
+        rotation: 5,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out",
+      }, "-=0.6");
 
-    // Floating icon animation
-    gsap.to(".hero-icon-float", {
-      y: -15,
-      duration: 2,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
+      // Floating icon animation
+      gsap.to(".hero-icon-float", {
+        y: -15,
+        duration: 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
     });
+
+    return () => ctx.revert();
   }, []);
 
   return (

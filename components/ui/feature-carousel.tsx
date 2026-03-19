@@ -47,13 +47,14 @@ export function FeatureCarousel({
             <div
               key={index}
               className={cn(
-                'absolute transition-all duration-300 ease-out flex items-center justify-center'
+                'absolute left-1/2 top-1/2 transition-all duration-300 ease-out flex items-center justify-center origin-center'
               )}
               style={{
                 width: isCenter ? '280px' : isAdjacent ? '200px' : '140px',
                 height: isCenter ? '280px' : isAdjacent ? '200px' : '140px',
                 transform: `
-                  translateX(${(pos) * 55}%)
+                  translate(-50%, -50%)
+                  translateX(${(pos) * 60}%)
                   scale(${isCenter ? 1 : isAdjacent ? 0.8 : 0.6})
                 `,
                 zIndex: isCenter ? 10 : isAdjacent ? 5 : 1,
@@ -72,22 +73,22 @@ export function FeatureCarousel({
       </div>
 
       <button
-        className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full h-14 w-14 z-50 bg-white border-2 border-black hover:bg-[#B9FF66] pointer-events-auto flex items-center justify-center transition-colors shadow-lg"
+        className="absolute left-1/2 -translate-x-[140px] md:-translate-x-[180px] top-1/2 -translate-y-1/2 rounded-full h-12 w-12 md:h-14 md:w-14 z-50 bg-white border-2 border-black hover:bg-[#B9FF66] pointer-events-auto flex items-center justify-center transition-colors shadow-[4px_4px_0px_0px_#000000]"
         onClick={(e) => {
           e.stopPropagation()
           onPrev()
         }}
       >
-        <ChevronLeft className="h-7 w-7" />
+        <ChevronLeft className="h-6 w-6 md:h-7 md:w-7 text-black stroke-[3]" />
       </button>
       <button
-        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full h-14 w-14 z-50 bg-white border-2 border-black hover:bg-[#B9FF66] pointer-events-auto flex items-center justify-center transition-colors shadow-lg"
+        className="absolute right-1/2 translate-x-[140px] md:translate-x-[180px] top-1/2 -translate-y-1/2 rounded-full h-12 w-12 md:h-14 md:w-14 z-50 bg-white border-2 border-black hover:bg-[#B9FF66] pointer-events-auto flex items-center justify-center transition-colors shadow-[4px_4px_0px_0px_#000000]"
         onClick={(e) => {
           e.stopPropagation()
           onNext()
         }}
       >
-        <ChevronRight className="h-7 w-7" />
+        <ChevronRight className="h-6 w-6 md:h-7 md:w-7 text-black stroke-[3]" />
       </button>
     </div>
   );
