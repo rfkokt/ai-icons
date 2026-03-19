@@ -173,7 +173,7 @@ export function IconCard({
 
         {showActionBar && (
           <div className={cn(
-            "absolute bottom-3 left-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            "absolute bottom-3 left-3 right-3 z-20 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300"
           )}>
             <div className="pointer-events-auto">
               <IconActionBar
@@ -206,7 +206,7 @@ export function IconCard({
       {showActionBar && (
         <div className={cn(
           "absolute bottom-3 left-3 right-3 z-10",
-          variant === "generated" ? "opacity-0 group-hover:opacity-100" : "opacity-100 sm:opacity-0 sm:group-hover:opacity-100",
+          "opacity-100 sm:opacity-0 sm:group-hover:opacity-100",
           "transition-opacity duration-300"
         )}>
           <div className="pointer-events-auto">

@@ -17,17 +17,23 @@ export function FeatureCarousel({
   onPrev,
   onIndexChange,
 }: FeatureCarouselProps) {
+  const latestActions = React.useRef({ onNext, onPrev });
+  React.useEffect(() => {
+    latestActions.current = { onNext, onPrev };
+  });
+
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') {
-        onPrev()
+        latestActions.current.onPrev()
       } else if (e.key === 'ArrowRight') {
-        onNext()
+        latestActions.current.onNext()
       }
     }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [onNext, onPrev])
+    // Use capture phase so Radix Dialog doesn't swallow the event
+    window.addEventListener('keydown', handleKeyDown, { capture: true })
+    return () => window.removeEventListener('keydown', handleKeyDown, { capture: true })
+  }, [])
 
   return (
     <div className="relative w-full h-[320px] md:h-[380px] flex items-center justify-center [perspective:1000px]">
@@ -76,7 +82,7 @@ export function FeatureCarousel({
         className="absolute left-1/2 -translate-x-[140px] md:-translate-x-[180px] top-1/2 -translate-y-1/2 rounded-full h-12 w-12 md:h-14 md:w-14 z-50 bg-white border-2 border-black hover:bg-[#B9FF66] pointer-events-auto flex items-center justify-center transition-colors shadow-[4px_4px_0px_0px_#000000]"
         onClick={(e) => {
           e.stopPropagation()
-          onPrev()
+          latestActions.current.onPrev()
         }}
       >
         <ChevronLeft className="h-6 w-6 md:h-7 md:w-7 text-black stroke-[3]" />
@@ -85,7 +91,7 @@ export function FeatureCarousel({
         className="absolute right-1/2 translate-x-[140px] md:translate-x-[180px] top-1/2 -translate-y-1/2 rounded-full h-12 w-12 md:h-14 md:w-14 z-50 bg-white border-2 border-black hover:bg-[#B9FF66] pointer-events-auto flex items-center justify-center transition-colors shadow-[4px_4px_0px_0px_#000000]"
         onClick={(e) => {
           e.stopPropagation()
-          onNext()
+          latestActions.current.onNext()
         }}
       >
         <ChevronRight className="h-6 w-6 md:h-7 md:w-7 text-black stroke-[3]" />

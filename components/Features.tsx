@@ -1,15 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FaBullseye } from "react-icons/fa6";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 const features = [
   {
@@ -57,27 +50,8 @@ const features = [
 ];
 
 export default function Features() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (gridRef.current) {
-      gsap.from(gridRef.current.children, {
-        scrollTrigger: {
-          trigger: gridRef.current,
-          start: "top 80%",
-        },
-        y: 80,
-        opacity: 0,
-        duration: 0.7,
-        stagger: 0.1,
-        ease: "back.out(1.2)",
-      });
-    }
-  }, []);
-
   return (
-    <section id="features" ref={sectionRef} className="max-w-7xl mx-auto px-6 py-24">
+    <section id="features" className="max-w-7xl mx-auto px-6 py-24">
       {/* Header */}
       <div className="grid lg:grid-cols-12 gap-10 items-center mb-20">
         <div className="lg:col-span-8">
@@ -107,7 +81,7 @@ export default function Features() {
       </div>
 
       {/* Features Grid */}
-      <div ref={gridRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {features.map((feature, index) => (
           <Card
             key={index}

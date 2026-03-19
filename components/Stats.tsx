@@ -80,7 +80,7 @@ export default function Stats() {
   return (
     <section id="showcase" ref={sectionRef} className="max-w-7xl mx-auto px-6 py-24 border-t-4 border-black border-dashed">
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
         {stats.map((stat, index) => (
           <div
             key={index}
