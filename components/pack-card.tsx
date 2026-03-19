@@ -15,6 +15,7 @@ interface PackCardProps {
   onDownloadSvg?: () => void
   onDelete?: () => void
   showActionBar?: boolean
+  disableHover?: boolean
   className?: string
 }
 
@@ -29,6 +30,7 @@ export function PackCard({
   onDownloadSvg,
   onDelete,
   showActionBar = true,
+  disableHover = false,
   className,
 }: PackCardProps) {
   return (
@@ -40,7 +42,11 @@ export function PackCard({
       </div>
 
       <Card
-        className="bg-white rounded-xl border-3 border-black shadow-[4px_4px_0px_0px_#000000] hover:shadow-[8px_8px_0px_0px_#000000] hover:-translate-y-1 hover:translate-x-1 transition-all duration-300 cursor-pointer overflow-hidden"
+        className={cn(
+          "bg-white rounded-xl border-3 border-black transition-all duration-300 cursor-pointer overflow-hidden",
+          "shadow-[4px_4px_0px_0px_#000000]",
+          !disableHover && "hover:shadow-[8px_8px_0px_0px_#000000] hover:-translate-y-1 hover:translate-x-1"
+        )}
         onClick={onClick}
       >
         <div className="aspect-square p-4 flex items-center justify-center bg-gradient-to-br from-white via-zinc-50 to-zinc-100">

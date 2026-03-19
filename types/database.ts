@@ -10,11 +10,19 @@ export interface IconPack {
 
 export interface GeneratedIcon {
   id: string
-  pack_id: string
+  user_id: string
+  pack_id?: string
   name: string
-  svg_content: string
-  png_url?: string
+  prompt?: string
+  style?: string
+  svg_content?: string
+  svg_url?: string | null
+  svg_key?: string | null
+  png_url?: string | null
+  png_key?: string | null
   format: "svg" | "png" | "both"
+  is_public: boolean
+  shared_at?: string | null
   created_at: string
 }
 
