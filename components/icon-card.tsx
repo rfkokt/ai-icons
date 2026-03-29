@@ -161,12 +161,11 @@ export function IconCard({
           )}
           onClick={handleClick}
         >
-          <div className="checkerboard absolute inset-0 z-0" />
           {src && (
             <LoadableImage 
               src={src} 
               alt={alt} 
-              className="relative z-10 w-full aspect-square object-contain p-1 sm:p-2" 
+              className="relative z-10 w-full aspect-square object-contain p-1 sm:p-2 bg-white" 
             />
           )}
         </div>

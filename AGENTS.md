@@ -91,6 +91,10 @@ Use ShadCN: `Button`, `Card`, `Dialog`, `Sheet`, `Badge`, `Input`, `DropdownMenu
 | `CountSelector` | Icon count dropdown |
 | `BrutalistButton` | Pre-styled brutalist button (lime/dark/white/outline) |
 | `FilterTabs`, `CopyLinkButton`, `QuickPromptButton`, `StatCard`, `UserCard`, `HowItWorks` |
+| `BrutalistBadge` | Pre-styled neo-brutalist badge |
+| `BrutalistCard` | Neo-brutalist container card with hover effects |
+| `PricingCard` | Reusable pricing bento card |
+| `Marquee` | Reusable neo-brutalist scrolling text |
 
 ## Shared Types (`types/icon.ts`)
 
