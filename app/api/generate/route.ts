@@ -12,45 +12,18 @@ interface GenerateRequest {
   prompt?: string
   style?: string
   count?: number
-  format?: {
-    iconType: string
-    background?: string
-    designStyle: string
-    colorPalette?: string
-    visualDetails?: string
-  }
 }
 
 const PROMPT_TEMPLATES: Record<string, string> = {
-  // E-commerce
-  "minimalist_studio": "Professional high-end studio product photography, {prompt} placed on a smooth matte geometric pedestal, neutral pastel background, soft-box side lighting, crisp shadows, sharp focus on texture, 8k resolution, minimalist aesthetic.",
-  "nature_organic": "Lifestyle product photography of {prompt}, nestled among organic elements like moss, wet stones, and soft ferns. Natural morning sunlight filtering through leaves (komorebi effect), realistic water droplets, macro detail, earthy tones.",
-  "dark_luxury": "Commercial photography of {prompt}, placed on black polished marble with subtle gold accents in the background. Moody low-key lighting, rim lighting to highlight edges, elegant reflections, cinematic atmosphere, premium feel.",
-  
-  // Content Creation & Characters
-  "3d_animation": "High-quality 3D character render of {prompt}, Pixar and Disney inspired style, large expressive eyes, detailed hair groom, subsurface scattering on skin, warm cinematic lighting, octane render, 4k.",
-  "anime_manga": "Anime style illustration, high-detail cel-shading, {prompt}. Vibrant color palette, sharp line art, aesthetic lighting effects, Makoto Shinkai inspired background, emotional atmosphere.",
-  "isometric_game": "Isometric 3D game asset of {prompt}, low-poly but high-detail texture, cute proportions, vibrant colors, isolated on plain background, soft global illumination, game-ready UI aesthetic.",
-  
-  // Real Estate
-  "japandi": "Interior photography of a {prompt} in Japandi style. Combination of Japanese minimalism and Scandinavian functionality. Light oak wood, shoji-inspired elements, neutral linen textures, indoor bonsai. Bright natural light, airy and calm.",
-  "industrial_loft": "Professional architectural shot of an industrial loft {prompt}. Exposed red brick walls, matte black metal beams, polished concrete floor, large factory windows. Sunset lighting, gritty yet sophisticated, high contrast textures.",
-  "modern_bohemian": "Cozy bohemian interior of a {prompt}, filled with textured macrame, rattan furniture, and many indoor plants. Warm string lights and candlelight, eclectic patterns, soft earth tones, high detail on textile fibers.",
-  
-  // Professional
-  "corporate_global": "Professional corporate headshot of {prompt}, wearing tailored business attire, confident and friendly expression. Blurred modern office background (bokeh), three-point studio lighting, sharp focus on eyes, realistic skin pores, 4k.",
-  "tech_creative": "Casual professional portrait of {prompt} in a bright, modern co-working space. Wearing a stylish turtleneck, natural window lighting, soft shadows, approachable vibe, clean and minimalist aesthetic, high resolution.",
-  "editorial_dark": "Editorial portrait of {prompt}, dramatic Rembrandt lighting, deep shadows, wearing dark textured clothing. Moody gray concrete background, cinematic and powerful, sharp focus, photography for high-end magazine.",
-  
-  // Web Assets
-  "3d_clay": "3D icon of {prompt} in claymorphism style, rounded and playful shapes, matte finish, soft ambient occlusion shadows, vibrant pastel colors, isolated on white background, high-quality 3D render.",
-  "flat_vector": "Minimalist flat vector illustration for web design, {prompt}, clean lines, no gradients, limited professional color palette, modern corporate Memphis style, isolated on white background.",
-  "mesh_gradient": "Abstract fluid mesh gradient background, {prompt}, flowing and organic shapes, ultra-smooth transitions, high resolution, futuristic and elegant, professional web hero-section aesthetic.",
-  "glassmorphism": "3D glassmorphism element of {prompt}, frosted glass texture, semi-transparent with blur effect, glowing neon accents, sharp edges, high-tech premium feel, isolated on white background."
+  "outline": "Clean minimalist outline icon of {prompt}, single consistent stroke weight, 2px stroke, transparent background, simple geometric shapes, centered, no fill, pure black strokes only, no shadows or gradients, UI icon style like Lucide icons or Heroicons, square canvas, balanced white space, professional icon design",
+  "filled": "Solid filled icon of {prompt}, pure black fill, transparent background, simple geometric shapes, no outlines, clean edges, no shadows, UI icon style like Lucide icons or Heroicons, square canvas, centered, minimalist icon design",
+  "duotone": "Modern duotone icon of {prompt}, black primary shape with secondary accent layer creating depth, transparent background, simple clean shapes, two color only (black and gray), no outlines, minimalist style like Lucide duotone icons, square canvas, balanced composition",
+  "colored": "Vibrant colored flat icon of {prompt}, single solid color fill (blue, purple, or green), transparent background, simple geometric shapes, no outlines, no gradients, modern app icon style, clean minimal design, square canvas, centered",
+  "3d": "Modern 3D rendered icon of {prompt}, solid color with subtle shading and depth, slight 3D effect, transparent background, simple rounded shapes, clean modern 3D icon style, cube or isometric feel, square canvas, professional icon design"
 }
 
 function buildTargetPrompt(userPrompt: string, style: string): string {
-  const template = PROMPT_TEMPLATES[style] || PROMPT_TEMPLATES["minimalist_studio"]
+  const template = PROMPT_TEMPLATES[style] || PROMPT_TEMPLATES["outline"]
   return template.replace(/\{prompt\}/g, userPrompt)
 }
 
@@ -180,15 +153,14 @@ export async function POST(request: NextRequest) {
 
     const userId = clerkUser.id
     const body: GenerateRequest = await request.json()
-    const { prompt, style = "minimalist_studio", count = 4, format } = body
-    const generateType = format?.iconType?.toLowerCase() || "ecommerce"
+    const { prompt, style = "outline", count = 4 } = body
 
     if (!prompt) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 })
     }
 
-    // Only assets that are explicitly isolated on white/plain backgrounds need transparency passing
-    const needsTransparency = ["3d_clay", "flat_vector", "glassmorphism", "isometric_game"].includes(style)
+    // All icon styles need transparency processing
+    const needsTransparency = true
 
     const iconCount = Math.min(Math.max(count, 1), 16)
     const icons: Array<{
@@ -200,13 +172,13 @@ export async function POST(request: NextRequest) {
 
     const iconPrompts = Array(iconCount).fill(prompt)
     
-    console.log("Generating", iconCount, "items...", "type:", generateType, "style:", style)
+    console.log("Generating", iconCount, "icons with style:", style)
     
     const results = await Promise.all(
       iconPrompts.map(async (iconPrompt, index) => {
-        console.log("Generating", generateType, index + 1)
+        console.log("Generating icon", index + 1)
         const pngBuffer = await generateTargetImage(iconPrompt, style)
-        console.log(generateType, index + 1, "generated:", pngBuffer ? "yes" : "no")
+        console.log("Icon", index + 1, "generated:", pngBuffer ? "yes" : "no")
         return { pngBuffer, index }
       })
     )

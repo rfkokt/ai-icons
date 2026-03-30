@@ -7,11 +7,9 @@ import { HiBolt } from "react-icons/hi2"
 import { ConfirmDialog } from "@/components/confirm-dialog"
 import { IconCard } from "@/components/icon-card"
 import { GeneratingOverlay } from "@/components/generating-overlay"
-import type { GenerateType } from "@/components/type-selector"
 import { FeatureCarousel } from "@/components/ui/feature-carousel"
 import { IconActions } from "@/components/icon-actions"
 import { useLightbox } from "@/hooks/use-lightbox"
-import { PageLoading } from "@/components/page-loading"
 import { useDownload } from "@/hooks/use-download"
 import { usePackDownload } from "@/hooks/use-pack-download"
 import { useShareIcon } from "@/hooks/use-share-icon"
@@ -19,19 +17,18 @@ import { useStaggerAnimation } from "@/hooks/use-stagger-animation"
 import { usePromptSuggestions } from "@/hooks/use-prompt-suggestions"
 import { toast } from "sonner"
 import gsap from "gsap"
-import type { GeneratedIcon, GeneratedPack } from "@/types/icon"
+import type { GeneratedPack } from "@/types/icon"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { MessageCircle, Wand2, Cpu, Monitor, Palette, ImageIcon, Loader2, Settings2 } from "lucide-react"
+import { MessageCircle, Wand2, Monitor, Palette, Loader2, Settings2 } from "lucide-react"
 
 export default function GeneratePage() {
   const [mounted, setMounted] = useState(false)
   const [prompt, setPrompt] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedPacks, setGeneratedPacks] = useState<GeneratedPack[]>([])
-  const [selectedStyle, setSelectedStyle] = useState("minimalist_studio")
-  const [generateType, setGenerateType] = useState<GenerateType>("ecommerce")
+  const [selectedStyle, setSelectedStyle] = useState("outline")
   const [iconCount, setIconCount] = useState(4)
   const [showOptions, setShowOptions] = useState(false)
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
@@ -58,23 +55,12 @@ export default function GeneratePage() {
     setMounted(true)
   }, [])
 
-  useEffect(() => {
-    const defaultStyles: Record<GenerateType, string> = {
-      ecommerce: "minimalist_studio",
-      content: "3d_animation",
-      real_estate: "japandi",
-      professional: "corporate_global",
-      web_assets: "3d_clay",
-    }
-    setSelectedStyle(defaultStyles[generateType])
-  }, [generateType])
-
   const { suggestions } = usePromptSuggestions(prompt, { minLength: 2, maxSuggestions: 3 })
 
   const defaultSuggestions = [
-    "Premium coffee cup with latte art",
-    "Modern minimal workspace with macbook",
-    "Cute robotic dog fetching a bone",
+    "Home icon for navigation",
+    "User profile circle",
+    "Settings gear icon",
   ]
 
   const staggerRef = useStaggerAnimation([generatedPacks.length], {
@@ -99,13 +85,6 @@ export default function GeneratePage() {
           prompt,
           style: selectedStyle,
           count: iconCount,
-          format: {
-            iconType: generateType,
-            background: "transparent",
-            designStyle: selectedStyle,
-            colorPalette: "monochrome",
-            visualDetails: "clean lines"
-          }
         }),
       })
 
@@ -299,10 +278,10 @@ export default function GeneratePage() {
                 !isGenerating && (
                   <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tighter text-zinc-900 mb-6 mt-12">
-                      Create Your Icon
+                      Generate Icons
                     </h1>
                     <p className="text-zinc-500 text-lg sm:text-xl max-w-lg mx-auto">
-                      Describe the icon you want to create and let AI do the magic
+                      Create simple, clean icons like Lucide, Heroicons, or React Icons - just describe what you need
                     </p>
                   </div>
                 )
@@ -349,7 +328,7 @@ export default function GeneratePage() {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Describe your icon... e.g., 'A shopping cart icon'"
+                placeholder="Describe the icon... e.g., 'home', 'user', 'settings'"
                 disabled={isGenerating}
                 className="w-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] border-2 border-black rounded-xl bg-zinc-50 px-4 py-3 text-base placeholder:text-zinc-500 min-h-[80px] font-medium focus-visible:ring-[#B9FF66] transition-all"
               />
@@ -367,26 +346,7 @@ export default function GeneratePage() {
 
               {/* Settings Grid */}
               {showOptions && (
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 p-4 border-3 border-black rounded-xl bg-zinc-50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]">
-                  {/* Component Type (Mapped from Model) */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-sm font-bold flex items-center gap-2">
-                      <Cpu className="w-4 h-4 text-black" /> Category
-                    </label>
-                    <Select value={generateType} onValueChange={(value: GenerateType) => setGenerateType(value)} disabled={isGenerating}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="ecommerce">Ecommerce</SelectItem>
-                        <SelectItem value="content">Content</SelectItem>
-                        <SelectItem value="real_estate">Real Estate</SelectItem>
-                        <SelectItem value="professional">Professional</SelectItem>
-                        <SelectItem value="web_assets">Web Assets</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
+                <div className="grid grid-cols-2 gap-2 sm:gap-4 p-4 border-3 border-black rounded-xl bg-zinc-50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]">
                   {/* Style Select */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-sm font-bold flex items-center gap-2">
@@ -397,16 +357,16 @@ export default function GeneratePage() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="minimalist_studio">Minimalist Studio</SelectItem>
-                        <SelectItem value="3d_clay">3D Clay</SelectItem>
-                        <SelectItem value="corporate_global">Corporate</SelectItem>
-                        <SelectItem value="japandi">Japandi</SelectItem>
-                        <SelectItem value="3d_animation">3D Animation</SelectItem>
+                        <SelectItem value="outline">Outline</SelectItem>
+                        <SelectItem value="filled">Filled</SelectItem>
+                        <SelectItem value="duotone">Duotone</SelectItem>
+                        <SelectItem value="colored">Colored</SelectItem>
+                        <SelectItem value="3d">3D</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {/* Count Select (Mapped from Quality) */}
+                  {/* Count Select */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-sm font-bold flex items-center gap-2">
                       <Monitor className="w-4 h-4 text-black" /> Count
@@ -419,23 +379,7 @@ export default function GeneratePage() {
                         <SelectItem value="1">1 Icon</SelectItem>
                         <SelectItem value="2">2 Icons</SelectItem>
                         <SelectItem value="4">4 Icons</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Background Select Context */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-sm font-bold flex items-center gap-2">
-                      <ImageIcon className="w-4 h-4 text-black" /> Context
-                    </label>
-                    <Select defaultValue="transparent" disabled={isGenerating}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="transparent">Transparent</SelectItem>
-                        <SelectItem value="solid">Solid Background</SelectItem>
-                        <SelectItem value="studio">Studio Environment</SelectItem>
+                        <SelectItem value="6">6 Icons</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
