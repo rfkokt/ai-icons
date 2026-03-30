@@ -20,34 +20,33 @@ interface StyleSelectorProps {
 }
 
 const ECOMMERCE_STYLES: StyleOption[] = [
-  { id: "minimalist_studio", name: "Minimalist Studio", description: "Clean, geometric, neutral pastel", color: "bg-stone-200" },
-  { id: "nature_organic", name: "Nature/Organic", description: "Moss, natural light, earthy", color: "bg-emerald-200" },
-  { id: "dark_luxury", name: "Dark Luxury", description: "Black marble, gold accents, moody", color: "bg-zinc-900 border border-yellow-500" },
+  { id: "outline", name: "Outline", description: "Single stroke, clean lines", color: "bg-white border-2 border-black" },
+  { id: "filled", name: "Filled", description: "Solid fill, no outline", color: "bg-black" },
+  { id: "duotone", name: "Duotone", description: "Two-tone, primary with accent", color: "bg-gradient-to-br from-black to-zinc-400" },
 ]
 
 const CONTENT_STYLES: StyleOption[] = [
-  { id: "3d_animation", name: "3D Animation", description: "Pixar/Disney inspired, cinematic", color: "bg-blue-400" },
-  { id: "anime_manga", name: "Anime/Manga", description: "Cel-shading, vibrant lines", color: "bg-pink-400" },
-  { id: "isometric_game", name: "Isometric Game", description: "Low-poly, cute proportions", color: "bg-violet-300" },
+  { id: "filled", name: "Filled", description: "Solid fill, bold look", color: "bg-black" },
+  { id: "outline", name: "Outline", description: "Line art style", color: "bg-white border-2 border-black" },
+  { id: "colored", name: "Colored", description: "Vibrant color fill", color: "bg-[#B9FF66]" },
 ]
 
 const REAL_ESTATE_STYLES: StyleOption[] = [
-  { id: "japandi", name: "Japandi", description: "Japanese minimalism, calm", color: "bg-orange-100" },
-  { id: "industrial_loft", name: "Industrial Loft", description: "Red brick, metal beams", color: "bg-red-800" },
-  { id: "modern_bohemian", name: "Modern Bohemian", description: "Rattan, plants, string lights", color: "bg-amber-100" },
+  { id: "duotone", name: "Duotone", description: "Primary + accent color", color: "bg-gradient-to-br from-black to-zinc-400" },
+  { id: "outline", name: "Outline", description: "Minimal line icon", color: "bg-white border-2 border-black" },
+  { id: "filled", name: "Filled", description: "Solid black icon", color: "bg-black" },
 ]
 
 const PROFESSIONAL_STYLES: StyleOption[] = [
-  { id: "corporate_global", name: "Corporate Global", description: "Business attire, office bokeh", color: "bg-slate-300" },
-  { id: "tech_creative", name: "Tech/Creative", description: "Casual, modern co-working", color: "bg-teal-200" },
-  { id: "editorial_dark", name: "Editorial/Dark", description: "Rembrandt lighting, moody", color: "bg-zinc-800" },
+  { id: "colored", name: "Colored", description: "Single vibrant color", color: "bg-[#B9FF66]" },
+  { id: "filled", name: "Filled", description: "Solid fill icon", color: "bg-black" },
+  { id: "duotone", name: "Duotone", description: "Two-tone style", color: "bg-gradient-to-br from-black to-zinc-400" },
 ]
 
 const WEB_ASSETS_STYLES: StyleOption[] = [
-  { id: "3d_clay", name: "3D Clay Icon", description: "Claymorphism, rounded shapes", color: "bg-rose-200 shadow-[inset_2px_2px_4px_rgba(255,255,255,0.5),inset_-2px_-2px_4px_rgba(0,0,0,0.1)]" },
-  { id: "flat_vector", name: "Flat Vector", description: "Corporate Memphis, clean", color: "bg-yellow-300" },
-  { id: "mesh_gradient", name: "Mesh Gradient", description: "Fluid, abstract, ultra-smooth", color: "bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400" },
-  { id: "glassmorphism", name: "Glassmorphism", description: "Frosted glass, neon accents", color: "bg-zinc-200/50 border border-white" },
+  { id: "3d", name: "3D Icon", description: "Slight depth, modern look", color: "bg-gradient-to-br from-zinc-200 to-zinc-400" },
+  { id: "filled", name: "Filled", description: "Solid fill, clean", color: "bg-black" },
+  { id: "outline", name: "Outline", description: "Line icon style", color: "bg-white border-2 border-black" },
 ]
 
 const TYPE_STYLES: Record<GenerateType, StyleOption[]> = {
@@ -71,11 +70,11 @@ export function StyleSelector({
   const displayStyle = currentStyle || fallbackStyle
 
   const typeLabel: Record<GenerateType, string> = {
-    ecommerce: "PHOTOGRAPHY STYLE",
-    content: "CHARACTER STYLE",
-    real_estate: "INTERIOR STYLE",
-    professional: "PORTRAIT STYLE",
-    web_assets: "ASSET STYLE",
+    ecommerce: "ICON STYLE",
+    content: "ICON STYLE",
+    real_estate: "ICON STYLE",
+    professional: "ICON STYLE",
+    web_assets: "ICON STYLE",
   }
 
   return (
