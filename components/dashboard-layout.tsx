@@ -28,6 +28,7 @@ import { useRouter } from "next/navigation"
 import { UserArea } from "@/components/user-area"
 import { ConfirmDialog } from "@/components/confirm-dialog"
 import { LoadableImage } from "@/components/loadable-image"
+import { ThemeToggle } from "@/components/theme-toggle"
 import gsap from "gsap"
 
 interface HistoryPack {
@@ -149,28 +150,29 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const userCredits = 48
 
   return (
-    <div className="h-screen flex flex-col lg:flex-row bg-zinc-100 overflow-hidden">
+    <div className="h-screen flex flex-col lg:flex-row bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
       {/* Mobile Header */}
-      <header className="lg:hidden h-14 bg-white border-b border-zinc-200 px-4 flex items-center justify-between shrink-0">
+      <header className="lg:hidden h-14 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 px-4 flex items-center justify-between shrink-0">
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="w-11 h-11 rounded-xl flex items-center justify-center text-zinc-500 hover:bg-zinc-100"
+          className="w-11 h-11 rounded-xl flex items-center justify-center text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
         >
           {mobileMenuOpen ? <HiXMark className="h-5 w-5" /> : <HiBars3 className="h-5 w-5" />}
         </Button>
-        <span className="font-semibold text-zinc-900">{currentLabel}</span>
+        <span className="font-semibold text-zinc-900 dark:text-zinc-100">{currentLabel}</span>
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           {isGeneratePage && (
             <Sheet>
               <SheetTrigger className="w-11 h-11 rounded-xl flex items-center justify-center text-zinc-500 hover:bg-zinc-100">
                 <HiClock className="h-5 w-5 text-zinc-500" />
               </SheetTrigger>
-              <SheetContent side="right" className="w-80 p-0">
-                <SheetHeader className="h-14 px-4 flex items-center border-b border-zinc-200">
-                  <SheetTitle className="text-left">History</SheetTitle>
-                  <span className="ml-2 px-2 py-0.5 bg-zinc-100 rounded-full text-xs text-zinc-500">
+              <SheetContent side="right" className="w-80 p-0 bg-white dark:bg-zinc-900">
+                <SheetHeader className="h-14 px-4 flex items-center border-b border-zinc-200 dark:border-zinc-800">
+                  <SheetTitle className="text-left text-zinc-900 dark:text-zinc-100">History</SheetTitle>
+                  <span className="ml-2 px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded-full text-xs text-zinc-500 dark:text-zinc-400">
                     {historyPacks.length}
                   </span>
                 </SheetHeader>
@@ -183,11 +185,11 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                     historyPacks.map((pack) => (
                       <div
                         key={pack.id}
-                        className="group p-3 bg-zinc-50 hover:bg-zinc-100 rounded-xl transition-colors cursor-pointer"
+                        className="group p-3 bg-zinc-50 dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-xl transition-colors cursor-pointer"
                         onClick={() => handlePackClick(pack.id)}
                       >
                         <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 bg-white rounded-lg border border-zinc-200 flex items-center justify-center shrink-0 overflow-hidden">
+                          <div className="w-10 h-10 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 flex items-center justify-center shrink-0 overflow-hidden">
                             {pack.preview && mounted ? (
                               <img src={pack.preview} alt="" className="w-full h-full object-contain" />
                             ) : (
@@ -195,15 +197,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-zinc-900 truncate">
+                            <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
                               {pack.prompt}
                             </p>
-                            <p className="text-xs text-zinc-500">{pack.iconCount} icons • {formatDate(pack.created_at)}</p>
+                            <p className="text-xs text-zinc-500 dark:text-zinc-400">{pack.iconCount} icons • {formatDate(pack.created_at)}</p>
                           </div>
                           <Button 
                             variant="ghost" 
                             size="icon" 
-                            className="p-1 h-auto w-auto opacity-0 group-hover:opacity-100 hover:bg-zinc-200 text-red-500"
+                            className="p-1 h-auto w-auto opacity-0 group-hover:opacity-100 hover:bg-zinc-200 dark:hover:bg-zinc-600 text-red-500"
                             onClick={(e) => handleDeletePack(pack.id, pack.prompt, e)}
                           >
                             <HiTrash className="h-3.5 w-3.5" />
@@ -229,17 +231,17 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       >
         <div 
           ref={sidebarRef}
-          className="absolute left-0 top-0 bottom-0 w-72 bg-white shadow-xl transition-transform duration-300 ease-out z-50"
+          className="absolute left-0 top-0 bottom-0 w-72 bg-white dark:bg-zinc-900 shadow-xl transition-transform duration-300 ease-out z-50"
           style={{ transform: mobileMenuOpen ? 'translateX(0)' : 'translateX(-100%)' }}
           onClick={(e) => e.stopPropagation()}
         >
-            <div className="p-4 border-b border-zinc-200 flex items-center justify-between">
+            <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between bg-white dark:bg-zinc-900">
               <span className="text-xl font-bold text-[#B9FF66]">AI Icons</span>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-10 h-10 rounded-xl hover:bg-zinc-100"
+                className="w-10 h-10 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800"
               >
                 <HiXMark className="h-5 w-5 text-zinc-500" />
               </Button>
@@ -256,7 +258,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                       "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
                       isActive
                         ? "bg-[#B9FF66] text-black"
-                        : "text-zinc-600 hover:bg-zinc-100"
+                        : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                     )}
                   >
                     <item.icon className="h-5 w-5" />
@@ -274,18 +276,18 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
                 pathname === "/settings"
                   ? "bg-[#B9FF66] text-black"
-                  : "text-zinc-600 hover:bg-zinc-100"
+                  : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
               )}
             >
               <HiCog className="h-5 w-5" />
               Settings
             </Link>
             </div>
-          </div>
         </div>
+      </div>
 
       {/* Desktop Left Sidebar */}
-      <aside className="hidden lg:flex w-16 bg-white border-r border-zinc-200 flex-col items-center py-4 shrink-0">
+      <aside className="hidden lg:flex w-16 bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex-col items-center py-4 shrink-0">
         <Link href="/dashboard" className="text-xl font-bold text-[#B9FF66] mb-8 hover:opacity-80 transition-opacity">
           AI
         </Link>
@@ -301,7 +303,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                   "w-11 h-11 rounded-xl flex items-center justify-center transition-colors",
                   isActive
                     ? "bg-[#B9FF66] text-black"
-                    : "text-zinc-500 hover:bg-zinc-100"
+                    : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                 )}
                 title={item.label}
               >
@@ -320,7 +322,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               "w-11 h-11 rounded-xl flex items-center justify-center transition-colors",
               pathname === "/settings"
                 ? "bg-[#B9FF66] text-black"
-                : "text-zinc-500 hover:bg-zinc-100"
+                : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
             )}
             title="Settings"
           >
@@ -332,14 +334,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       {/* Main Workspace */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Desktop Top Bar */}
-        <header className="hidden lg:flex h-14 bg-white border-b border-zinc-200 px-6 items-center justify-between shrink-0">
+        <header className="hidden lg:flex h-14 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 px-6 items-center justify-between shrink-0">
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-zinc-500">Home</span>
+            <span className="text-zinc-500 dark:text-zinc-400">Home</span>
             <span className="text-zinc-300">/</span>
-            <span className="font-medium text-zinc-900">{currentLabel}</span>
+            <span className="font-medium text-zinc-900 dark:text-zinc-100">{currentLabel}</span>
           </div>
 
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <UserArea credits={userCredits} />
           </div>
         </header>
@@ -352,10 +355,10 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
       {/* Desktop Right Sidebar - History Panel (only on /generate) */}
       {pathname === "/generate" && (
-      <aside className="hidden xl:flex w-72 bg-white border-l border-zinc-200 flex-col shrink-0">
-        <div className="h-14 px-4 flex items-center border-b border-zinc-200">
-          <h2 className="font-semibold text-zinc-900">History</h2>
-          <span className="ml-2 px-2 py-0.5 bg-zinc-100 rounded-full text-xs text-zinc-500">
+      <aside className="hidden xl:flex w-72 bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 flex-col shrink-0">
+        <div className="h-14 px-4 flex items-center border-b border-zinc-200 dark:border-zinc-800">
+          <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">History</h2>
+          <span className="ml-2 px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded-full text-xs text-zinc-500 dark:text-zinc-400">
             {historyPacks.length}
           </span>
         </div>
@@ -369,11 +372,11 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             historyPacks.map((pack) => (
               <div
                 key={pack.id}
-                className="group p-3 bg-zinc-50 hover:bg-zinc-100 rounded-xl transition-colors cursor-pointer"
+                className="group p-3 bg-zinc-50 dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-xl transition-colors cursor-pointer"
                 onClick={() => handlePackClick(pack.id)}
               >
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-white rounded-lg border border-zinc-200 flex items-center justify-center shrink-0 overflow-hidden">
+                  <div className="w-10 h-10 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 flex items-center justify-center shrink-0 overflow-hidden">
                     {pack.preview && mounted ? (
                       <img src={pack.preview} alt="" className="w-full h-full object-contain" />
                     ) : (
@@ -381,15 +384,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-zinc-900 truncate">
+                    <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
                       {pack.prompt}
                     </p>
-                    <p className="text-xs text-zinc-500">{pack.iconCount} icons • {formatDate(pack.created_at)}</p>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400">{pack.iconCount} icons • {formatDate(pack.created_at)}</p>
                   </div>
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="p-1 h-auto w-auto opacity-0 group-hover:opacity-100 hover:bg-zinc-200 text-red-500"
+                    className="p-1 h-auto w-auto opacity-0 group-hover:opacity-100 hover:bg-zinc-200 dark:hover:bg-zinc-600 text-red-500"
                     onClick={(e) => handleDeletePack(pack.id, pack.prompt, e)}
                   >
                     <HiTrash className="h-3.5 w-3.5" />
