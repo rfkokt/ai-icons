@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { useAuthStore, useSidebarStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { ThemeToggle } from "@/components/theme-toggle"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,14 +51,17 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
               AI Icons
             </Link>
           )}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggle}
-            className="h-8 w-8"
-          >
-            {collapsed ? <HiChevronRight className="h-4 w-4" /> : <HiChevronLeft className="h-4 w-4" />}
-          </Button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggle}
+              className="h-8 w-8"
+            >
+              {collapsed ? <HiChevronRight className="h-4 w-4" /> : <HiChevronLeft className="h-4 w-4" />}
+            </Button>
+          </div>
         </div>
 
         <nav className="flex-1 p-2 space-y-1">

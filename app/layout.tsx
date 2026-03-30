@@ -3,6 +3,7 @@ import { Bricolage_Grotesque } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeInitializer } from "@/components/theme-initializer";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -24,11 +25,12 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-        <html lang="en" className="scroll-smooth">
+        <html lang="en" className="scroll-smooth" suppressHydrationWarning>
           <body
             className={`${bricolage.variable} font-sans antialiased bg-[#f3f4f6] text-zinc-900 overflow-x-hidden selection:bg-[#B9FF66] selection:text-black`}
             style={{ fontFamily: 'var(--font-bricolage), system-ui, sans-serif' }}
           >
+            <ThemeInitializer />
             <TooltipProvider>
               {children}
               <Toaster position="top-right" />

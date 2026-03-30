@@ -6,6 +6,7 @@ import { HiBars3, HiXMark } from "react-icons/hi2";
 import { SignInButton, SignUpButton, Show, useUser } from "@clerk/nextjs";
 import { useAuthSync } from "@/hooks/use-auth-sync";
 import { UserArea } from "@/components/user-area";
+import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
 
 const navLinks = [
@@ -42,6 +43,7 @@ export default function Navigation() {
       </div>
 
       <div className="hidden lg:flex items-center gap-3">
+        <ThemeToggle />
         <Show when="signed-out">
           <SignInButton mode="modal">
             <Button variant="ghost" className="text-sm font-bold text-zinc-800 hover:text-[#88cc33]">
@@ -83,6 +85,10 @@ export default function Navigation() {
                 {link.label}
               </Link>
             ))}
+            <div className="flex items-center gap-3 mt-4 pt-4 border-t-2 border-black">
+              <ThemeToggle />
+              <span className="text-sm font-bold text-zinc-600">Toggle Theme</span>
+            </div>
             <Show when="signed-out">
               <SignInButton mode="modal">
                 <Button variant="outline" className="w-full py-3 text-lg font-bold border-2 border-black rounded-xl mt-4">
