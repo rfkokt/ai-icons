@@ -6,7 +6,7 @@ import sharp from "sharp"
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta"
-const GEMINI_MODEL_IMAGE = "gemini-2.5-flash-image"
+const GEMINI_MODEL_IMAGE = "gemini-2.0-flash-exp"
 
 interface GenerateRequest {
   prompt?: string
