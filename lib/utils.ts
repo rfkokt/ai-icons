@@ -99,3 +99,48 @@ export function setStorageItem(key: string, value: string): void {
     // Silently fail if localStorage is unavailable
   }
 }
+
+/**
+ * Safely removes an item from localStorage with SSR fallback.
+ * Silently fails if localStorage is unavailable or an error occurs.
+ *
+ * @param key - The localStorage key to remove
+ *
+ * @example
+ * ```ts
+ * removeStorageItem("theme-preference")
+ * ```
+ */
+export function removeStorageItem(key: string): void {
+  try {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(key)
+    }
+  } catch {
+    // Silently fail if localStorage is unavailable
+  }
+}
+
+/**
+ * Theme type for dark mode utilities.
+ */
+export type Theme = "light" | "dark"
+
+/**
+ * Detects the system's preferred color scheme.
+ * Returns "dark" if the user prefers dark mode, otherwise "light".
+ *
+ * @returns The system theme preference
+ *
+ * @example
+ * ```ts
+ * const systemTheme = getSystemThemePreference()
+ * if (systemTheme === "dark") {
+ *   // Apply dark theme
+ * }
+ * ```
+ */
+export function getSystemThemePreference(): Theme {
+  if (typeof window === "undefined") return "light"
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+}
