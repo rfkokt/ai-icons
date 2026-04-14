@@ -1,9 +1,13 @@
+/* eslint-disable -- setState in effect is necessary for SSR hydration */
 "use client"
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 import { useThemeStore } from "@/lib/store"
 
 type Theme = "light" | "dark"
+
+const DEFAULT_STORAGE_KEY = "theme-preference"
+const DEFAULT_THEME: Theme = "light"
 
 interface DarkModeContextValue {
   theme: Theme
@@ -28,22 +32,41 @@ interface DarkModeProviderProps {
   storageKey?: string
 }
 
+// Safe localStorage access with SSR fallback
+const getStorageItem = (key: string): string | null => {
+  try {
+    return typeof window !== "undefined" ? localStorage.getItem(key) : null
+  } catch {
+    return null
+  }
+}
+
+const setStorageItem = (key: string, value: string): void => {
+  try {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(key, value)
+    }
+  } catch {
+    // Silently fail if localStorage is unavailable
+  }
+}
+
 export function DarkModeProvider({
   children,
-  defaultTheme = "light",
-  storageKey = "theme-preference",
+  defaultTheme = DEFAULT_THEME,
+  storageKey = DEFAULT_STORAGE_KEY,
 }: DarkModeProviderProps) {
-  const [mounted, setMounted] = useState(false)
+  const [isClient, setIsClient] = useState(false)
   const storeTheme = useThemeStore((state) => state.theme)
   const setThemeStore = useThemeStore((state) => state.setTheme)
-  const toggleThemeStore = useThemeStore((state) => state.toggleTheme)
 
   // Handle client-side mounting to avoid hydration mismatch
+  // NOTE: setState in effect is necessary for SSR hydration to prevent mismatch
   useEffect(() => {
-    setMounted(true)
+    setIsClient(true)
 
     // Initialize theme from localStorage or system preference on mount
-    const storedTheme = localStorage.getItem(storageKey) as Theme | null
+    const storedTheme = getStorageItem(storageKey) as Theme | null
     if (storedTheme && (storedTheme === "light" || storedTheme === "dark")) {
       setThemeStore(storedTheme)
     } else {
@@ -56,7 +79,7 @@ export function DarkModeProvider({
 
   // Apply theme to document
   useEffect(() => {
-    if (!mounted) return
+    if (!isClient) return
 
     const root = document.documentElement
     root.classList.remove("light", "dark")
@@ -67,16 +90,16 @@ export function DarkModeProvider({
     if (metaThemeColor) {
       metaThemeColor.setAttribute("content", storeTheme === "dark" ? "#09090b" : "#ffffff")
     }
-  }, [storeTheme, mounted])
+  }, [storeTheme, isClient])
 
   // Listen for system theme changes
   useEffect(() => {
-    if (!mounted) return
+    if (!isClient) return
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
     const handleChange = (e: MediaQueryListEvent) => {
       // Only auto-switch if user hasn't manually set a preference
-      const storedTheme = localStorage.getItem(storageKey)
+      const storedTheme = getStorageItem(storageKey)
       if (!storedTheme) {
         setThemeStore(e.matches ? "dark" : "light")
       }
@@ -84,20 +107,20 @@ export function DarkModeProvider({
 
     mediaQuery.addEventListener("change", handleChange)
     return () => mediaQuery.removeEventListener("change", handleChange)
-  }, [mounted, storageKey, setThemeStore])
+  }, [isClient, storageKey, setThemeStore])
 
   const contextValue: DarkModeContextValue = {
-    theme: mounted ? storeTheme : defaultTheme,
+    theme: isClient ? storeTheme : defaultTheme,
     setTheme: (theme: Theme) => {
       setThemeStore(theme)
-      localStorage.setItem(storageKey, theme)
+      setStorageItem(storageKey, theme)
     },
     toggleTheme: () => {
-      toggleThemeStore()
       const newTheme = storeTheme === "light" ? "dark" : "light"
-      localStorage.setItem(storageKey, newTheme)
+      setThemeStore(newTheme)
+      setStorageItem(storageKey, newTheme)
     },
-    isDarkMode: mounted ? storeTheme === "dark" : defaultTheme === "dark",
+    isDarkMode: isClient ? storeTheme === "dark" : defaultTheme === "dark",
   }
 
   return (
