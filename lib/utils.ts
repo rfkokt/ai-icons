@@ -54,6 +54,48 @@ export function formatDateNoTime(date: Date | string): string {
   const day = d.getDate()
   const month = MONTHS[d.getMonth()]
   const year = d.getFullYear()
-  
+
   return `${dayName}, ${day} ${month} ${year}`
+}
+
+/**
+ * Safely retrieves an item from localStorage with SSR fallback.
+ * Returns null if localStorage is unavailable or an error occurs.
+ *
+ * @param key - The localStorage key to retrieve
+ * @returns The stored value as a string, or null if not found/unavailable
+ *
+ * @example
+ * ```ts
+ * const theme = getStorageItem("theme-preference")
+ * ```
+ */
+export function getStorageItem(key: string): string | null {
+  try {
+    return typeof window !== "undefined" ? localStorage.getItem(key) : null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Safely stores an item in localStorage with SSR fallback.
+ * Silently fails if localStorage is unavailable or an error occurs.
+ *
+ * @param key - The localStorage key to set
+ * @param value - The value to store (will be converted to string)
+ *
+ * @example
+ * ```ts
+ * setStorageItem("theme-preference", "dark")
+ * ```
+ */
+export function setStorageItem(key: string, value: string): void {
+  try {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(key, value)
+    }
+  } catch {
+    // Silently fail if localStorage is unavailable
+  }
 }
