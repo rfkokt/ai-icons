@@ -96,7 +96,7 @@
   --sidebar-ring: #B9FF66;
 }
 
-.dark {
+:root.dark {
   --background: #333333;
   --foreground: #ffffff;
   --card: #27272a;
