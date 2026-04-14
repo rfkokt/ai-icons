@@ -17,7 +17,7 @@ export function UserCard({ rank, name, referrals, credits, variant = "regular" }
       case "my":
         return "p-4 rounded-2xl border-[3px] border-black shadow-[4px_4px_0px_0px_#000000] bg-[#B9FF66]"
       default:
-        return "w-full p-5 rounded-[20px] border-[3px] border-black shadow-[4px_4px_0px_0px_#000000] bg-white transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000000]"
+        return "w-full p-5 rounded-[20px] border-[3px] border-black dark:border-zinc-600 shadow-[4px_4px_0px_0px_#000000] dark:shadow-none bg-white dark:bg-[#141414] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000000] dark:hover:shadow-none"
     }
   }
 
@@ -30,7 +30,7 @@ export function UserCard({ rank, name, referrals, credits, variant = "regular" }
       )
     }
     return (
-      <div className={`w-8 h-8 ${variant === "my" ? "bg-white" : "bg-zinc-100"} rounded-lg flex items-center justify-center text-sm font-medium ${variant === "my" ? "text-black" : "text-zinc-600"}`}>
+      <div className={`w-8 h-8 ${variant === "my" ? "bg-white dark:bg-[#1a1a1a]" : "bg-zinc-100 dark:bg-[#1a1a1a]"} rounded-lg flex items-center justify-center text-sm font-medium ${variant === "my" ? "text-black dark:text-zinc-100" : "text-zinc-600 dark:text-zinc-400"}`}>
         {rank}
       </div>
     )
@@ -43,17 +43,22 @@ export function UserCard({ rank, name, referrals, credits, variant = "regular" }
         <div className="flex items-center gap-3">
           {getRankDisplay()}
           <div className="flex-1 min-w-0">
-            <p className={`font-medium truncate ${variant === "my" ? "text-black" : "text-zinc-900"}`}>
+            <p className={`font-medium truncate ${variant === "my" ? "text-black dark:text-zinc-100" : "text-zinc-900 dark:text-zinc-100"}`}>
               {name}
             </p>
-            <p className={`text-xs ${variant === "my" ? "text-black/70" : "text-zinc-500"}`}>
+            <p className={`text-xs ${variant === "my" ? "text-black dark:text-zinc-400" : "text-zinc-500 dark:text-zinc-400"}`}>
               {referrals} referrals
             </p>
           </div>
-          {variant === "my" && (
+          {variant === "my" ? (
             <div className="text-right">
-              <p className="font-semibold text-black">{credits}</p>
-              <p className="text-xs text-black/70">credits</p>
+              <p className="font-semibold text-black dark:text-zinc-100">{credits}</p>
+              <p className="text-xs text-black dark:text-zinc-400">credits</p>
+            </div>
+          ) : (
+            <div className="text-right">
+              <p className="font-semibold text-zinc-900 dark:text-zinc-100">{credits}</p>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">credits</p>
             </div>
           )}
         </div>
@@ -61,8 +66,8 @@ export function UserCard({ rank, name, referrals, credits, variant = "regular" }
       {variant === "top" && (
         <>
           <p className="font-bold text-black truncate">{name}</p>
-          <p className="text-sm text-black/80">{referrals} referrals</p>
-          <p className="text-xs font-medium text-black/60 mt-1">{credits} credits</p>
+          <p className="text-sm text-black/80 dark:text-black/70">{referrals} referrals</p>
+          <p className="text-xs font-medium text-black/60 dark:text-black/50 mt-1">{credits} credits</p>
         </>
       )}
     </Card>

@@ -185,14 +185,14 @@ export default function GeneratePage() {
 
   if (!mounted) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-[#f3f4f6] bg-grid-pattern">
+      <div className="flex-1 flex items-center justify-center bg-[#f3f4f6] dark:bg-[#0a0a0a] bg-grid-pattern">
         <div className="w-10 h-10 border-4 border-[#B9FF66] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="flex-1 flex h-full overflow-hidden bg-[#f3f4f6] bg-grid-pattern">
+    <div className="flex-1 flex h-full overflow-hidden bg-[#f3f4f6] dark:bg-[#0a0a0a] bg-grid-pattern">
       {isGenerating && (
         <GeneratingOverlay iconCount={iconCount} />
       )}
@@ -202,12 +202,12 @@ export default function GeneratePage() {
           <div className="w-full max-w-6xl mx-auto" ref={staggerRef}>
             <div className="space-y-6">
               {generatedPacks.length > 0 ? (
-                <div className="bg-white rounded-[24px] border-3 border-black p-4 sm:p-6 shadow-[8px_8px_0px_0px_#000000]">
+                <div className="bg-white dark:bg-[#141414] rounded-[24px] border-3 border-black p-4 sm:p-6 shadow-[8px_8px_0px_0px_#000000]">
                   
                   {/* Latest Generation (Dashed Area) */}
-                  <div className="rounded-2xl flex flex-col items-center justify-center bg-zinc-50 border-3 border-dashed border-black min-h-[300px] p-4 sm:p-6 mb-6">
+                  <div className="rounded-2xl flex flex-col items-center justify-center bg-zinc-50 dark:bg-[#1a1a1a] border-3 border-dashed border-black min-h-[300px] p-4 sm:p-6 mb-6">
                     <div className="w-full flex items-center justify-between mb-4">
-                      <h3 className="font-black text-black text-lg">Latest Generation: <span className="font-bold text-zinc-600">{generatedPacks[0].prompt}</span></h3>
+                      <h3 className="font-black text-black text-lg">Latest Generation: <span className="font-bold text-zinc-600 dark:text-zinc-400">{generatedPacks[0].prompt}</span></h3>
                       <div className="flex gap-2">
                         <Button variant="outline" size="sm" onClick={() => handleDownloadPack(generatedPacks[0].id, "png")} className="border-2 border-black font-bold h-8 hover:bg-[#B9FF66]">
                           Download Pack
@@ -277,10 +277,10 @@ export default function GeneratePage() {
               ) : (
                 !isGenerating && (
                   <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tighter text-zinc-900 mb-6 mt-12">
+                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tighter text-zinc-900 dark:text-white mb-6 mt-12">
                       Generate Icons
                     </h1>
-                    <p className="text-zinc-500 text-lg sm:text-xl max-w-lg mx-auto">
+                    <p className="text-zinc-500 dark:text-zinc-400 text-lg sm:text-xl max-w-lg mx-auto">
                       Create simple, clean icons like Lucide, Heroicons, or React Icons - just describe what you need
                     </p>
                   </div>
@@ -292,7 +292,7 @@ export default function GeneratePage() {
 
         <div className="flex-shrink-0 px-3 sm:px-6 lg:px-8 pb-4 sm:pb-6">
           <div className="w-full max-w-4xl mx-auto">
-            <div className="bg-white rounded-xl sm:rounded-2xl border-3 border-black shadow-[4px_4px_0px_0px_#000000] sm:shadow-[8px_8px_0px_0px_#000000] p-4 sm:p-6 flex flex-col gap-5">
+            <div className="bg-white dark:bg-[#141414] rounded-xl sm:rounded-2xl border-3 border-black shadow-[4px_4px_0px_0px_#000000] sm:shadow-[8px_8px_0px_0px_#000000] p-4 sm:p-6 flex flex-col gap-5">
               
               {/* Prompt Header */}
               <div className="flex items-center justify-between">
@@ -330,7 +330,7 @@ export default function GeneratePage() {
                 onKeyDown={handleKeyDown}
                 placeholder="Describe the icon... e.g., 'home', 'user', 'settings'"
                 disabled={isGenerating}
-                className="w-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] border-2 border-black rounded-xl bg-zinc-50 px-4 py-3 text-base placeholder:text-zinc-500 min-h-[80px] font-medium focus-visible:ring-[#B9FF66] transition-all"
+                className="w-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] border-2 border-black rounded-xl bg-zinc-50 dark:bg-[#1a1a1a] px-4 py-3 text-base placeholder:text-zinc-500 dark:placeholder:text-zinc-400 min-h-[80px] font-medium focus-visible:ring-[#B9FF66] transition-all"
               />
 
               <div className="flex items-center -mt-2">
@@ -346,7 +346,7 @@ export default function GeneratePage() {
 
               {/* Settings Grid */}
               {showOptions && (
-                <div className="grid grid-cols-2 gap-2 sm:gap-4 p-4 border-3 border-black rounded-xl bg-zinc-50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]">
+                <div className="grid grid-cols-2 gap-2 sm:gap-4 p-4 border-3 border-black rounded-xl bg-zinc-50 dark:bg-[#1a1a1a] shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]">
                   {/* Style Select */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-sm font-bold flex items-center gap-2">
@@ -412,10 +412,10 @@ export default function GeneratePage() {
       </div>
 
       <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
-        <DialogContent className="bg-white border-3 border-black rounded-2xl shadow-[8px_8px_0px_0px_#000000] p-6 max-w-md">
+        <DialogContent className="bg-white dark:bg-[#141414] border-3 border-black rounded-2xl shadow-[8px_8px_0px_0px_#000000] p-6 max-w-md">
           <DialogHeader>
             <DialogTitle className="text-2xl font-black tracking-tighter">Share to Community</DialogTitle>
-            <DialogDescription className="text-zinc-600">
+            <DialogDescription className="text-zinc-600 dark:text-zinc-400">
               Are you sure you want to share this icon to the community? Others will be able to see and use it.
             </DialogDescription>
           </DialogHeader>
@@ -438,10 +438,10 @@ export default function GeneratePage() {
       </Dialog>
 
       <Dialog open={lightbox.isOpen} onOpenChange={lightbox.close}>
-        <DialogContent className="max-w-5xl p-0 gap-0 w-[95vw] bg-white border-3 border-black rounded-2xl shadow-[8px_8px_0px_0px_#000000] overflow-hidden">
+        <DialogContent className="max-w-5xl p-0 gap-0 w-[95vw] bg-white dark:bg-[#141414] border-3 border-black rounded-2xl shadow-[8px_8px_0px_0px_#000000] overflow-hidden">
           {lightboxPack && (
             <>
-              <div className="flex items-center justify-between p-4 sm:p-5 border-b-3 border-black bg-zinc-50 relative z-10 min-h-[72px]">
+              <div className="flex items-center justify-between p-4 sm:p-5 border-b-3 border-black bg-zinc-50 dark:bg-[#1a1a1a] relative z-10 min-h-[72px]">
                 {/* Left Badge */}
                 <div className="flex-shrink-0 z-10">
                   <div className="inline-flex items-center justify-center min-w-[4rem] px-3 py-1.5 bg-[#B9FF66] rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000000] text-sm font-black text-black">
@@ -451,7 +451,7 @@ export default function GeneratePage() {
                 
                 {/* Center Title */}
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[40%] text-center z-0 hidden sm:block">
-                  <h3 className="font-bold text-base sm:text-lg truncate text-zinc-800 px-4">
+                  <h3 className="font-bold text-base sm:text-lg truncate text-zinc-800 dark:text-zinc-200 px-4">
                     {lightboxPack.prompt}
                   </h3>
                 </div>
@@ -474,7 +474,7 @@ export default function GeneratePage() {
                 </div>
               </div>
 
-              <div className="p-4 sm:p-8 bg-zinc-100/50 flex flex-col items-center justify-center min-h-[350px] md:min-h-[450px]">
+              <div className="p-4 sm:p-8 bg-zinc-100/50 dark:bg-[#1a1a1a]/50 flex flex-col items-center justify-center min-h-[350px] md:min-h-[450px]">
                 <FeatureCarousel
                   images={lightboxPack.icons.map((icon) => ({
                     src: `/api/download/${encodeURIComponent(icon.png.key)}`,

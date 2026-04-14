@@ -4,13 +4,13 @@ import { Button } from '@/components/ui/button'
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-[#f3f4f6] bg-grid-pattern flex flex-col items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white border-4 border-black rounded-[24px] shadow-[8px_8px_0_0_#000000] p-8 text-center">
+    <div className="min-h-screen bg-[#f3f4f6] dark:bg-[#0a0a0a] bg-grid-pattern flex flex-col items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white dark:bg-[#141414] border-4 border-black rounded-[24px] shadow-[8px_8px_0_0_#000000] p-8 text-center">
         <h1 className="text-8xl sm:text-[120px] font-black text-[#B9FF66] mb-2 leading-none" style={{ WebkitTextStroke: '4px black' }}>
           404
         </h1>
         <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight mb-4">Page Not Found</h2>
-        <p className="text-zinc-600 font-medium mb-8 text-sm sm:text-base">
+        <p className="text-zinc-600 dark:text-zinc-400 font-medium mb-8 text-sm sm:text-base">
           The icon you're looking for must have been deleted, or this url doesn't exist. Get back to generating.
         </p>
         <Link href="/">

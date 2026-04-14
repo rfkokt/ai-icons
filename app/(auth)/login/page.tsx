@@ -56,14 +56,14 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6] bg-grid-pattern flex items-center justify-center p-4 sm:p-6">
+    <div className="min-h-screen bg-[#f3f4f6] dark:bg-[#0a0a0a] bg-grid-pattern flex items-center justify-center p-4 sm:p-6">
       <div className="w-full max-w-md">
-        <div className="bg-white border-4 border-black brutalist-shadow rounded-2xl p-6 sm:p-8">
+        <div className="bg-white dark:bg-[#141414] border-4 border-black brutalist-shadow rounded-2xl p-6 sm:p-8">
           <div className="text-center mb-6 sm:mb-8">
             <Link href="/" className="inline-block">
               <h1 className="text-3xl sm:text-4xl font-bold tracking-tighter">AI Icons</h1>
             </Link>
-            <p className="text-zinc-500 mt-2 text-sm sm:text-base">Sign in to your account</p>
+            <p className="text-zinc-500 dark:text-zinc-400 mt-2 text-sm sm:text-base">Sign in to your account</p>
           </div>
 
           {error && (
@@ -117,14 +117,14 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-5 sm:mt-6 text-center text-sm text-zinc-500">
+          <div className="mt-5 sm:mt-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
             <p>Demo: any email & password (min 6 chars)</p>
           </div>
 
           <div className="mt-5 sm:mt-6 pt-5 sm:pt-6 border-t border-zinc-200 text-center">
             <Link
               href="/"
-              className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors touch-manipulation"
+              className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors touch-manipulation"
             >
               ← Back to home
             </Link>

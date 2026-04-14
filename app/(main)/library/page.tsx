@@ -88,13 +88,13 @@ function LibraryContent() {
 
   if (packId) {
     return (
-      <div className="flex-1 min-h-screen bg-[#f3f4f6] bg-grid-pattern overflow-y-auto">
+      <div className="flex-1 min-h-screen bg-[#f3f4f6] dark:bg-[#0a0a0a] bg-grid-pattern overflow-y-auto">
         <div className="bg-[#B9FF66] border-b-4 border-black px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <button
-                  className="bg-white border-3 border-black p-2 rounded-xl shadow-[4px_4px_0px_0px_#000000] hover:shadow-[2px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer"
+                  className="bg-white dark:bg-[#141414] border-3 border-black p-2 rounded-xl shadow-[4px_4px_0px_0px_#000000] hover:shadow-[2px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer"
                   onClick={() => router.back()}
                 >
                   <HiArrowLeft className="h-5 w-5 text-black" />
@@ -113,12 +113,12 @@ function LibraryContent() {
                     </h1>
                   </div>
                   <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-                    <p className="text-sm sm:text-base font-medium text-zinc-800 flex items-center gap-2">
+                    <p className="text-sm sm:text-base font-medium text-zinc-800 dark:text-zinc-200 flex items-center gap-2">
                       <HiBolt className="h-4 w-4" />
                       {icons.length} icons generated
                     </p>
                     {packPrompt && packPrompt.length > 40 && (
-                      <p className="text-xs sm:text-sm text-zinc-600 truncate max-w-md" title={packPrompt}>
+                      <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 truncate max-w-md" title={packPrompt}>
                         &quot;{packPrompt}&quot;
                       </p>
                     )}
@@ -143,7 +143,7 @@ function LibraryContent() {
             ) : icons.length === 0 ? (
               <EmptyState
                 variant="brutalist"
-                icon={<div className="w-12 h-12 bg-white flex items-center justify-center border-4 border-black font-black text-2xl shadow-[4px_4px_0_0_#000] rotate-3 text-black">?</div>}
+                icon={<div className="w-12 h-12 bg-white dark:bg-[#141414] flex items-center justify-center border-4 border-black font-black text-2xl shadow-[4px_4px_0_0_#000] rotate-3 text-black">?</div>}
                 title="No icons yet"
                 description="Generate some icons to fill this pack!"
               />
@@ -181,7 +181,7 @@ function LibraryContent() {
         />
 
         <Dialog open={lightbox.isOpen} onOpenChange={lightbox.close}>
-          <DialogContent className="max-w-5xl p-0 gap-0 w-[95vw] bg-white border-3 border-black rounded-2xl shadow-[8px_8px_0px_0px_#000000] overflow-hidden">
+          <DialogContent className="max-w-5xl p-0 gap-0 w-[95vw] bg-white dark:bg-[#141414] border-3 border-black rounded-2xl shadow-[8px_8px_0px_0px_#000000] overflow-hidden">
             <div className="flex items-center justify-between p-4 sm:p-5 border-b-3 border-black bg-zinc-50 relative z-10 min-h-[72px]">
               {/* Left Badge */}
               <div className="flex-shrink-0 z-10">
@@ -193,7 +193,7 @@ function LibraryContent() {
               {/* Center Title */}
               {packPrompt && (
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[40%] text-center z-0 hidden sm:block">
-                  <h3 className="font-bold text-base sm:text-lg truncate text-zinc-800 px-4">
+                  <h3 className="font-bold text-base sm:text-lg truncate text-zinc-800 dark:text-zinc-200 px-4">
                     {packPrompt}
                   </h3>
                 </div>
@@ -231,7 +231,7 @@ function LibraryContent() {
   }
 
   return (
-    <div className="flex-1 min-h-screen bg-[#f3f4f6] bg-grid-pattern overflow-y-auto" ref={staggerRef}>
+    <div className="flex-1 min-h-screen bg-[#f3f4f6] dark:bg-[#0a0a0a] bg-grid-pattern overflow-y-auto" ref={staggerRef}>
       <PageHeader
         icon={<HiBolt className="h-8 w-8" />}
         title="Your Library"
@@ -257,7 +257,7 @@ function LibraryContent() {
           ) : packs.length === 0 ? (
             <EmptyState
               variant="brutalist"
-              icon={<div className="w-16 h-16 bg-white flex items-center justify-center border-4 border-black font-black text-4xl shadow-[6px_6px_0_0_#000] -rotate-3 text-black">?</div>}
+              icon={<div className="w-16 h-16 bg-white dark:bg-[#141414] flex items-center justify-center border-4 border-black font-black text-4xl shadow-[6px_6px_0_0_#000] -rotate-3 text-black">?</div>}
               title="Your library is empty"
               description="Start generating icons to see them appear here"
               action={{

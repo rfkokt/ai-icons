@@ -30,7 +30,7 @@ export default function Navigation() {
         AI Icons
       </Link>
 
-      <div className="hidden lg:flex items-center h-10 gap-10 text-base font-bold text-zinc-800 bg-white px-6 rounded-full border-2 border-black brutalist-shadow-sm">
+      <div className="hidden lg:flex items-center h-10 gap-10 text-base font-bold text-zinc-800 dark:text-zinc-200 bg-card dark:bg-card px-6 rounded-full border-2 border-black dark:border-zinc-700 brutalist-shadow-sm dark:shadow-[4px_4px_0px_0px_#444]">
         {navLinks.map((link) => (
           <Link
             key={link.href}
@@ -66,14 +66,14 @@ export default function Navigation() {
       <Button
         variant="outline"
         size="icon"
-        className="lg:hidden bg-white p-2 border-2 border-black rounded-lg brutalist-shadow-sm h-auto w-auto"
+        className="lg:hidden bg-card dark:bg-card p-2 border-2 border-black dark:border-zinc-700 rounded-lg brutalist-shadow-sm dark:shadow-[4px_4px_0px_0px_#444] h-auto w-auto"
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? <HiXMark className="text-3xl" /> : <HiBars3 className="text-3xl" />}
       </Button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 bg-white border-4 border-black brutalist-shadow mx-6 mt-2 p-6 lg:hidden z-50">
+        <div className="absolute top-full left-0 right-0 bg-card dark:bg-card border-4 border-black dark:border-zinc-700 brutalist-shadow dark:shadow-[8px_8px_0px_0px_#444] mx-6 mt-2 p-6 lg:hidden z-50">
           <div className="flex flex-col gap-4">
             {navLinks.map((link) => (
               <Link

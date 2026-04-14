@@ -24,20 +24,20 @@ export function PageHeader({
   className
 }: PageHeaderProps) {
   const variantStyles = {
-    lime: "bg-[#B9FF66] border-b-4 border-black",
-    white: "bg-white border-b-2 border-zinc-200",
+    lime: "bg-[#B9FF66] dark:bg-[#0a0a0a] border-b-4 border-black dark:border-zinc-700",
+    white: "bg-white dark:bg-[#141414] border-b-2 border-zinc-200 dark:border-zinc-700",
     dark: "bg-black text-[#B9FF66] border-b-4 border-[#B9FF66]"
   }
 
   const titleStyles = {
-    lime: "text-black",
-    white: "text-zinc-900",
+    lime: "text-black dark:text-white",
+    white: "text-zinc-900 dark:text-white",
     dark: "text-[#B9FF66]"
   }
 
   const descriptionStyles = {
-    lime: "text-zinc-800",
-    white: "text-zinc-600",
+    lime: "text-zinc-800 dark:text-zinc-300",
+    white: "text-zinc-600 dark:text-zinc-400",
     dark: "text-zinc-300"
   }
 
@@ -51,8 +51,8 @@ export function PageHeader({
         {icon && (
           <div className={cn(
             "inline-flex p-3 rounded-2xl mb-4",
-            variant === "lime" && "bg-black text-white shadow-[4px_4px_0px_0px_#B9FF66]",
-            variant === "white" && "bg-zinc-100 text-zinc-900",
+            variant === "lime" && "bg-black dark:bg-[#141414] text-white shadow-[4px_4px_0px_0px_#B9FF66] dark:shadow-none",
+            variant === "white" && "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100",
             variant === "dark" && "bg-[#B9FF66] text-black"
           )}>
             {icon}
@@ -78,13 +78,13 @@ export function PageHeader({
               <div
                 key={i}
                 className={cn(
-                  "px-4 py-2 rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000000]",
-                  variant === "lime" && "bg-white",
-                  variant === "white" && "bg-zinc-100",
+                  "px-4 py-2 rounded-xl border-2 border-black dark:border-zinc-600 shadow-[2px_2px_0px_0px_#000000] dark:shadow-none",
+                  variant === "lime" && "bg-white dark:bg-[#1a1a1a]",
+                  variant === "white" && "bg-zinc-100 dark:bg-zinc-800",
                   variant === "dark" && "bg-zinc-800 text-white"
                 )}
               >
-                <span className="text-sm font-bold text-zinc-700">
+                <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
                   {stat.value} {stat.label}
                 </span>
               </div>
