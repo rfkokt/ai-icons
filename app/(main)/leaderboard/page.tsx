@@ -65,7 +65,7 @@ export default function LeaderboardPage() {
           <div className="p-5 border-b-3 border-black bg-zinc-50 dark:bg-[#1a1a1a]">
             <h2 className="font-black text-xl text-zinc-900 dark:text-white tracking-tight">Community Champions</h2>
           </div>
-          <div className="divide-y-3 divide-black">
+          <div className="divide-y-3 divide-black dark:divide-zinc-700">
             {leaderboardData.map((user) => (
               <div key={user.rank} className="hover:bg-zinc-50 dark:hover:bg-[#1a1a1a] transition-colors">
                 <UserCard {...user} variant="regular" />

@@ -50,10 +50,15 @@ export function UserCard({ rank, name, referrals, credits, variant = "regular" }
               {referrals} referrals
             </p>
           </div>
-          {variant === "my" && (
+          {variant === "my" ? (
             <div className="text-right">
               <p className="font-semibold text-black dark:text-zinc-100">{credits}</p>
               <p className="text-xs text-black/70 dark:text-zinc-400">credits</p>
+            </div>
+          ) : (
+            <div className="text-right">
+              <p className="font-semibold text-zinc-900 dark:text-zinc-100">{credits}</p>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">credits</p>
             </div>
           )}
         </div>
@@ -61,8 +66,8 @@ export function UserCard({ rank, name, referrals, credits, variant = "regular" }
       {variant === "top" && (
         <>
           <p className="font-bold text-black truncate">{name}</p>
-          <p className="text-sm text-black/80">{referrals} referrals</p>
-          <p className="text-xs font-medium text-black/60 mt-1">{credits} credits</p>
+          <p className="text-sm text-black/80 dark:text-black/70">{referrals} referrals</p>
+          <p className="text-xs font-medium text-black/60 dark:text-black/50 mt-1">{credits} credits</p>
         </>
       )}
     </Card>
