@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeInitializer } from "@/components/theme-initializer";
+import { DarkModeProvider } from "@/components/providers";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -30,11 +31,13 @@ export default function RootLayout({
             className={`${bricolage.variable} font-sans antialiased bg-background text-foreground overflow-x-hidden selection:bg-[#B9FF66] selection:text-black`}
             style={{ fontFamily: 'var(--font-bricolage), system-ui, sans-serif' }}
           >
-            <ThemeInitializer />
-            <TooltipProvider>
-              {children}
-              <Toaster position="top-right" />
-            </TooltipProvider>
+            <DarkModeProvider>
+              <ThemeInitializer />
+              <TooltipProvider>
+                {children}
+                <Toaster position="top-right" />
+              </TooltipProvider>
+            </DarkModeProvider>
           </body>
         </html>
       </ClerkProvider>
