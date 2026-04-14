@@ -3,7 +3,6 @@ import { Bricolage_Grotesque } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeInitializer } from "@/components/theme-initializer";
 import { DarkModeProvider } from "@/components/providers";
 import "./globals.css";
 
@@ -32,7 +31,6 @@ export default function RootLayout({
             style={{ fontFamily: 'var(--font-bricolage), system-ui, sans-serif' }}
           >
             <DarkModeProvider>
-              <ThemeInitializer />
               <TooltipProvider>
                 {children}
                 <Toaster position="top-right" />

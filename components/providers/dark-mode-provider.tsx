@@ -3,17 +3,11 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 import { useThemeStore } from "@/lib/store"
-import { getStorageItem, setStorageItem } from "@/lib/utils"
 
 /**
  * Represents the available theme options.
  */
 type Theme = "light" | "dark"
-
-/**
- * Default localStorage key for storing theme preference.
- */
-const DEFAULT_STORAGE_KEY = "theme-preference"
 
 /**
  * Default theme to use when no preference is stored.
@@ -70,35 +64,21 @@ interface DarkModeProviderProps {
   children: ReactNode
   /** The default theme to use before client-side initialization */
   defaultTheme?: Theme
-  /** The localStorage key for persisting theme preference (defaults to "theme-preference") */
-  storageKey?: string
 }
 
 export function DarkModeProvider({
   children,
   defaultTheme = DEFAULT_THEME,
-  storageKey = DEFAULT_STORAGE_KEY,
 }: DarkModeProviderProps) {
   const [isClient, setIsClient] = useState(false)
-  const storeTheme = useThemeStore((state) => state.theme)
-  const setThemeStore = useThemeStore((state) => state.setTheme)
+  const theme = useThemeStore((state) => state.theme)
+  const setTheme = useThemeStore((state) => state.setTheme)
 
   // Handle client-side mounting to avoid hydration mismatch
   // NOTE: setState in effect is necessary for SSR hydration to prevent mismatch
   useEffect(() => {
     setIsClient(true)
-
-    // Initialize theme from localStorage or system preference on mount
-    const storedTheme = getStorageItem(storageKey) as Theme | null
-    if (storedTheme && (storedTheme === "light" || storedTheme === "dark")) {
-      setThemeStore(storedTheme)
-    } else {
-      // Use system preference as fallback
-      const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-      const systemTheme: Theme = systemPrefersDark ? "dark" : "light"
-      setThemeStore(systemTheme)
-    }
-  }, [storageKey, setThemeStore])
+  }, [])
 
   // Apply theme to document
   useEffect(() => {
@@ -106,14 +86,14 @@ export function DarkModeProvider({
 
     const root = document.documentElement
     root.classList.remove("light", "dark")
-    root.classList.add(storeTheme)
+    root.classList.add(theme)
 
     // Update meta theme-color for mobile browsers
     const metaThemeColor = document.querySelector('meta[name="theme-color"]')
     if (metaThemeColor) {
-      metaThemeColor.setAttribute("content", storeTheme === "dark" ? "#09090b" : "#ffffff")
+      metaThemeColor.setAttribute("content", theme === "dark" ? "#09090b" : "#ffffff")
     }
-  }, [storeTheme, isClient])
+  }, [theme, isClient])
 
   // Listen for system theme changes
   useEffect(() => {
@@ -122,28 +102,26 @@ export function DarkModeProvider({
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
     const handleChange = (e: MediaQueryListEvent) => {
       // Only auto-switch if user hasn't manually set a preference
-      const storedTheme = getStorageItem(storageKey)
-      if (!storedTheme) {
-        setThemeStore(e.matches ? "dark" : "light")
+      // (Zustand persist will have the saved preference)
+      const zustandStorage = localStorage.getItem("theme-preference")
+      if (!zustandStorage) {
+        setTheme(e.matches ? "dark" : "light")
       }
     }
 
     mediaQuery.addEventListener("change", handleChange)
     return () => mediaQuery.removeEventListener("change", handleChange)
-  }, [isClient, storageKey, setThemeStore])
+  }, [isClient, setTheme])
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light")
+  }
 
   const contextValue: DarkModeContextValue = {
-    theme: isClient ? storeTheme : defaultTheme,
-    setTheme: (theme: Theme) => {
-      setThemeStore(theme)
-      setStorageItem(storageKey, theme)
-    },
-    toggleTheme: () => {
-      const newTheme = storeTheme === "light" ? "dark" : "light"
-      setThemeStore(newTheme)
-      setStorageItem(storageKey, newTheme)
-    },
-    isDarkMode: isClient ? storeTheme === "dark" : defaultTheme === "dark",
+    theme: isClient ? theme : defaultTheme,
+    setTheme,
+    toggleTheme,
+    isDarkMode: isClient ? theme === "dark" : defaultTheme === "dark",
     isLoading: !isClient,
   }
 
