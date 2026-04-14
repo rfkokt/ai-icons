@@ -38,16 +38,16 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuthStore()
 
   return (
-    <div className="min-h-screen bg-zinc-50 flex">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 flex">
       <aside
         className={cn(
-          "bg-white border-r border-zinc-200 flex flex-col transition-all duration-300",
+          "bg-white dark:bg-zinc-800 border-r border-zinc-200 dark:border-zinc-700 flex flex-col transition-all duration-300",
           collapsed ? "w-16" : "w-64"
         )}
       >
-        <div className="h-16 flex items-center justify-between px-4 border-b border-zinc-200">
+        <div className="h-16 flex items-center justify-between px-4 border-b border-zinc-200 dark:border-zinc-700">
           {!collapsed && (
-            <Link href="/dashboard" className="text-xl font-bold text-zinc-900">
+            <Link href="/dashboard" className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
               AI Icons
             </Link>
           )}
@@ -75,7 +75,7 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
                   "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                   isActive
                     ? "bg-[#B9FF66] text-black"
-                    : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
+                    : "text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-zinc-100"
                 )}
               >
                 <item.icon className="h-5 w-5 shrink-0" />
@@ -85,12 +85,12 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        <div className="p-4 border-t border-zinc-200">
+        <div className="p-4 border-t border-zinc-200 dark:border-zinc-700">
           <DropdownMenu>
             <DropdownMenuTrigger>
               <div
                 className={cn(
-                  "flex items-center gap-2 w-full rounded-lg hover:bg-zinc-100 transition-colors",
+                  "flex items-center gap-2 w-full rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors",
                   collapsed ? "justify-center px-2 py-2" : "px-2 py-2"
                 )}
               >
@@ -101,7 +101,7 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
                   </AvatarFallback>
                 </Avatar>
                 {!collapsed && (
-                  <span className="truncate text-sm text-zinc-700">{user?.name || "User"}</span>
+                  <span className="truncate text-sm text-zinc-700 dark:text-zinc-300">{user?.name || "User"}</span>
                 )}
               </div>
             </DropdownMenuTrigger>
