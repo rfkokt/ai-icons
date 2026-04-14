@@ -28,6 +28,7 @@ import { useRouter } from "next/navigation"
 import { UserArea } from "@/components/user-area"
 import { ConfirmDialog } from "@/components/confirm-dialog"
 import { LoadableImage } from "@/components/loadable-image"
+import { ThemeToggle } from "@/components/theme-toggle"
 import gsap from "gsap"
 
 interface HistoryPack {
@@ -200,9 +201,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                             </p>
                             <p className="text-xs text-zinc-500">{pack.iconCount} icons • {formatDate(pack.created_at)}</p>
                           </div>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             className="p-1 h-auto w-auto opacity-0 group-hover:opacity-100 hover:bg-zinc-200 text-red-500"
                             onClick={(e) => handleDeletePack(pack.id, pack.prompt, e)}
                           >
@@ -216,6 +217,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               </SheetContent>
             </Sheet>
           )}
+          <ThemeToggle />
           <UserArea credits={userCredits} />
         </div>
       </header>
@@ -340,6 +342,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <UserArea credits={userCredits} />
           </div>
         </header>
