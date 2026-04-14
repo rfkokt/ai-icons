@@ -78,20 +78,20 @@ export default function Stats() {
   }, []);
 
   return (
-    <section id="showcase" ref={sectionRef} className="max-w-7xl mx-auto px-6 py-24 border-t-4 border-black border-dashed">
+    <section id="showcase" ref={sectionRef} className="max-w-7xl mx-auto px-6 py-24 border-t-4 border-black dark:border-zinc-700 border-dashed">
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
         {stats.map((stat, index) => (
           <div
             key={index}
-            className="stat-card bg-white p-6 lg:p-8 rounded-[20px] border-4 border-black brutalist-shadow text-center group hover:-translate-y-2 transition-transform"
+            className="stat-card bg-card dark:bg-card p-6 lg:p-8 rounded-[20px] border-4 border-black dark:border-zinc-700 brutalist-shadow dark:shadow-[8px_8px_0px_0px_#444] text-center group hover:-translate-y-2 transition-transform"
           >
             <stat.icon className="w-10 h-10 mx-auto mb-4 text-[#B9FF66] bg-black rounded-full p-2" />
             <div className="text-4xl lg:text-5xl font-black tracking-tighter mb-2">
               {stat.value}
             </div>
             <div className="font-bold text-lg mb-1">{stat.label}</div>
-            <div className="text-sm text-zinc-500 font-medium">{stat.description}</div>
+            <div className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">{stat.description}</div>
           </div>
         ))}
       </div>
@@ -100,11 +100,11 @@ export default function Stats() {
       <div className="mb-16 max-w-3xl">
         <Badge
           variant="outline"
-          className="bg-white text-black font-bold px-4 py-2 border-2 border-black rounded-lg mb-6 transform rotate-2 brutalist-shadow-sm text-base"
+          className="bg-card dark:bg-card text-black dark:text-white font-bold px-4 py-2 border-2 border-black dark:border-zinc-700 rounded-lg mb-6 transform rotate-2 brutalist-shadow-sm dark:shadow-[4px_4px_0px_0px_#444] text-base"
         >
           Success Stories
         </Badge>
-        <h2 className="text-4xl lg:text-5xl font-black tracking-tighter leading-tight">
+        <h2 className="text-4xl lg:text-5xl font-black tracking-tighter leading-tight text-foreground">
           See how teams are using AI Icons to accelerate their workflow
         </h2>
       </div>
@@ -120,7 +120,7 @@ export default function Stats() {
               <div className="text-[#B9FF66] font-bold text-sm uppercase tracking-widest mb-4">
                 {study.title}
               </div>
-              <p className="text-xl leading-relaxed text-zinc-300 font-medium mb-8">
+              <p className="text-xl leading-relaxed text-zinc-300 dark:text-zinc-400 font-medium mb-8">
                 {study.description}
               </p>
             </div>

@@ -61,15 +61,15 @@ export default function Features() {
           >
             Our Features
           </BrutalistBadge>
-          <h2 className="text-4xl lg:text-5xl font-bold tracking-tighter leading-tight">
+          <h2 className="text-4xl lg:text-5xl font-bold tracking-tighter leading-tight text-foreground">
             Everything you need to create perfect icons for your projects
           </h2>
         </div>
         
         {/* Parallel Illustration */}
         <div className="lg:col-span-4 flex justify-center lg:justify-end relative">
-          <div className="w-48 h-48 bg-white border-4 border-black rounded-full shadow-[6px_6px_0px_0px_#000] flex flex-col items-center justify-center relative z-10 group">
-            <FaBullseye className="w-20 h-20 text-black group-hover:scale-110 transition-transform duration-300" />
+          <div className="w-48 h-48 bg-card dark:bg-card border-4 border-black dark:border-zinc-700 rounded-full shadow-[6px_6px_0px_0px_#000] dark:shadow-[6px_6px_0px_0px_#444] flex flex-col items-center justify-center relative z-10 group">
+            <FaBullseye className="w-20 h-20 text-black dark:text-white group-hover:scale-110 transition-transform duration-300" />
           </div>
           {/* Decorative blob behind */}
           <div className="absolute w-48 h-48 bg-[#B9FF66] border-4 border-black rounded-full translate-x-4 translate-y-4 shadow-[4px_4px_0_0_#000]" />
@@ -100,7 +100,7 @@ export default function Features() {
               </p>
             </div>
             <div className={`flex items-center gap-4 text-xl font-bold mt-auto ${feature.color === 'black' ? 'text-[#B9FF66]' : ''}`}>
-              <div className={`w-12 h-12 rounded-full border-2 border-black flex items-center justify-center bg-white transition-colors ${
+              <div className={`w-12 h-12 rounded-full border-2 border-black dark:border-zinc-700 flex items-center justify-center bg-card dark:bg-card transition-colors ${
                 feature.color === 'black' 
                   ? 'group-hover:border-[#B9FF66] text-black' 
                   : 'group-hover:bg-black group-hover:text-[#B9FF66] text-black'

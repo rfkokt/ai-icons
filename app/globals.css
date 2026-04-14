@@ -146,31 +146,31 @@
 /* Neo-Brutalist Utility Classes */
 @layer utilities {
   .brutalist-shadow {
-    @apply shadow-[8px_8px_0px_0px_#000000];
+    @apply shadow-[8px_8px_0px_0px_#000000] dark:shadow-[8px_8px_0px_0px_#444];
   }
-  
+
   .brutalist-shadow-sm {
-    @apply shadow-[4px_4px_0px_0px_#000000];
+    @apply shadow-[4px_4px_0px_0px_#000000] dark:shadow-[4px_4px_0px_0px_#444];
   }
 
   .btn-brutalist {
-    @apply shadow-[4px_4px_0px_0px_#000000] transition-all duration-200;
+    @apply shadow-[4px_4px_0px_0px_#000000] dark:shadow-[4px_4px_0px_0px_#444] transition-all duration-200;
   }
-  
+
   .btn-brutalist:hover {
-    @apply shadow-[2px_2px_0px_0px_#000000] translate-x-0.5 translate-y-0.5;
+    @apply shadow-[2px_2px_0px_0px_#000000] dark:shadow-[2px_2px_0px_0px_#444] translate-x-0.5 translate-y-0.5;
   }
-  
+
   .btn-brutalist:active {
     @apply shadow-none translate-x-1 translate-y-1;
   }
-  
+
   .brutalist-border {
-    @apply border-4 border-black;
+    @apply border-4 border-black dark:border-zinc-700;
   }
-  
+
   .brutalist-border-2 {
-    @apply border-2 border-black;
+    @apply border-2 border-black dark:border-zinc-700;
   }
   
   .bg-grid-pattern {
@@ -178,6 +178,13 @@
     background-image:
       linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  }
+
+  .dark .bg-grid-pattern {
+    background-size: 40px 40px;
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   }
 
   .scrollbar-hide {
