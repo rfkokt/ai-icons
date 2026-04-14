@@ -8,9 +8,9 @@ export default function PricingPage() {
 			<section className="mx-auto w-full max-w-6xl p-6 lg:p-8">
 				{/* Heading */}
 				<div className="mx-auto mb-16 max-w-2xl text-center flex flex-col items-center">
-                    <Badge 
-                        variant="outline" 
-                        className="bg-[#B9FF66] text-black font-bold px-4 py-2 border-2 border-black rounded-lg mb-6 transform -rotate-2 brutalist-shadow-sm text-base uppercase"
+                    <Badge
+                        variant="outline"
+                        className="bg-[#B9FF66] dark:bg-[#B9FF66] text-black font-bold px-4 py-2 border-2 border-black dark:border-zinc-600 rounded-lg mb-6 transform -rotate-2 brutalist-shadow-sm dark:shadow-[2px_2px_0_0_#666] text-base uppercase"
                     >
                         Pricing Plans
                     </Badge>

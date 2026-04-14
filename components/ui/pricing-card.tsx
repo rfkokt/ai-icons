@@ -18,7 +18,7 @@ export interface PricingCardProps {
 
 export function BrutalistCheck({ className }: { className?: string }) {
   return (
-    <div className={cn("bg-[#B9FF66] border-2 border-black text-black rounded-full p-0.5 shadow-[2px_2px_0px_0px_#000]", className)}>
+    <div className={cn("bg-[#B9FF66] border-2 border-black dark:border-zinc-600 text-black rounded-full p-0.5 shadow-[2px_2px_0px_0px_#000] dark:shadow-[2px_2px_0px_0px_#666]", className)}>
       <CheckIcon className="size-4" strokeWidth={4} />
     </div>
   );
@@ -40,24 +40,24 @@ export function PricingCard({
       className={cn("flex flex-col", className)}
     >
       <div className={cn(
-        "flex items-center justify-between gap-3 p-6 border-b-4 border-black",
-        isPopular ? "bg-white/40" : "bg-zinc-100"
+        "flex items-center justify-between gap-3 p-6 border-b-4 border-black dark:border-zinc-600",
+        isPopular ? "bg-white/40 dark:bg-zinc-800/40" : "bg-zinc-100 dark:bg-zinc-800"
       )}>
         <div className="flex flex-col sm:flex-row items-start gap-4">
           <BrutalistBadge color={isPopular ? 'black' : 'white'}>
             {titleBadge}
           </BrutalistBadge>
           {isPopular && (
-            <BrutalistBadge color="white" className="hidden lg:inline-flex shadow-[2px_2px_0_0_#000]">
-              Mst Popular
+            <BrutalistBadge color="white" className="hidden lg:inline-flex shadow-[2px_2px_0_0_#000] dark:shadow-[2px_2px_0_0_#666]">
+              Most Popular
             </BrutalistBadge>
           )}
         </div>
-        <Button 
+        <Button
           onClick={onCtaClick}
           className={cn(
-            "border-2 border-black font-bold rounded-xl shadow-[4px_4px_0_0_#000] hover:shadow-[2px_2px_0_0_#000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all h-9",
-            isPopular ? "bg-black text-white hover:bg-white hover:text-black" : "bg-white text-black hover:bg-black hover:text-white"
+            "border-2 border-black dark:border-zinc-600 font-bold rounded-xl shadow-[4px_4px_0_0_#000] dark:shadow-[4px_4px_0_0_#666] hover:shadow-[2px_2px_0_0_#000] dark:hover:shadow-[2px_2px_0_0_#666] hover:translate-x-0.5 hover:translate-y-0.5 transition-all h-9",
+            isPopular ? "bg-black text-white hover:bg-white hover:text-black" : "bg-white dark:bg-zinc-800 text-black dark:text-white hover:bg-black hover:text-white dark:hover:bg-zinc-700 dark:hover:text-zinc-100"
           )}
         >
           {cta}
@@ -65,14 +65,14 @@ export function PricingCard({
       </div>
 
       <div className={cn(
-        "flex items-baseline gap-2 px-6 py-6 border-b-4 border-black",
-        isPopular ? "bg-white/20" : ""
+        "flex items-baseline gap-2 px-6 py-6 border-b-4 border-black dark:border-zinc-600",
+        isPopular ? "bg-white/20 dark:bg-zinc-800/20" : ""
       )}>
         <span className="font-black text-6xl tracking-tighter">
           {priceLabel}
         </span>
         {priceLabel.toLowerCase() !== 'free' && priceLabel !== '$0' && (
-          <span className={cn("font-bold text-lg", isPopular ? "text-zinc-800" : "text-zinc-500")}>
+          <span className={cn("font-bold text-lg", isPopular ? "text-zinc-800 dark:text-zinc-300" : "text-zinc-500 dark:text-zinc-400")}>
             {priceSuffix}
           </span>
         )}
@@ -80,7 +80,7 @@ export function PricingCard({
 
       <ul className={cn(
         "grid gap-4 p-6 text-base font-semibold flex-1",
-        isPopular ? "text-zinc-900 font-bold" : "text-zinc-800"
+        isPopular ? "text-zinc-900 dark:text-zinc-100 font-bold" : "text-zinc-800 dark:text-zinc-200"
       )}>
         {features.map((f, i) => (
           <li key={i} className="flex items-center gap-4">
