@@ -61,8 +61,8 @@ export default function ReferralPage() {
               className="bg-[#B9FF66] text-black border-2 border-black brutalist-shadow-sm hover:bg-[#a8ef55] px-4"
             />
           </div>
-          <div className="mt-4 pt-4 border-t border-zinc-200">
-            <p className="text-sm text-zinc-500 mb-3">Share on social media</p>
+          <div className="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-700">
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-3">Share on social media</p>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" className="brutalist-border-2 rounded-lg">
                 <HiShare className="h-4 w-4" />
