@@ -3,21 +3,57 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 import { useThemeStore } from "@/lib/store"
+import { getStorageItem, setStorageItem } from "@/lib/utils"
 
+/**
+ * Represents the available theme options.
+ */
 type Theme = "light" | "dark"
 
+/**
+ * Default localStorage key for storing theme preference.
+ */
 const DEFAULT_STORAGE_KEY = "theme-preference"
+
+/**
+ * Default theme to use when no preference is stored.
+ */
 const DEFAULT_THEME: Theme = "light"
 
+/**
+ * Context value interface for dark mode state and controls.
+ */
 interface DarkModeContextValue {
+  /** The current theme value */
   theme: Theme
+  /** Function to set a specific theme */
   setTheme: (theme: Theme) => void
+  /** Function to toggle between light and dark themes */
   toggleTheme: () => void
+  /** Whether dark mode is currently active */
   isDarkMode: boolean
+  /** Whether the theme is still being initialized (client-side mounting) */
+  isLoading: boolean
 }
 
 const DarkModeContext = createContext<DarkModeContextValue | undefined>(undefined)
 
+/**
+ * Hook to access the dark mode context.
+ * Must be used within a DarkModeProvider.
+ *
+ * @throws {Error} If used outside of DarkModeProvider
+ * @returns The dark mode context value
+ *
+ * @example
+ * ```tsx
+ * function MyComponent() {
+ *   const { theme, toggleTheme, isLoading } = useDarkMode()
+ *   if (isLoading) return <div>Loading...</div>
+ *   return <button onClick={toggleTheme}>Current: {theme}</button>
+ * }
+ * ```
+ */
 export function useDarkMode() {
   const context = useContext(DarkModeContext)
   if (!context) {
@@ -26,29 +62,16 @@ export function useDarkMode() {
   return context
 }
 
+/**
+ * Props for the DarkModeProvider component.
+ */
 interface DarkModeProviderProps {
+  /** Child components to be wrapped with the theme context */
   children: ReactNode
+  /** The default theme to use before client-side initialization */
   defaultTheme?: Theme
+  /** The localStorage key for persisting theme preference (defaults to "theme-preference") */
   storageKey?: string
-}
-
-// Safe localStorage access with SSR fallback
-const getStorageItem = (key: string): string | null => {
-  try {
-    return typeof window !== "undefined" ? localStorage.getItem(key) : null
-  } catch {
-    return null
-  }
-}
-
-const setStorageItem = (key: string, value: string): void => {
-  try {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(key, value)
-    }
-  } catch {
-    // Silently fail if localStorage is unavailable
-  }
 }
 
 export function DarkModeProvider({
@@ -121,6 +144,7 @@ export function DarkModeProvider({
       setStorageItem(storageKey, newTheme)
     },
     isDarkMode: isClient ? storeTheme === "dark" : defaultTheme === "dark",
+    isLoading: !isClient,
   }
 
   return (
