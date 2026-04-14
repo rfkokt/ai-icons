@@ -205,7 +205,7 @@ function CommunityContent() {
                     </h1>
                   </div>
                   <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-                    <p className="text-sm sm:text-base font-medium text-zinc-800 flex items-center gap-2">
+                    <p className="text-sm sm:text-base font-medium text-zinc-800 dark:text-zinc-200 flex items-center gap-2">
                       <HiBolt className="h-4 w-4" />
                       {selectedPackIcons.length} community icons
                     </p>
@@ -269,7 +269,7 @@ function CommunityContent() {
               {/* Center Title */}
               {packPrompt && (
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[40%] text-center z-0 hidden sm:block">
-                  <h3 className="font-bold text-base sm:text-lg truncate text-zinc-800 px-4">
+                  <h3 className="font-bold text-base sm:text-lg truncate text-zinc-800 dark:text-zinc-200 px-4">
                     {packPrompt}
                   </h3>
                 </div>

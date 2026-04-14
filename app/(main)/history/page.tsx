@@ -49,7 +49,7 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+    <div className="flex-1 min-h-screen bg-[#f3f4f6] dark:bg-[#0a0a0a] p-4 sm:p-6 lg:p-8 overflow-y-auto">
       <PageHeader
         icon={<HiClock className="h-6 w-6" />}
         title="History"

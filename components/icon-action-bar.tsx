@@ -53,7 +53,7 @@ export function IconActionBar({
 
   return (
     <>
-      <div className={cn("inline-flex h-8 sm:h-9 items-stretch bg-white border-2 border-black rounded-full shadow-[2px_2px_0_0_#000] hover:shadow-[1px_1px_0_0_#000] hover:translate-x-px hover:translate-y-px transition-all overflow-hidden", className)}>
+      <div className={cn("inline-flex h-8 sm:h-9 items-stretch bg-white dark:bg-[#1a1a1a] border-2 border-black dark:border-zinc-600 rounded-full shadow-[2px_2px_0_0_#000] dark:shadow-none hover:shadow-[1px_1px_0_0_#000] hover:translate-x-px hover:translate-y-px transition-all overflow-hidden", className)}>
         {showShare && onShare && (
           <>
             <button
@@ -68,18 +68,18 @@ export function IconActionBar({
         )}
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="px-2 hover:bg-zinc-100 flex items-center justify-center transition-colors text-black outline-none min-w-[2rem] sm:min-w-[2.25rem]">
+          <DropdownMenuTrigger className="px-2 hover:bg-zinc-100 dark:hover:bg-zinc-700 flex items-center justify-center transition-colors text-black outline-none min-w-[2rem] sm:min-w-[2.25rem]">
             <HiEllipsisVertical className="h-4 w-4 sm:h-5 sm:w-5" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48 bg-white border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000000]">
-            <DropdownMenuItem onClick={handleDownloadPng} className="flex items-center gap-2 cursor-pointer font-bold">
+          <DropdownMenuContent align="end" className="w-48 bg-white dark:bg-[#1a1a1a] border-2 border-black dark:border-zinc-600 rounded-xl shadow-[3px_3px_0px_0px_#000000] dark:shadow-none">
+            <DropdownMenuItem onClick={handleDownloadPng} className="flex items-center gap-2 cursor-pointer font-bold text-black dark:text-white">
               <HiArrowDownTray className="h-4 w-4" />Download PNG
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleDownloadSvg} className="flex items-center gap-2 cursor-pointer font-bold">
+            <DropdownMenuItem onClick={handleDownloadSvg} className="flex items-center gap-2 cursor-pointer font-bold text-black dark:text-white">
               <HiArrowDownTray className="h-4 w-4" />Download SVG
             </DropdownMenuItem>
             {showDelete && onDelete && (
-              <DropdownMenuItem onClick={() => setConfirmType("delete")} className="flex items-center gap-2 cursor-pointer font-bold text-red-500">
+              <DropdownMenuItem onClick={() => setConfirmType("delete")} className="flex items-center gap-2 cursor-pointer font-bold text-red-500 dark:text-red-400">
                 <HiTrash className="h-4 w-4" />Delete
               </DropdownMenuItem>
             )}
@@ -89,25 +89,25 @@ export function IconActionBar({
 
       {confirmType && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50">
-          <div className="bg-white border-2 border-black rounded-2xl p-6 max-w-sm w-full mx-4 shadow-[8px_8px_0px_0px_#000000]">
-            <h3 className="text-lg font-bold mb-2">
+          <div className="bg-white dark:bg-[#1a1a1a] border-2 border-black dark:border-zinc-600 rounded-2xl p-6 max-w-sm w-full mx-4 shadow-[8px_8px_0px_0px_#000000] dark:shadow-none">
+            <h3 className="text-lg font-bold mb-2 text-black dark:text-white">
               {confirmType === "share" ? "Share to Community?" : "Delete?"}
             </h3>
-            <p className="text-zinc-600 mb-4">
-              {confirmType === "share" 
+            <p className="text-zinc-600 dark:text-zinc-400 mb-4">
+              {confirmType === "share"
                 ? `This ${iconCount && iconCount > 1 ? "pack" : "icon"} will be visible to everyone in the community.`
                 : "This action cannot be undone."
               }
             </p>
             <div className="flex gap-2 justify-end">
-              <Button variant="outline" onClick={() => setConfirmType(null)} className="border-2 border-black rounded-xl">
+              <Button variant="outline" onClick={() => setConfirmType(null)} className="border-2 border-black dark:border-zinc-600 rounded-xl bg-white dark:bg-[#141414] text-black dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-700">
                 Cancel
               </Button>
-              <Button 
-                onClick={() => handleConfirm(onShare, onDelete)} 
-                className={confirmType === "delete" 
-                  ? "bg-red-500 hover:bg-red-600 border-2 border-red-500 text-white rounded-xl" 
-                  : "bg-[#B9FF66] border-2 border-black rounded-xl"
+              <Button
+                onClick={() => handleConfirm(onShare, onDelete)}
+                className={confirmType === "delete"
+                  ? "bg-red-500 hover:bg-red-600 border-2 border-red-500 text-white rounded-xl"
+                  : "bg-[#B9FF66] border-2 border-black dark:border-zinc-600 rounded-xl hover:bg-lime-400"
                 }
               >
                 {confirmType === "share" ? "Share" : "Delete"}
