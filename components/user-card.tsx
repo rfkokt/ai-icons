@@ -46,14 +46,14 @@ export function UserCard({ rank, name, referrals, credits, variant = "regular" }
             <p className={`font-medium truncate ${variant === "my" ? "text-black dark:text-zinc-100" : "text-zinc-900 dark:text-zinc-100"}`}>
               {name}
             </p>
-            <p className={`text-xs ${variant === "my" ? "text-black/70 dark:text-zinc-400" : "text-zinc-500 dark:text-zinc-400"}`}>
+            <p className={`text-xs ${variant === "my" ? "text-black dark:text-zinc-400" : "text-zinc-500 dark:text-zinc-400"}`}>
               {referrals} referrals
             </p>
           </div>
           {variant === "my" ? (
             <div className="text-right">
               <p className="font-semibold text-black dark:text-zinc-100">{credits}</p>
-              <p className="text-xs text-black/70 dark:text-zinc-400">credits</p>
+              <p className="text-xs text-black dark:text-zinc-400">credits</p>
             </div>
           ) : (
             <div className="text-right">
