@@ -97,7 +97,7 @@
 }
 
 :root.dark {
-  --background: #333333;
+  --background: #0a0a0a;
   --foreground: #ffffff;
   --card: #27272a;
   --card-foreground: #f3f4f6;
@@ -191,7 +191,7 @@
 
   /* Dark mode utility class */
   .dark-mode {
-    --background: #333333;
+    --background: #0a0a0a;
     --foreground: #ffffff;
     --card: #27272a;
     --card-foreground: #f3f4f6;
