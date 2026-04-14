@@ -184,13 +184,13 @@ function CommunityContent() {
 
   if (packPrompt && selectedPackIcons.length > 0) {
     return (
-      <div className="flex-1 min-h-screen bg-[#f3f4f6] bg-grid-pattern overflow-y-auto">
+      <div className="flex-1 min-h-screen bg-[#f3f4f6] dark:bg-[#0a0a0a] bg-grid-pattern overflow-y-auto">
         <div className="bg-[#B9FF66] border-b-4 border-black px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <button
-                  className="bg-white border-3 border-black p-2 rounded-xl shadow-[4px_4px_0px_0px_#000000] hover:shadow-[2px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer"
+                  className="bg-white dark:bg-[#141414] border-3 border-black p-2 rounded-xl shadow-[4px_4px_0px_0px_#000000] hover:shadow-[2px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer"
                   onClick={() => router.push("/community")}
                 >
                   <HiArrowLeft className="h-5 w-5 text-black" />
@@ -257,11 +257,11 @@ function CommunityContent() {
         </div>
 
         <Dialog open={lightbox.isOpen} onOpenChange={lightbox.close}>
-          <DialogContent className="max-w-4xl w-full bg-white border-3 border-black rounded-2xl shadow-[8px_8px_0px_0px_#000000] p-6">
-            <div className="flex items-center justify-between p-4 sm:p-5 border-b-3 border-black bg-zinc-50 relative z-10 min-h-[72px]">
+          <DialogContent className="max-w-4xl w-full bg-white dark:bg-[#141414] border-3 border-black rounded-2xl shadow-[8px_8px_0px_0px_#000000] p-6">
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b-3 border-black bg-zinc-50 dark:bg-[#1a1a1a] relative z-10 min-h-[72px]">
               {/* Left Badge */}
               <div className="flex-shrink-0 z-10">
-                <div className="inline-flex items-center justify-center min-w-[4rem] px-3 py-1.5 bg-zinc-100 rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000000] text-sm font-bold text-zinc-700">
+                <div className="inline-flex items-center justify-center min-w-[4rem] px-3 py-1.5 bg-zinc-100 dark:bg-[#1a1a1a] rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000000] text-sm font-bold text-zinc-700 dark:text-zinc-300">
                   {lightbox.currentIndex + 1} / {selectedPackIcons.length}
                 </div>
               </div>
@@ -295,7 +295,7 @@ function CommunityContent() {
   }
 
   return (
-    <div className="flex-1 min-h-screen bg-[#f3f4f6] bg-grid-pattern overflow-y-auto" ref={staggerRef}>
+    <div className="flex-1 min-h-screen bg-[#f3f4f6] dark:bg-[#0a0a0a] bg-grid-pattern overflow-y-auto" ref={staggerRef}>
       <PageHeader
         icon={<HiBolt className="h-8 w-8" />}
         title="Community"

@@ -20,7 +20,7 @@ export default function AuthLayout({
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-50">
+      <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-[#1a1a1a]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
       </div>
     )

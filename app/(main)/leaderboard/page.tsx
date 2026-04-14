@@ -31,9 +31,9 @@ export default function LeaderboardPage() {
   const [filter, setFilter] = useState<FilterType>("weekly")
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden bg-[#f3f4f6] bg-grid-pattern">
-      <header className="h-auto bg-white border-b-3 border-black px-4 sm:px-6 py-4 shrink-0 shadow-[0_4px_0_0_#000000] z-10">
-        <h1 className="text-2xl font-black text-zinc-900 mb-3 tracking-tight">Leaderboard</h1>
+    <div className="flex-1 flex flex-col overflow-hidden bg-[#f3f4f6] dark:bg-[#0a0a0a] bg-grid-pattern">
+      <header className="h-auto bg-white dark:bg-[#141414] border-b-3 border-black px-4 sm:px-6 py-4 shrink-0 shadow-[0_4px_0_0_#000000] z-10">
+        <h1 className="text-2xl font-black text-zinc-900 dark:text-white mb-3 tracking-tight">Leaderboard</h1>
         <FilterTabs
           tabs={[
             { key: "weekly", label: "Weekly" },
@@ -61,13 +61,13 @@ export default function LeaderboardPage() {
           </div>
         </div>
 
-        <Card className="rounded-[24px] border-[3px] border-black bg-white shadow-[8px_8px_0_0_#000000] overflow-hidden max-w-4xl mx-auto">
-          <div className="p-5 border-b-3 border-black bg-zinc-50">
-            <h2 className="font-black text-xl text-zinc-900 tracking-tight">Community Champions</h2>
+        <Card className="rounded-[24px] border-[3px] border-black bg-white dark:bg-[#141414] shadow-[8px_8px_0_0_#000000] overflow-hidden max-w-4xl mx-auto">
+          <div className="p-5 border-b-3 border-black bg-zinc-50 dark:bg-[#1a1a1a]">
+            <h2 className="font-black text-xl text-zinc-900 dark:text-white tracking-tight">Community Champions</h2>
           </div>
           <div className="divide-y-3 divide-black">
             {leaderboardData.map((user) => (
-              <div key={user.rank} className="hover:bg-zinc-50 transition-colors">
+              <div key={user.rank} className="hover:bg-zinc-50 dark:hover:bg-[#1a1a1a] transition-colors">
                 <UserCard {...user} variant="regular" />
               </div>
             ))}
