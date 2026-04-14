@@ -86,28 +86,16 @@ export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
       theme: "light",
-      setTheme: (theme) => {
-        if (typeof window !== "undefined") {
-          document.documentElement.classList.remove("light", "dark")
-          document.documentElement.classList.add(theme)
-        }
-        set({ theme })
-      },
-      toggleTheme: () => {
-        const newTheme = get().theme === "light" ? "dark" : "light"
-        if (typeof window !== "undefined") {
-          document.documentElement.classList.remove("light", "dark")
-          document.documentElement.classList.add(newTheme)
-        }
-        set({ theme: newTheme })
-      },
+      setTheme: (theme) => set({ theme }),
+      toggleTheme: () => set({ theme: get().theme === "light" ? "dark" : "light" }),
     }),
     {
       name: "theme-preference",
       onRehydrateStorage: () => (state) => {
-        if (typeof window !== "undefined" && state) {
-          document.documentElement.classList.remove("light", "dark")
-          document.documentElement.classList.add(state.theme)
+        // Use system preference if no saved theme
+        if (typeof window !== "undefined" && state && !state.theme) {
+          const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+          state.theme = systemPrefersDark ? "dark" : "light"
         }
       },
     }

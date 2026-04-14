@@ -27,7 +27,7 @@ export default function RootLayout({
     <ClerkProvider>
         <html lang="en" className="scroll-smooth" suppressHydrationWarning>
           <body
-            className={`${bricolage.variable} font-sans antialiased bg-[#f3f4f6] text-zinc-900 overflow-x-hidden selection:bg-[#B9FF66] selection:text-black`}
+            className={`${bricolage.variable} font-sans antialiased bg-background text-foreground overflow-x-hidden selection:bg-[#B9FF66] selection:text-black`}
             style={{ fontFamily: 'var(--font-bricolage), system-ui, sans-serif' }}
           >
             <ThemeInitializer />
